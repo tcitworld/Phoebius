@@ -1,9 +1,10 @@
 package augier.fr.phoebius.core
-import android.os.Environment
-import augier.fr.phoebius.MainActivity
-import groovy.json.JsonBuilder
 
-class ConfigManager
+import android.os.Environment
+import groovy.json.JsonBuilder
+import augier.fr.phoebius.MainActivity
+
+public class ConfigManager
 {
 	public static final S = File.separator
 	public static final File getConfDir()
