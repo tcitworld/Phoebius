@@ -5,6 +5,7 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
+import groovy.transform.CompileStatic
 
 class SongList
 {	
@@ -49,6 +50,8 @@ class SongList
 		songList.sort(new SongComparator())
 		return songList
 	}
+
+	public Song getAt(int idx){ return songList[idx] }
 	
 	private class SongComparator implements Comparator<Song>
 	{

@@ -9,17 +9,17 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.TextView
 import augier.fr.phoebius.R
-import augier.fr.phoebius.utils.Song;
+import augier.fr.phoebius.utils.Song
 
 public class SongAdapter extends BaseAdapter
 {
-	private ArrayList<Song> songs;
-	private LayoutInflater songInf;
+	private ArrayList<Song> songs
+	private LayoutInflater songInf
 	
 	public SongAdapter(Context c, ArrayList<Song> _songs)
 	{
-		songs = _songs;
-		songInf = LayoutInflater.from(c);
+		songs = _songs
+		songInf = LayoutInflater.from(c)
 	}
 
 	@Override
@@ -38,12 +38,12 @@ public class SongAdapter extends BaseAdapter
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		LinearLayout songLay = songInf.inflate(R.layout.song_list, parent, false) as LinearLayout
-		TextView songView = songLay.findViewById(R.id.songTitle) as TextView
-		TextView artistView = songLay.findViewById(R.id.songArtist) as TextView
 		Song currSong = songs.get(position)
-		songView.setText(currSong.getTitle())
-		artistView.setText(currSong.getArtist())
+		TextView songTitle = songLay.findViewById(R.id.songTitle) as TextView
+		TextView songArtist = songLay.findViewById(R.id.songArtist) as TextView
+		songTitle.setText(currSong.getTitle())
+		songArtist.setText(currSong.getArtist())
 		songLay.setTag(position)
-		return songLay;
+		return songLay
 	}
 }

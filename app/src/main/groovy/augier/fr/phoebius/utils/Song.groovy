@@ -1,5 +1,9 @@
-package augier.fr.phoebius.utils;
+package augier.fr.phoebius.utils
 
+
+import groovy.transform.CompileStatic;
+
+@CompileStatic
 class Song
 {
 	private long id;
