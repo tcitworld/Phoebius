@@ -42,20 +42,19 @@ class SongList
 			}
 
 		}
-		return songList
+		return this.sort()
 	}
-	
+
+	/* TODO: This doesn't work :'( */
 	public ArrayList<Song> sort()
 	{
-		songList.sort(new SongComparator())
+		songList.sort({ song1, song2 ->  return song1.artist.compareTo(song2.artist) })
 		return songList
 	}
 
 	public Song getAt(int idx){ return songList[idx] }
-	
-	private class SongComparator implements Comparator<Song>
-	{
-		@Override
-		int compare(Song a, Song b){ return a.getTitle().compareTo(b.getTitle()) }
-	}
+
+	//region GET/SET
+	public int getLenght(){ return songList.size() }
+	//endregion
 }

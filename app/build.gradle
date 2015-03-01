@@ -1,0 +1,55 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:1.0.0'
+		classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.5'
+	}
+}
+
+apply plugin: 'groovyx.grooid.groovy-android'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+	    applicationId "augier.fr.phoebius"
+        minSdkVersion 19
+        targetSdkVersion 20
+        versionCode 1
+        versionName "0.0.2"
+    }
+	buildTypes{
+		release{
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy:2.4.1:grooid'
+	compile ('org.codehaus.groovy:groovy-json:2.4.1'){
+		transitive = false
+	}
+	compile "com.arasthel:swissknife:+"
+}
+
+project.androidGroovy {
+	options {
+		sourceCompatibility = '1.7'
+		targetCompatibility = '1.7'
+	}
+}
