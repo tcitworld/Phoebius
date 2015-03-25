@@ -5,47 +5,61 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import groovy.transform.CompileStatic
 
 class SongList
-{	
+{
+	private final String SONG_TITLE = MediaStore.Audio.Media.TITLE
+	private final String SONG_ID = MediaStore.Audio.Media._ID
+	private final String SONG_ARTIST = MediaStore.Audio.Media.ARTIST
+	private final Uri MUSIC_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+
 	private ContentResolver musicResolver
 	private ArrayList<Song> songList = []
+	private int currentSong
+	private Cursor musicCursor
 
-	public  SongList(ContentResolver _musicResolver){ musicResolver = _musicResolver }
-	
+	public SongList(ContentResolver _musicResolver)
+	{
+		musicResolver = _musicResolver
+		currentSong = 0
+		musicCursor = queryCursor
+	}
+
 	public ArrayList<Song> getSongList()
 	{
 		songList.empty
-		
-		Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-		Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null)
+		musicCursor = queryCursor
 
 		if(musicCursor!=null && musicCursor.moveToFirst())
 		{
-			int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-			int idColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media._ID)
-			int artistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-			
-			
-			long thisId = musicCursor.getLong(idColumn)
-			String thisTitle = musicCursor.getString(titleColumn)
-			String thisArtist = musicCursor.getString(artistColumn)
-			songList.add(new Song(thisId, thisTitle, thisArtist))
-			
-			while(musicCursor.moveToNext())
-			{
-				thisId = musicCursor.getLong(idColumn)
-				thisTitle = musicCursor.getString(titleColumn)
-				thisArtist = musicCursor.getString(artistColumn)
+			int titleColumn = songTitleColumn
+			int idColumn = songIdColumn
+			int artistColumn = songArtistColumn
+
+			/* StackOverflow
+			musicCursor.collect{
+				long thisId = it.getLong(idColumn)
+				String thisTitle = it.getString(titleColumn)
+				String thisArtist = it.getString(artistColumn)
 				songList.add(new Song(thisId, thisTitle, thisArtist))
 			}
+			*/
+
+
+			while(musicCursor.moveToNext())
+			{
+				long thisId = musicCursor.getLong(idColumn)
+				String thisTitle = musicCursor.getString(titleColumn)
+				String thisArtist = musicCursor.getString(artistColumn)
+				songList.add(new Song(thisId, thisTitle, thisArtist))
+			}
+			
+
 
 		}
 		return this.sort()
 	}
 
-	/* TODO: This doesn't work :'( */
 	public ArrayList<Song> sort()
 	{
 		songList.sort({ song1, song2 ->  return song1.artist.compareTo(song2.artist) })
@@ -56,5 +70,9 @@ class SongList
 
 	//region GET/SET
 	public int getLenght(){ return songList.size() }
+	private int getSongTitleColumn(){ return musicCursor.getColumnIndex(SONG_TITLE) }
+	private int getSongIdColumn(){ return musicCursor.getColumnIndex(SONG_ID) }
+	private int getSongArtistColumn(){ return musicCursor.getColumnIndex(SONG_ARTIST) }
+	private Cursor getQueryCursor(){ return musicResolver.query(MUSIC_URI, null, null, null, null) }
 	//endregion
 }
