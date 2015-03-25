@@ -26,7 +26,6 @@ public class MainActivity extends Activity implements MediaPlayerControl
 {
 	public static final String APP_NAME = "Phoebius"
 	@InjectView ListView songView
-	private SongList songList
 	private MusicService musicService
 	private Intent playIntent
 	private boolean musicBound = false
@@ -43,11 +42,10 @@ public class MainActivity extends Activity implements MediaPlayerControl
 		SwissKnife.inject(this)
 
 		// Variables init
-		songList = new SongList(contentResolver)
 		musicConnection = new MusicServiceConnection()
 
 		// UI init
-		SongAdapter songAdapter = new SongAdapter(this, songList.songList)
+		SongAdapter songAdapter = new SongAdapter(this, musicService.songList)
 		songView.setAdapter(songAdapter)
 		musicController = new MusicController(this)
 		musicController.setPrevNextListeners(
@@ -97,7 +95,8 @@ public class MainActivity extends Activity implements MediaPlayerControl
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
-		musicService.play(position)
+		long songId = musicService.songList[position].ID
+		musicService.play(SongList.uriFromId(songId))
 		musicController.show()
 	}
 
@@ -173,13 +172,6 @@ public class MainActivity extends Activity implements MediaPlayerControl
 		{
 			MusicBinder binder = iBinder as MusicBinder
 			musicService = binder.service
-			/* TODO: Retirer l'injection de songList
-			 * La liste des fichiers devrait appartenir au service lui-même
-			 * Cela permettra plus tard de ne pas avoir à se soucier
-			 * de sa sauvegarde lors des changements d'activité
-			 * (flip de l'écran, passe sur un widget)...
-			 */
-			musicService.songList = songList
 			musicBound = true
 		}
 

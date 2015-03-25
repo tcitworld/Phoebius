@@ -1,14 +1,13 @@
 package augier.fr.phoebius.core
 
 import android.app.Service
-import android.content.ContentUris
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.media.MediaPlayer.OnErrorListener
 import android.media.MediaPlayer.OnCompletionListener
-import android.provider.MediaStore.Audio.Media as AudioMedia
+import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
@@ -21,28 +20,22 @@ public class MusicService extends Service implements
 		OnCompletionListener
 {
 	private MediaPlayer mediaPlayer
-	private SongList songList
-	private SongIterator songPosition
+	private SongList songList = new SongList(contentResolver)
 	private final IBinder musicBinder = new MusicBinder()
 
 	@Override
 	void onCreate()
 	{
 		super.onCreate()
-		songPosition = new SongIterator()
 		mediaPlayer = new MediaPlayer()
 		mediaPlayerInit()
 	}
 
 	//region Player logic
-	public void play(int position = songPosition.songPosition)
+	public void play(Uri songUri)
 	{
 		mediaPlayer.reset()
-		songPosition.songPosition = position
-		def playingSong = songList[songPosition.songPosition]
-		def currentSong = playingSong.ID
-		def trackURI = ContentUris.withAppendedId(AudioMedia.EXTERNAL_CONTENT_URI, currentSong)
-		try{ mediaPlayer.setDataSource(applicationContext, trackURI) }
+		try{ mediaPlayer.setDataSource(applicationContext, songUri) }
 		catch(Exception e){ Log.e("MUSIC SERVICE", "Error setting data source", e) /* TODO: Handle fucking exception */ }
 		mediaPlayer.prepareAsync()
 		Log.e("PLAYING", "${currentSong}")
@@ -51,8 +44,8 @@ public class MusicService extends Service implements
 	public void pause(){ mediaPlayer.pause() }
 	public void seek(int position){ mediaPlayer.seekTo(position) }
 	public void start(){ mediaPlayer.start() }
-	public void playPrevious(){ play(songPosition.previous) }
-	public void playNext(){ play(songPosition.next) }
+	public void playPrevious(){ play(songList.moveToNextSong().getCurrentSongUri()) }
+	public void playNext(){ play(songList.moveToPreviousSong().getCurrentSongUri()) }
 	//endregion
 
 
@@ -87,43 +80,15 @@ public class MusicService extends Service implements
 	}
 
 	//region GET/SET
-	SongList getSongList(){ return songList }
-	void setSongList(SongList songList){ this.songList = songList }
-	int getSongPosition(){ return songPosition.songPosition }
-	int getPosition(){ return mediaPlayer.currentPosition }
+	ArrayList<Song> getSongList(){ return songList.currSongList }
 	int getDuration(){ return mediaPlayer.duration }
 	boolean isPlaying(){ return mediaPlayer.playing }
-	Song getCurrentSong(){ return songList[songPosition.songPosition] }
+	Song getCurrentSong(){ return songList.getCurrentSong() }
 	//endregion
 
 
 	public class MusicBinder extends Binder
 	{
 		MusicService getService(){ return MusicService.this }
-	}
-
-	public class SongIterator
-	{
-		private int songPosition
-
-		public SongIterator(int initialPosition = 0){ songPosition = initialPosition }
-
-		public int getNext()
-		{
-			if(songList != null)
-				{ songPosition = (songPosition + 1) % songList.lenght }
-			return songPosition
-		}
-
-		public int getPrevious()
-		{
-			if(songList != null)
-				{ songPosition = (songList.lenght + songPosition - 1) % songList.lenght }
-			return songPosition
-		}
-
-		int getSongPosition(){ return songPosition }
-		void setSongPosition(int songPosition)
-			{ this.songPosition = songList == null ? 0 : (songPosition % songList.lenght) }
 	}
 }

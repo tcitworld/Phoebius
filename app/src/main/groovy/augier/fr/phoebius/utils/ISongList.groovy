@@ -14,4 +14,10 @@ interface ISongList
 
 	public Song getNextSong()
 	public Song getPreviousSong()
+	public Song getCurrentSong()
+	public Uri getNextSongUri()
+	public Uri getPreviousSongUri()
+	public Uri getCurrentSongUri()
+	public ISongList moveToNextSong()
+	public ISongList moveToPreviousSong()
 }
