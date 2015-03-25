@@ -5,56 +5,97 @@ import android.content.ContentResolver
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
-import groovy.transform.CompileStatic
 
-class SongList
-{	
+class SongList implements ISongList
+{
 	private ContentResolver musicResolver
-	private ArrayList<Song> songList = []
+	private ArrayList<Song> currSongList = []
+	private Cursor musicCursor
+	private long currentSongId
 
-	public  SongList(ContentResolver _musicResolver){ musicResolver = _musicResolver }
-	
+	private boolean loop
+
+	public SongList(ContentResolver _musicResolver)
+	{
+		musicResolver = _musicResolver
+		musicCursor = queryCursor
+		currentSongId = songList[1].ID
+		loop = false
+	}
+
 	public ArrayList<Song> getSongList()
 	{
-		songList.empty
-		
-		Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-		Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null)
+		currSongList.empty
+		musicCursor = queryCursor
 
-		if(musicCursor!=null && musicCursor.moveToFirst())
+		if(musicCursor != null && musicCursor.moveToFirst())
 		{
-			int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
-			int idColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media._ID)
-			int artistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
-			
-			
-			long thisId = musicCursor.getLong(idColumn)
-			String thisTitle = musicCursor.getString(titleColumn)
-			String thisArtist = musicCursor.getString(artistColumn)
-			songList.add(new Song(thisId, thisTitle, thisArtist))
-			
+			int titleColumn = songTitleColumn
+			int idColumn = songIdColumn
+			int artistColumn = songArtistColumn
+
+			/* StackOverflow
+			musicCursor.collect{
+				long thisId = it.getLong(idColumn)
+				String thisTitle = it.getString(titleColumn)
+				String thisArtist = it.getString(artistColumn)
+				currSongList.add(new Song(thisId, thisTitle, thisArtist))
+			}
+			*/
+
 			while(musicCursor.moveToNext())
 			{
-				thisId = musicCursor.getLong(idColumn)
-				thisTitle = musicCursor.getString(titleColumn)
-				thisArtist = musicCursor.getString(artistColumn)
-				songList.add(new Song(thisId, thisTitle, thisArtist))
+				long thisId = musicCursor.getLong(idColumn)
+				String thisTitle = musicCursor.getString(titleColumn)
+				String thisArtist = musicCursor.getString(artistColumn)
+				currSongList.add(new Song(thisId, thisTitle, thisArtist))
 			}
+
 
 		}
 		return this.sort()
 	}
 
-	/* TODO: This doesn't work :'( */
 	public ArrayList<Song> sort()
 	{
-		songList.sort({ song1, song2 ->  return song1.artist.compareTo(song2.artist) })
-		return songList
+		currSongList.sort({ song1, song2 ->  return song1.artist.compareTo(song2.artist) })
+		return currSongList
 	}
 
-	public Song getAt(int idx){ return songList[idx] }
+	public Song getAt(int idx){ return currSongList[idx] }
+
+	@Override
+	public Song getNextSong()
+	{
+		int _nextSongIdx = nextSongIdx
+		if(_nextSongIdx < 0){ return null}
+		else{ return currSongList[_nextSongIdx] }
+	}
+
+	@Override
+	public Song getPreviousSong()
+	{
+		return null
+	}
+
+	//region PRIVATE METHODS
+	private int findIndexById(id){ return currSongList.findIndexOf{ it.ID == id } }
+	private Song findById(id){ return currSongList[findIndexById(id)] }
+	private int getNextSongIdx()
+	{
+		int currentSongIdx = findIndexById(currentSongId)
+		if(currentSongIdx == currSongList.size() - 1){ return -1 }
+		else{ return currentSongIdx + 1 % currSongList.size() }
+	}
+	//endregion
 
 	//region GET/SET
-	public int getLenght(){ return songList.size() }
+	public int getLenght(){ return currSongList.size() }
+	public boolean getLoop(){ return loop }
+	public void setLoop(boolean loop){ this.loop = loop }
+	private int getSongTitleColumn(){ return musicCursor.getColumnIndex(SONG_TITLE) }
+	private int getSongIdColumn(){ return musicCursor.getColumnIndex(SONG_ID) }
+	private int getSongArtistColumn(){ return musicCursor.getColumnIndex(SONG_ARTIST) }
+	private Cursor getQueryCursor(){ return musicResolver.query(MUSIC_URI, null, null, null, null) }
 	//endregion
 }

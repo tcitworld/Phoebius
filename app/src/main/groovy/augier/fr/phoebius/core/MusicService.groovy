@@ -93,7 +93,7 @@ public class MusicService extends Service implements
 	int getPosition(){ return mediaPlayer.currentPosition }
 	int getDuration(){ return mediaPlayer.duration }
 	boolean isPlaying(){ return mediaPlayer.playing }
-	Song getCurrentSong(){ return songList[songPosition.songPosition]}
+	Song getCurrentSong(){ return songList[songPosition.songPosition] }
 	//endregion
 
 
