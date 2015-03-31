@@ -41,14 +41,15 @@ public class MusicService extends Service implements
 		try{ mediaPlayer.setDataSource(applicationContext, songUri) }
 		catch(Exception e){ Log.e("MUSIC SERVICE", "Error setting data source", e) /* TODO: Handle fucking exception */ }
 		mediaPlayer.prepareAsync()
-		Log.e("PLAYING", "${currentSong}")
+		Log.d("PLAYING", "${currentSong}")
 	}
 
+	public void stop(){ mediaPlayer.stop() }
 	public void pause(){ mediaPlayer.pause() }
 	public void seek(int position){ mediaPlayer.seekTo(position) }
 	public void start(){ mediaPlayer.start() }
-	public void playPrevious(){ play(songList.moveToNextSong().getCurrentSongUri()) }
-	public void playNext(){ play(songList.moveToPreviousSong().getCurrentSongUri()) }
+	public void playPrevious(){ songList.moveToNextSong(this.&play, this.&stop) }
+	public void playNext(){ songList.moveToPreviousSong(this.&play, this.&stop) }
 	//endregion
 
 
@@ -64,7 +65,7 @@ public class MusicService extends Service implements
 	}
 
 	@Override
-	void onCompletion(MediaPlayer mediaPlayer){}
+	void onCompletion(MediaPlayer mediaPlayer){ playNext() }
 
 	@Override
 	boolean onError(MediaPlayer mediaPlayer, int i, int i2){ return false }

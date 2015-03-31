@@ -7,7 +7,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
 
-class SongList implements ISongList
+class SongList
 {
 	private ContentResolver musicResolver
 
@@ -36,15 +36,6 @@ class SongList implements ISongList
 			int idColumn = songIdColumn
 			int artistColumn = songArtistColumn
 
-			/* StackOverflow
-			musicCursor.collect{
-				long thisId = it.getLong(idColumn)
-				String thisTitle = it.getString(titleColumn)
-				String thisArtist = it.getString(artistColumn)
-				currSongList.add(new Song(thisId, thisTitle, thisArtist))
-			}
-			*/
-
 			while(musicCursor.moveToNext())
 			{
 				long thisId = musicCursor.getLong(idColumn)
@@ -66,7 +57,6 @@ class SongList implements ISongList
 
 	public Song getAt(int idx){ return currSongList[idx] }
 
-	@Override
 	public Song getNextSong()
 	{
 		int _nextSongIdx = nextSongIdx
@@ -74,7 +64,6 @@ class SongList implements ISongList
 		else{ return currSongList[_nextSongIdx] }
 	}
 
-	@Override
 	public Song getPreviousSong()
 	{
 		int _prevSongIdx = previousSongIdx
@@ -82,34 +71,37 @@ class SongList implements ISongList
 		else{ return  currSongList[_prevSongIdx] }
 	}
 
-	@Override
 	Song getCurrentSong(){ return findById(currentSongId) }
 
-	@Override
-	Uri getNextSongUri(){ return uriFromId(getPreviousSong().ID) }
-
-	@Override
-	Uri getPreviousSongUri(){ return uriFromId(getNextSong().ID) }
-
-	@Override
-	Uri getCurrentSongUri(){ return uriFromId(currentSongId) }
-
-	@Override
-	public ISongList moveToNextSong()
+	public SongList moveToNextSong(Closure playCallback, Closure stopCallback)
 	{
 		Song next = getNextSong()
-		if(next == null){ currentSongId = currSongList[0].ID }
-		else{ currentSongId = next.ID }
-		currentSongId = getNextSong().ID
+		if(next == null)
+		{
+			currentSongId = currSongList[0].ID
+			stopCallback()
+		}
+		else
+		{
+			currentSongId = next.ID
+			playCallback(currentSongId)
+		}
 		return this
 	}
 
-	@Override
-	public ISongList moveToPreviousSong()
+	public SongList moveToPreviousSong(Closure playCallback, Closure stopCallback)
 	{
 		Song prev = getNextSong()
-		if(prev == null){ currentSongId = currSongList[0].ID }
-		else{ currentSongId = prev.ID }
+		if(prev == null)
+		{
+			currentSongId = currSongList[0].ID
+			stopCallback()
+		}
+		else
+		{
+			currentSongId = prev.ID
+			playCallback(currentSongId)
+		}
 		return this
 	}
 
@@ -118,17 +110,16 @@ class SongList implements ISongList
 	private int getNextSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
-		if(currentSongIdx == currSongList.size() - 1){ return -1 }
-		else{ return currentSongIdx + 1 % currSongList.size() }
+		if(currentSongIdx == this.lenght - 1){ return -1 }
+		else{ return currentSongIdx + 1 % this.lenght }
 	}
 	private int getPreviousSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
 		if(currentSongIdx == 0){ return -1 }
-		else{ return currentSongIdx + currSongList.size() - 1 % currSongList.size() }
+		else{ return currentSongIdx + this.lenght - 1 % this.lenght }
 	}
 
-	public static uriFromId(long id){ return ContentUris.withAppendedId(MUSIC_URI, id)}
 	//region GET/SET
 	public int getLenght(){ return currSongList.size() }
 	public boolean getLoop(){ return loop }

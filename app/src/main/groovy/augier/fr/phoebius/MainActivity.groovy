@@ -65,7 +65,7 @@ public class MainActivity extends Activity implements MediaPlayerControl
 	protected void onDestroy()
 	{
 		stopService(playIntent)
-		musicService = null
+		musicConnection.destroy()
 		super.onDestroy()
 	}
 
@@ -102,19 +102,16 @@ public class MainActivity extends Activity implements MediaPlayerControl
 	}
 
 	@Override
-	int getCurrentPosition()
-	{
-		return 0
-	}
+	int getCurrentPosition(){ return getBufferPercentage() }
 
 	@Override
-	void seekTo(int i){}
+	void seekTo(int i){ musicService.seek(i) }
 
 	@Override
 	boolean isPlaying(){ return musicService != null ? musicService.playing : false }
 
 	@Override
-	int getBufferPercentage(){ return 0 }
+	int getBufferPercentage(){ return 50 }
 
 	@Override
 	boolean canPause(){ return true }
@@ -145,6 +142,7 @@ public class MainActivity extends Activity implements MediaPlayerControl
 				break
 			case R.id.action_end:
 				stopService(playIntent)
+				musicConnection.destroy()
 				System.exit(0)
 				break
 		}
