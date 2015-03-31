@@ -60,7 +60,7 @@ class SongList implements ISongList
 
 	public ArrayList<Song> sort()
 	{
-		currSongList.sort({ song1, song2 ->  return song1.artist.compareTo(song2.artist) })
+		currSongList.sort({ song1, song2 -> return song1.artist.compareTo(song2.artist) })
 		return currSongList
 	}
 

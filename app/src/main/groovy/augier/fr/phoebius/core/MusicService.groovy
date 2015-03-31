@@ -20,15 +20,18 @@ public class MusicService extends Service implements
 		OnCompletionListener
 {
 	private MediaPlayer mediaPlayer
-	private SongList songList = new SongList(contentResolver)
+	private SongList songList
 	private final IBinder musicBinder = new MusicBinder()
 
 	@Override
 	void onCreate()
 	{
 		super.onCreate()
+		songList = new SongList(contentResolver)
 		mediaPlayer = new MediaPlayer()
 		mediaPlayerInit()
+
+		Log.e("onCreate", this.class.toString())
 	}
 
 	//region Player logic
