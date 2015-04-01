@@ -22,7 +22,7 @@ class Song
 	public long getID(){ return id }
 	public String getTitle(){ return title }
 	public String getArtist(){ return artist }
-	public Uri getURI(){ return ContentUris.withAppendedId(ISongList.MUSIC_URI, id) }
+	public Uri getURI(){ return ContentUris.withAppendedId(SongList.MUSIC_URI, id) }
 
 	@Override
 	public String toString()

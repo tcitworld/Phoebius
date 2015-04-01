@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,6 +15,7 @@ import android.widget.MediaController
 import android.widget.MediaController.MediaPlayerControl
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
+import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
@@ -65,7 +67,7 @@ public class MainActivity extends Activity implements MediaPlayerControl
 	protected void onDestroy()
 	{
 		stopService(playIntent)
-		musicService = null
+		musicConnection.destroy()
 		super.onDestroy()
 	}
 
@@ -83,50 +85,36 @@ public class MainActivity extends Activity implements MediaPlayerControl
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
-		Uri songUri = musicService.songList[position].URI
-		musicService.play(songUri)
+		Song song = musicService.songList[position]
+		musicService.play(song)
 		musicController.show()
 	}
-
-	@Override
-	void start(){ musicService.start() }
-
-	@Override
-	void pause(){ musicService.pause() }
 
 	@Override
 	int getDuration()
 	{
 		if(musicService == null){ return 0 }
-		return musicService.playing ? musicService.duration : 0
+		return playing ? musicService.duration : 0
 	}
 
 	@Override
-	int getCurrentPosition()
+	int getBufferPercentage()
 	{
-		return 0
+		if(!playing || currentPosition == 0 ){ return 0 }
+		int percent = (currentPosition / duration) * 100
+		Log.e("${percent}", this.class.toString())
+		return percent
 	}
 
-	@Override
-	void seekTo(int i){}
-
-	@Override
-	boolean isPlaying(){ return musicService != null ? musicService.playing : false }
-
-	@Override
-	int getBufferPercentage(){ return 0 }
-
-	@Override
-	boolean canPause(){ return true }
-
-	@Override
-	boolean canSeekBackward(){ return true }
-
-	@Override
-	boolean canSeekForward(){ return true }
-
-	@Override
-	int getAudioSessionId(){ return 0 }
+	@Override int getCurrentPosition(){ return musicService.position }
+	@Override boolean isPlaying(){ return musicService != null ? musicService.playing : false }
+	@Override void seekTo(int i){ musicService.seek(i) }
+	@Override boolean canSeekBackward(){ return true }
+	@Override boolean canSeekForward(){ return true }
+	@Override boolean canPause(){ return true }
+	@Override void start(){ musicService.start() }
+	@Override void pause(){ musicService.pause() }
+	@Override int getAudioSessionId(){ return 0 }
 	//endregion
 
 	@Override
@@ -145,6 +133,7 @@ public class MainActivity extends Activity implements MediaPlayerControl
 				break
 			case R.id.action_end:
 				stopService(playIntent)
+				musicConnection.destroy()
 				System.exit(0)
 				break
 		}

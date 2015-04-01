@@ -17,7 +17,7 @@ public class MusicServiceConnection implements ServiceConnection
 	private Context context
 	private ListView songView
 
-	public MusicServiceConnection(Context c, ListView v)
+	public MusicServiceConnection(Context c, ListView v = null)
 	{
 		context = c
 		songView = v
@@ -32,12 +32,17 @@ public class MusicServiceConnection implements ServiceConnection
 		musicService = binder.service
 		musicBound = true
 
-		SongAdapter songAdapter = new SongAdapter(context, musicService.songList)
-		songView.setAdapter(songAdapter)
+		if(songView != null)
+		{
+			SongAdapter songAdapter = new SongAdapter(context, musicService.songList)
+			songView.setAdapter(songAdapter)
+		}
 	}
 
 	@Override
 	void onServiceDisconnected(ComponentName componentName){ musicBound = false }
+
+	void destroy(){ musicService = null }
 
 	MusicService getMusicService(){ return musicService }
 	boolean getMusicBound(){ return musicBound }
