@@ -28,19 +28,20 @@ public class MusicService extends Service implements
 	{
 		super.onCreate()
 		songList = new SongList(contentResolver)
+		songList.stopCallback = this.&stop
+		songList.playCallback = this.&play
 		mediaPlayer = new MediaPlayer()
 		mediaPlayerInit()
-
-		Log.e("onCreate", this.class.toString())
 	}
 
 	//region Player logic
-	public void play(Uri songUri)
+	public void play(Song song)
 	{
 		mediaPlayer.reset()
-		try{ mediaPlayer.setDataSource(applicationContext, songUri) }
+		try{ mediaPlayer.setDataSource(applicationContext, song.URI) }
 		catch(Exception e){ Log.e("MUSIC SERVICE", "Error setting data source", e) /* TODO: Handle fucking exception */ }
 		mediaPlayer.prepareAsync()
+		songList.currentSong = song
 		Log.d("PLAYING", "${currentSong}")
 	}
 
@@ -48,8 +49,8 @@ public class MusicService extends Service implements
 	public void pause(){ mediaPlayer.pause() }
 	public void seek(int position){ mediaPlayer.seekTo(position) }
 	public void start(){ mediaPlayer.start() }
-	public void playPrevious(){ songList.moveToNextSong(this.&play, this.&stop) }
-	public void playNext(){ songList.moveToPreviousSong(this.&play, this.&stop) }
+	public void playPrevious(){ songList.moveToPreviousSong() }
+	public void playNext(){ songList.moveToNextSong() }
 	//endregion
 
 
@@ -88,6 +89,7 @@ public class MusicService extends Service implements
 	int getDuration(){ return mediaPlayer.duration }
 	boolean isPlaying(){ return mediaPlayer.playing }
 	Song getCurrentSong(){ return songList.getCurrentSong() }
+	int getPosition(){ return mediaPlayer.currentPosition }
 	//endregion
 
 

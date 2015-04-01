@@ -6,14 +6,22 @@ import android.content.ContentUris
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 
 class SongList
 {
-	private ContentResolver musicResolver
+	public static final String SONG_TITLE = MediaStore.Audio.Media.TITLE
+	public static final String SONG_ID = MediaStore.Audio.Media._ID
+	public static final String SONG_ARTIST = MediaStore.Audio.Media.ARTIST
+	public static final Uri MUSIC_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
+	private ContentResolver musicResolver
 	private ArrayList<Song> currSongList = []
 	private Cursor musicCursor
 	private long currentSongId
+	private Closure stopCallback = {}
+	private Closure playCallback = {}
+
 
 	private boolean loop
 
@@ -71,9 +79,7 @@ class SongList
 		else{ return  currSongList[_prevSongIdx] }
 	}
 
-	Song getCurrentSong(){ return findById(currentSongId) }
-
-	public SongList moveToNextSong(Closure playCallback, Closure stopCallback)
+	public SongList moveToNextSong()
 	{
 		Song next = getNextSong()
 		if(next == null)
@@ -84,14 +90,14 @@ class SongList
 		else
 		{
 			currentSongId = next.ID
-			playCallback(currentSongId)
+			playCallback(next)
 		}
 		return this
 	}
 
-	public SongList moveToPreviousSong(Closure playCallback, Closure stopCallback)
+	public SongList moveToPreviousSong()
 	{
-		Song prev = getNextSong()
+		Song prev = getPreviousSong()
 		if(prev == null)
 		{
 			currentSongId = currSongList[0].ID
@@ -100,13 +106,17 @@ class SongList
 		else
 		{
 			currentSongId = prev.ID
-			playCallback(currentSongId)
+			playCallback(prev)
 		}
 		return this
 	}
 
 	private int findIndexById(long id){ return currSongList.findIndexOf{ it.ID == id } }
-	private Song findById(long id){ return currSongList[findIndexById(id)] }
+	private Song findById(long id)
+	{
+		try{ return currSongList[findIndexById(id)] }
+		catch(ArrayIndexOutOfBoundsException e){ return null }
+	}
 	private int getNextSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
@@ -125,9 +135,13 @@ class SongList
 	public boolean getLoop(){ return loop }
 	public void setLoop(boolean loop){ this.loop = loop }
 	public ArrayList<Song> getCurrSongList(){ return currSongList }
+	public Song getCurrentSong(){ return findById(currentSongId) }
+	public void setCurrentSong(Song song){ this.currentSongId = song.ID }
+	public void setStopCallback(Closure stopCallback){ this.stopCallback = stopCallback }
+	public void setPlayCallback(Closure playCallback){ this.playCallback = playCallback }
 	private int getSongTitleColumn(){ return musicCursor.getColumnIndex(SONG_TITLE) }
 	private int getSongIdColumn(){ return musicCursor.getColumnIndex(SONG_ID) }
 	private int getSongArtistColumn(){ return musicCursor.getColumnIndex(SONG_ARTIST) }
 	private Cursor getQueryCursor(){ return musicResolver.query(MUSIC_URI, null, null, null, null) }
-	//endregion
+//endregion
 }
