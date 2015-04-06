@@ -14,16 +14,19 @@ public class PlayerControl implements MediaPlayerControl
 {
 	MusicServiceConnection musicConnection
 	MediaPlayerControl mediaPlayerControl = this
-	MusicController musicController
+	MediaController mediaController
 	ListView listView
 
-	public PlayerControl(MusicServiceConnection musicConnection, Context c, ListView lv)
+	public PlayerControl(MusicServiceConnection musicConnection, MediaController mediaController)
 	{
 		this.musicConnection = musicConnection
-		this.listView = lv
 
-		musicController = new MusicController(c)
-		musicController.setPrevNextListeners(
+		mediaController.mediaPlayer = mediaPlayerControl
+		mediaController.anchorView = listView
+		mediaController.enabled = true
+
+		this.mediaController = mediaController
+		mediaController.setPrevNextListeners(
 				new View.OnClickListener() { @Override public void onClick(View v) { playNext() }},
 				new View.OnClickListener() { @Override public void onClick(View v) { playPrev() }})
 	}
@@ -31,15 +34,15 @@ public class PlayerControl implements MediaPlayerControl
 	//region MediaController
 	private void playNext(){
 		musicService.playNext()
-		musicController.show()
+		mediaController.show()
 	}
 
 	private void playPrev(){
 		musicService.playPrevious()
-		musicController.show()
+		mediaController.show()
 	}
 
-	void show(){ musicController.show() }
+	void show(){ mediaController.show() }
 
 	@Override
 	int getDuration()
@@ -68,19 +71,4 @@ public class PlayerControl implements MediaPlayerControl
 	//endregion
 
 	private MusicService getMusicService(){ return musicConnection.musicService }
-
-	private class MusicController extends MediaController
-	{
-		MusicController(Context context)
-		{
-			super(context)
-
-			mediaPlayer = mediaPlayerControl
-			anchorView = listView
-			enabled = true
-		}
-
-		@Override
-		public void hide(){}
-	}
 }

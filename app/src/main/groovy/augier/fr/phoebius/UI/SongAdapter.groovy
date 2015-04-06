@@ -16,9 +16,9 @@ public class SongAdapter extends BaseAdapter
 	private ArrayList<Song> songs
 	private LayoutInflater songInf
 	
-	public SongAdapter(Context c, ArrayList<Song> _songs)
+	public SongAdapter(Context c, ArrayList<Song> songList)
 	{
-		songs = _songs
+		songs = songList
 		songInf = LayoutInflater.from(c)
 	}
 

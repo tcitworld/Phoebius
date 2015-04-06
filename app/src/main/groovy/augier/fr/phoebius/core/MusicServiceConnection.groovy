@@ -14,13 +14,10 @@ public class MusicServiceConnection implements ServiceConnection
 {
 	private MusicService musicService
 	private boolean musicBound
-	private Context context
-	private ListView songView
+	private Closure serviceConnectedEvent = {}
 
-	public MusicServiceConnection(Context c, ListView v = null)
+	public MusicServiceConnection()
 	{
-		context = c
-		songView = v
 		musicService = null
 		musicBound = false
 	}
@@ -32,11 +29,7 @@ public class MusicServiceConnection implements ServiceConnection
 		musicService = binder.service
 		musicBound = true
 
-		if(songView != null)
-		{
-			SongAdapter songAdapter = new SongAdapter(context, musicService.songList)
-			songView.setAdapter(songAdapter)
-		}
+		serviceConnectedEvent()
 	}
 
 	@Override
@@ -46,4 +39,6 @@ public class MusicServiceConnection implements ServiceConnection
 
 	MusicService getMusicService(){ return musicService }
 	boolean getMusicBound(){ return musicBound }
+	void setServiceConnectedEvent(Closure serviceConnectedEvent)
+		{ this.serviceConnectedEvent = serviceConnectedEvent }
 }

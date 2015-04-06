@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
+import android.widget.MediaController
 import augier.fr.phoebius.UI.PlayerControl
+import augier.fr.phoebius.UI.SongAdapter
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
 import augier.fr.phoebius.utils.Song
@@ -15,10 +17,12 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
 
+
 public class MainActivity extends Activity
 {
 	public static final String APP_NAME = "Phoebius"
 	@InjectView ListView songView
+	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
 	private PlayerControl playerControl
@@ -35,8 +39,10 @@ public class MainActivity extends Activity
 		/*
 		 * TODO : Intencier dans un thread à part
 		 */
-		musicConnection = new MusicServiceConnection(this, songView)
-		playerControl = new PlayerControl(musicConnection, this, songView)
+		musicConnection = new MusicServiceConnection()
+		musicConnection.serviceConnectedEvent = this.&onServiceConnected
+		playerControl = new PlayerControl(musicConnection, mediaController)
+
 	}
 
 	@Override
@@ -90,6 +96,15 @@ public class MainActivity extends Activity
 				break
 		}
 		return super.onOptionsItemSelected(item)
+	}
+
+	private void onServiceConnected()
+	{
+		if(songView != null)
+		{
+			SongAdapter songAdapter = new SongAdapter(this, musicService.songList)
+			songView.setAdapter(songAdapter)
+		}
 	}
 
 	private MusicService getMusicService(){ return musicConnection.musicService }

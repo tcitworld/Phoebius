@@ -17,4 +17,13 @@
         android:layout_height="wrap_content" >
     </ListView>
 
+	<MediaController
+		android:id="@+id/mediaController"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignBottom="@+id/songView"
+		android:layout_alignParentEnd="true"
+		android:background="@android:color/black">
+	</MediaController>
+
 </RelativeLayout>
