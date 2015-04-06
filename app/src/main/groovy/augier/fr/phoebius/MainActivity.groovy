@@ -4,11 +4,10 @@ package augier.fr.phoebius
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ListView
 import android.widget.MediaController
+import augier.fr.phoebius.UI.AlbumListFragment
 import augier.fr.phoebius.UI.PlayerControl
 import augier.fr.phoebius.UI.SongListFragment
 import augier.fr.phoebius.core.MusicService
@@ -20,7 +19,6 @@ import com.arasthel.swissknife.annotations.InjectView
 public class MainActivity extends Activity
 {
 	public static final String APP_NAME = "Phoebius"
-	@InjectView ListView songView
 	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
@@ -91,8 +89,7 @@ public class MainActivity extends Activity
 	{
 		if(musicService?.songList != null)
 		{
-			def frag = new SongListFragment(musicService)
-			Log.d("${frag}\n\n\n\n", "")
+			def frag = new AlbumListFragment(musicService)
 			fragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
 		}
 	}

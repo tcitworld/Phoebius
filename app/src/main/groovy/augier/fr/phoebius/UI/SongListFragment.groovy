@@ -17,6 +17,7 @@ import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
+import org.w3c.dom.Text
 
 public class SongListFragment extends Fragment
 {
@@ -46,22 +47,9 @@ public class SongListFragment extends Fragment
 	class SongAdapter extends BaseAdapter
 	{
 		private LayoutInflater songInf = LayoutInflater.from(activity)
-
-		@Override
-		public int getCount()
-		{ return songs.size() }
-
-		@Override
-		public Object getItem(int arg0)
-		{
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0)
-		{
-			return 0;
-		}
+		@Override public int getCount(){ return songs.size() }
+		@Override public Object getItem(int arg0){ return null; }
+		@Override public long getItemId(int arg0){ return 0; }
 
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
