@@ -4,18 +4,17 @@ package augier.fr.phoebius
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
 import android.widget.MediaController
 import augier.fr.phoebius.UI.PlayerControl
-import augier.fr.phoebius.UI.SongAdapter
+import augier.fr.phoebius.UI.SongListFragment
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
-import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick
 
 
 public class MainActivity extends Activity
@@ -42,7 +41,6 @@ public class MainActivity extends Activity
 		musicConnection = new MusicServiceConnection()
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
 		playerControl = new PlayerControl(musicConnection, mediaController)
-
 	}
 
 	@Override
@@ -64,15 +62,6 @@ public class MainActivity extends Activity
 		stopService(playIntent)
 		musicConnection.destroy()
 		super.onDestroy()
-	}
-
-	// region User events callbacks
-	@OnItemClick(R.id.songView)
-	public void onItemClick(int position)
-	{
-		Song song = musicService.songList[position]
-		musicService.play(song)
-		playerControl.show()
 	}
 
 	@Override
@@ -100,10 +89,11 @@ public class MainActivity extends Activity
 
 	private void onServiceConnected()
 	{
-		if(songView != null)
+		if(musicService?.songList != null)
 		{
-			SongAdapter songAdapter = new SongAdapter(this, musicService.songList)
-			songView.setAdapter(songAdapter)
+			def frag = new SongListFragment(musicService)
+			Log.d("${frag}\n\n\n\n", "")
+			fragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
 		}
 	}
 

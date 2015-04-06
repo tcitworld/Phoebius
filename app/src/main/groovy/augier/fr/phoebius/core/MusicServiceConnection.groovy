@@ -1,12 +1,9 @@
 package augier.fr.phoebius.core
 
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.ServiceConnection
 import android.os.IBinder
-import android.widget.ListView
-import augier.fr.phoebius.UI.SongAdapter;
+import android.content.ComponentName
+import android.content.ServiceConnection
 import augier.fr.phoebius.core.MusicService.MusicBinder
 
 
