@@ -17,11 +17,12 @@ class SongList
 	public static final String ALBUM_ARTIST = MediaStore.Audio.Albums.ARTIST
 	public static final String ALBUM_DATE = MediaStore.Audio.Albums.FIRST_YEAR
 	public static final String ALBUM_NB_SONG = MediaStore.Audio.Albums.NUMBER_OF_SONGS
+	public static final String ALBUM_COVER = MediaStore.Audio.Albums.ALBUM_ART
 
 	public static final Uri MUSIC_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 	public static final Uri ALBUM_URI = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-
-	private final String[] columns = [ALBUM_ID, ALBUM_TITLE, ALBUM_ARTIST, ALBUM_DATE, ALBUM_NB_SONG]
+	private final String[] columns = [ALBUM_ID, ALBUM_TITLE, ALBUM_ARTIST,
+	                                 ALBUM_DATE, ALBUM_NB_SONG, ALBUM_COVER]
 
 	private ContentResolver musicResolver
 	private ArrayList<Song> currSongList = []
@@ -75,6 +76,7 @@ class SongList
 			int artistCol = albumArtistColumn
 			int dateCol = albumDateColumn
 			int nbSongsCol = albumNbSongsColumn
+			int artCol = albumCoverColumn
 
 			while(musicCursor.moveToNext())
 			{
@@ -83,7 +85,9 @@ class SongList
 				String thisArtist = musicCursor.getString(artistCol)
 				String thisDate = musicCursor.getString(dateCol)
 				String thisNbSongs = musicCursor.getString(nbSongsCol)
-				thisAlbumsList.add(new Album(thisId, thisTitle, thisArtist, thisDate, thisNbSongs))
+				String albumCoverPath = musicCursor.getString(artCol)
+				thisAlbumsList.add(new Album(
+						thisId, thisTitle, thisArtist, thisDate, thisNbSongs, albumCoverPath))
 			}
 
 
@@ -189,6 +193,7 @@ class SongList
 	private int getAlbumIdColumn(){ return musicCursor.getColumnIndex(ALBUM_ID) }
 	private int getAlbumDateColumn(){ return musicCursor.getColumnIndex(ALBUM_DATE) }
 	private int getAlbumNbSongsColumn(){ return musicCursor.getColumnIndex(ALBUM_NB_SONG) }
+	private int getAlbumCoverColumn(){ return musicCursor.getColumnIndex(ALBUM_COVER) }
 	private Cursor getQueryCursor(){ return musicResolver.query(MUSIC_URI, null, null, null, null) }
 	private Cursor getAlbumCursor(){ return musicResolver.query(ALBUM_URI, null, null, null, null) }
 

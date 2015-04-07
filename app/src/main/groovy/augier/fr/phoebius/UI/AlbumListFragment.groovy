@@ -6,18 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Album
-import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick;
-
 
 public class AlbumListFragment extends Fragment
 {
@@ -53,11 +47,14 @@ public class AlbumListFragment extends Fragment
 			TextView albumArtist = songLay.findViewById(R.id.albumArtist) as TextView
 			TextView albumDate = songLay.findViewById(R.id.albumDate) as TextView
 			TextView albumNbSongs = songLay.findViewById(R.id.albumNbSongs) as TextView
-			albumTitle.setText(currAlbum.albumTitle)
-			albumArtist.setText(currAlbum.albumArtist)
-			albumDate.setText(currAlbum.date)
-			albumNbSongs.setText(currAlbum.nbSongs)
-			songLay.setTag(position)
+			ImageView albumCover = songLay.findViewById(R.id.albumCover) as ImageView
+
+			albumTitle.text = currAlbum.albumTitle
+			albumArtist.text = currAlbum.albumArtist
+			albumDate.text = currAlbum.date
+			albumNbSongs.text = currAlbum.nbSongs
+			albumCover.imageBitmap = currAlbum.cover
+			songLay.tag = position
 			return songLay
 		}
 		private ArrayList<Album> getAlbums(){ return musicService.albumList }

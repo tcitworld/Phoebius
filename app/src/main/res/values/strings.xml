@@ -8,5 +8,9 @@
 
 <!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>
+	<string name="albumDateText">Date</string>
+	<string name="albumArtistText">Artiste</string>
+	<string name="albumTitleText">Titre</string>
+	<string name="albumNbSongText">Nombre de pistes</string>
 
 </resources>

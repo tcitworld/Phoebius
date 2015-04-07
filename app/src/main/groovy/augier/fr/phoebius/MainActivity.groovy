@@ -46,11 +46,18 @@ public class MainActivity extends Activity
 	{
 		super.onStart()
 
+		Activity thisActivity = this
 		if(playIntent == null)
 		{
-			playIntent = new Intent(this, MusicService.class)
-			bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
-			startService(playIntent)
+			new Thread(new Runnable(){
+				@Override
+				void run()
+				{
+					playIntent = new Intent(thisActivity, MusicService.class)
+					bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
+					startService(playIntent)
+				}
+			}).run()
 		}
 	}
 
