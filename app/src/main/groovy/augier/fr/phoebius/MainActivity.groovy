@@ -6,19 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ListView
+import android.widget.MediaController
+import augier.fr.phoebius.UI.AlbumListFragment
 import augier.fr.phoebius.UI.PlayerControl
+import augier.fr.phoebius.UI.SongListFragment
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
-import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick
+
 
 public class MainActivity extends Activity
 {
 	public static final String APP_NAME = "Phoebius"
-	@InjectView ListView songView
+	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
 	private PlayerControl playerControl
@@ -35,8 +36,9 @@ public class MainActivity extends Activity
 		/*
 		 * TODO : Intencier dans un thread à part
 		 */
-		musicConnection = new MusicServiceConnection(this, songView)
-		playerControl = new PlayerControl(musicConnection, this, songView)
+		musicConnection = new MusicServiceConnection()
+		musicConnection.serviceConnectedEvent = this.&onServiceConnected
+		playerControl = new PlayerControl(musicConnection, mediaController)
 	}
 
 	@Override
@@ -44,11 +46,18 @@ public class MainActivity extends Activity
 	{
 		super.onStart()
 
+		Activity thisActivity = this
 		if(playIntent == null)
 		{
-			playIntent = new Intent(this, MusicService.class)
-			bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
-			startService(playIntent)
+			new Thread(new Runnable(){
+				@Override
+				void run()
+				{
+					playIntent = new Intent(thisActivity, MusicService.class)
+					bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
+					startService(playIntent)
+				}
+			}).run()
 		}
 	}
 
@@ -58,15 +67,6 @@ public class MainActivity extends Activity
 		stopService(playIntent)
 		musicConnection.destroy()
 		super.onDestroy()
-	}
-
-	// region User events callbacks
-	@OnItemClick(R.id.songView)
-	public void onItemClick(int position)
-	{
-		Song song = musicService.songList[position]
-		musicService.play(song)
-		playerControl.show()
 	}
 
 	@Override
@@ -90,6 +90,15 @@ public class MainActivity extends Activity
 				break
 		}
 		return super.onOptionsItemSelected(item)
+	}
+
+	private void onServiceConnected()
+	{
+		if(musicService?.songList != null)
+		{
+			def frag = new AlbumListFragment(musicService)
+			fragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
+		}
 	}
 
 	private MusicService getMusicService(){ return musicConnection.musicService }

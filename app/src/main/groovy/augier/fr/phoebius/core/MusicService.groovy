@@ -12,6 +12,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 
@@ -86,6 +87,7 @@ public class MusicService extends Service implements
 
 	//region GET/SET
 	ArrayList<Song> getSongList(){ return songList.currSongList }
+	ArrayList<Album> getAlbumList(){ return songList.albumList }
 	int getDuration(){ return mediaPlayer.duration }
 	boolean isPlaying(){ return mediaPlayer.playing }
 	Song getCurrentSong(){ return songList.getCurrentSong() }

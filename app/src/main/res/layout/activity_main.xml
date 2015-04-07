@@ -11,10 +11,19 @@
     android:screenOrientation="portrait"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/songView"
+    <FrameLayout
+        android:id="@+id/mainFrame"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-    </ListView>
+    </FrameLayout>
+
+	<MediaController
+		android:id="@+id/mediaController"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignBottom="@+id/mainFrame"
+		android:layout_alignParentEnd="true"
+		android:background="@android:color/black">
+	</MediaController>
 
 </RelativeLayout>
