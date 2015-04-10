@@ -2,6 +2,7 @@ package augier.fr.phoebius.utils
 
 
 import android.content.ContentUris
+import android.graphics.Bitmap
 import android.net.Uri
 import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
@@ -59,6 +60,11 @@ class Song implements Comparable
 	public int getTrackNumber(){ return trackNumber }
 	/** @return Song year of release */
 	public int getYear(){ return year }
+	public Bitmap getCover()
+	{
+		if(id < 0) return Album.defaultCover
+		else return SongList.instance.getCoverFor(this.album) ?: Album.defaultCover
+	}
 
 	@Override
 	public String toString(){

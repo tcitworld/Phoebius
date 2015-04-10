@@ -54,8 +54,6 @@ public class MainPageFragment extends Fragment implements TabListener
 		return view
 	}
 
-	private MusicService getMusicService(){ return PhoebiusApplication.musicService }
-
 	@Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabSelected(Tab tab, FragmentTransaction ft)

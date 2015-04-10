@@ -25,8 +25,6 @@ class SongList extends MusicQueryBuilder
 	private LinkedHashMap<String, Bitmap> covers = [:]
 	private LinkedHashMap<String, ArrayList<Song>> playlists = [Test:new ArrayList<>()]
 	private Long currentSongId
-	private Closure stopCallback = {}
-	private Closure playCallback = {}
 	private boolean loop
 
 	private SongList()

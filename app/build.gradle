@@ -45,6 +45,7 @@ dependencies{
 		transitive = false
 	}
 	compile "com.arasthel:swissknife:1.2.2"
+	compile 'com.sothree.slidinguppanel:library:3.0.0'
 }
 
 dependencies{
