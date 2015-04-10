@@ -21,11 +21,6 @@
         </activity>
 
         <service android:name=".core.MusicService" />
-
-        <activity
-            android:name=".Play"
-            android:label="@string/title_activity_play" >
-        </activity>
     </application>
 
 </manifest>

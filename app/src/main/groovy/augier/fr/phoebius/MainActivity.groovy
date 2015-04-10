@@ -8,23 +8,20 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.MediaController
 import augier.fr.phoebius.UI.MainPageFragment
-import augier.fr.phoebius.UI.PlayerControl
+import augier.fr.phoebius.UI.PlayerControlFragment
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
 import augier.fr.phoebius.utils.SongList
-import com.arasthel.swissknife.SwissKnife
-import com.arasthel.swissknife.annotations.InjectView
+import groovy.transform.CompileStatic
 
+@CompileStatic
 public class MainActivity extends FragmentActivity
 {
 	public static final String APP_NAME = R.string.app_name
 	private static Context context
-	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
-	private PlayerControl playerControl
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -33,7 +30,6 @@ public class MainActivity extends FragmentActivity
 		super.onCreate(savedInstanceState)
 		context = this
 		contentView = R.layout.activity_main
-		SwissKnife.inject(this)
 
 		// Variables init
 		/*
@@ -41,7 +37,6 @@ public class MainActivity extends FragmentActivity
 		 */
 		musicConnection = new MusicServiceConnection()
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
-		playerControl = new PlayerControl(musicConnection, mediaController)
     }
 
 	@Override
@@ -77,12 +72,12 @@ public class MainActivity extends FragmentActivity
 	{
 		switch(item.itemId)
 		{
-			case R.id.action_shuffle:
-				break
 			case R.id.action_end:
 				stopService(playIntent)
 				musicConnection.destroy()
 				System.exit(0)
+				break
+			default:
 				break
 		}
 		return super.onOptionsItemSelected(item)
@@ -93,7 +88,9 @@ public class MainActivity extends FragmentActivity
 		if(SongList.instance?.currSongList != null)
 		{
 			def frag = new MainPageFragment(supportFragmentManager, musicService)
+			def contr = new PlayerControlFragment(musicConnection)
 			supportFragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
+			supportFragmentManager.beginTransaction().add(R.id.mediaController, contr).commit()
 		}
 	}
 
