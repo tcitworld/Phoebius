@@ -44,7 +44,7 @@ dependencies {
 	compile ('org.codehaus.groovy:groovy-json:2.4.1'){
 		transitive = false
 	}
-	compile "com.arasthel:swissknife:+"
+	compile "com.arasthel:swissknife:1.2.2"
 }
 
 project.androidGroovy {
