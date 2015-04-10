@@ -26,7 +26,7 @@ class SongList
 
 	private ContentResolver musicResolver
 	private ArrayList<Song> currSongList = []
-	private ArrayList<Album> thisAlbumsList = []
+	private ArrayList<Album> thisAlbumList = []
 	private Cursor musicCursor
 	private long currentSongId
 	private Closure stopCallback = {}
@@ -37,11 +37,13 @@ class SongList
 	{
 		musicResolver = _musicResolver
 		musicCursor = queryCursor
+		createAlbumList()
+		createSongList()
 		currentSongId = songList[0].ID // TODO : Gérer le cas liste vide
 		loop = false
 	}
 
-	public ArrayList<Song> getSongList()
+	public void createSongList()
 	{
 		currSongList.clear()
 		musicCursor = queryCursor
@@ -60,12 +62,12 @@ class SongList
 				currSongList.add(new Song(thisId, thisTitle, thisArtist))
 			}
 		}
-		return this.sort()
+		currSongList = this.sort()
 	}
 
-	public ArrayList<Album> getAlbumList()
+	public void createAlbumList()
 	{
-		thisAlbumsList.clear()
+		thisAlbumList.clear()
 
 		musicCursor = albumCursor
 
@@ -86,14 +88,14 @@ class SongList
 				String thisDate = musicCursor.getString(dateCol)
 				String thisNbSongs = musicCursor.getString(nbSongsCol)
 				String albumCoverPath = musicCursor.getString(artCol)
-				thisAlbumsList.add(new Album(
+				thisAlbumList.add(new Album(
 						thisId, thisTitle, thisArtist, thisDate, thisNbSongs, albumCoverPath))
 			}
 
 
 		}
 
-		return thisAlbumsList.sort({ album1, album2 ->
+		 thisAlbumList = thisAlbumList.sort({ album1, album2 ->
 			int byArtist = album1.albumTitle.compareTo(album2.albumTitle)
 			int byYear = album1.albumTitle.compareTo(album2.albumTitle)
 			int byTitle = album1.albumTitle.compareTo(album2.albumTitle)
@@ -185,6 +187,8 @@ class SongList
 	public void setCurrentSong(Song song){ this.currentSongId = song.ID }
 	public void setStopCallback(Closure stopCallback){ this.stopCallback = stopCallback }
 	public void setPlayCallback(Closure playCallback){ this.playCallback = playCallback }
+	public ArrayList<Album> getAlbumList(){ return thisAlbumList }
+	public ArrayList<Song> getSongList(){ return currSongList }
 	private int getSongTitleColumn(){ return musicCursor.getColumnIndex(SONG_TITLE) }
 	private int getSongIdColumn(){ return musicCursor.getColumnIndex(SONG_ID) }
 	private int getSongArtistColumn(){ return musicCursor.getColumnIndex(SONG_ARTIST) }

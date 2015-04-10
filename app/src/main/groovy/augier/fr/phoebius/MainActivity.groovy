@@ -18,7 +18,7 @@ import com.arasthel.swissknife.annotations.InjectView
 
 public class MainActivity extends Activity
 {
-	public static final String APP_NAME = "Phoebius"
+	public static final String APP_NAME = R.string.app_name
 	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
@@ -49,15 +49,8 @@ public class MainActivity extends Activity
 		Activity thisActivity = this
 		if(playIntent == null)
 		{
-			new Thread(new Runnable(){
-				@Override
-				void run()
-				{
-					playIntent = new Intent(thisActivity, MusicService.class)
-					bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
-					startService(playIntent)
-				}
-			}).run()
+			playIntent = new Intent(thisActivity, MusicService.class)
+			bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
 		}
 	}
 
