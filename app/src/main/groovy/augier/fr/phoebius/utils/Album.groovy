@@ -11,17 +11,15 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public class Album
 {
-	private long albumId
 	private String albumArtist
 	private String albumTitle
 	private String date
 	private String nbSongs
 	private Bitmap cover
 
-	public Album(long albumId, String albumTitle,String albumArtist,
+	public Album(String albumTitle,String albumArtist,
 	             String date, String nbSongs, String coverPath)
 	{
-		this.albumId = albumId
 		this.albumArtist = albumArtist
 		this.albumTitle = albumTitle
 		this.date = date
@@ -33,7 +31,6 @@ public class Album
 
 	}
 
-	long getAlbumId(){ return albumId }
 	String getAlbumArtist(){ return albumArtist }
 	String getAlbumTitle(){ return albumTitle }
 	String getDate(){ return date }
@@ -44,7 +41,8 @@ public class Album
 	boolean equals(Object o)
 	{
 		if(!o instanceof Album){ return false }
-		return ((Album)o).albumId == this.albumId
+		return ((Album)o).albumTitle.toLowerCase() == this.albumTitle.toLowerCase() &&
+		       ((Album)o).albumArtist.toLowerCase() == this.albumArtist.toLowerCase()
 	}
 
 	@Override
