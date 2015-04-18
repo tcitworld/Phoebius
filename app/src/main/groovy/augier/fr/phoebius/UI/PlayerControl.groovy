@@ -1,7 +1,6 @@
 package augier.fr.phoebius.UI
 
 
-import android.content.Context
 import android.view.View
 import android.widget.ListView
 import android.widget.MediaController

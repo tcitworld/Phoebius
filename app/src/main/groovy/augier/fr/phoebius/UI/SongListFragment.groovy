@@ -1,8 +1,7 @@
 package augier.fr.phoebius.UI
 
 
-import android.app.Fragment
-import android.content.Context
+import android.support.v4.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import augier.fr.phoebius.utils.Song
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
-import org.w3c.dom.Text
 
 public class SongListFragment extends Fragment
 {
