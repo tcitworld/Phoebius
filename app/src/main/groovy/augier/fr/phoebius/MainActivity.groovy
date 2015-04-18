@@ -1,43 +1,35 @@
 package augier.fr.phoebius
 
+
 import android.app.ActionBar
 import android.app.ActionBar.Tab
 import android.app.ActionBar.TabListener
 import android.app.Activity
 import android.app.FragmentTransaction
-import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
-import android.support.v4.app.FragmentActivity
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ListView
 import android.widget.MediaController
-import android.widget.MediaController.MediaPlayerControl
+import augier.fr.phoebius.UI.AlbumListFragment
 import augier.fr.phoebius.UI.FragmentAdapter
-import augier.fr.phoebius.UI.SongAdapter
+import augier.fr.phoebius.UI.PlayerControl
 import augier.fr.phoebius.core.MusicService
-import augier.fr.phoebius.core.MusicService.MusicBinder
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.core.MusicServiceConnection
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnItemClick
 
-public class MainActivity extends FragmentActivity implements TabListener
+public class MainActivity extends Activity implements TabListener
 {
 	public static final String APP_NAME = R.string.app_name
 	@InjectView MediaController mediaController
+	@InjectView ViewPager mainPager;
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
 	private PlayerControl playerControl
-    private ActionBar actionbar;
-    private ViewPager viewpager;
-    private FragmentAdapter ft;
+	private ActionBar actionBar;
+    private FragmentAdapter fragmentAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -55,25 +47,24 @@ public class MainActivity extends FragmentActivity implements TabListener
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
 		playerControl = new PlayerControl(musicConnection, mediaController)
 
-        viewpager = (ViewPager) findViewById(R.id.pager);
-        ft = new FragmentAdapter(getSupportFragmentManager(), musicService);
         mainPagerInit();
 
     }
 
     public void mainPagerInit()
     {
-        actionbar = getActionBar();
-        viewpager.setAdapter(ft);
-        actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionbar.addTab(actionbar.newTab().setText(R.string.playlist_en).setTabListener(this));
-        actionbar.addTab(actionbar.newTab().setText(R.string.album).setTabListener(this));
-        actionbar.addTab(actionbar.newTab().setText(R.string.artiste).setTabListener(this));
-        viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+	    fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), musicService);
+        actionBar = getActionBar();
+        mainPager.setAdapter(fragmentAdapter);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.addTab(actionBar.newTab().setText(R.string.playlist_en).setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText(R.string.album).setTabListener(this));
+        actionBar.addTab(actionBar.newTab().setText(R.string.artiste).setTabListener(this));
+        mainPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int arg0) {
-                actionbar.setSelectedNavigationItem(arg0);
+                actionBar.setSelectedNavigationItem(arg0);
 
             }
 
@@ -92,19 +83,19 @@ public class MainActivity extends FragmentActivity implements TabListener
     }
 
     @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    public void onTabReselected(Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        viewpager.setCurrentItem(tab.getPosition());
+    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+        mainPager.setCurrentItem(tab.getPosition());
 
     }
 
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
         // TODO Auto-generated method stub
 
     }
