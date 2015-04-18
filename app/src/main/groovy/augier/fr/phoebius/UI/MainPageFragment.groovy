@@ -6,10 +6,10 @@ import android.app.ActionBar.Tab
 import android.app.ActionBar.TabListener
 import android.app.FragmentTransaction
 import android.os.Bundle
-import android.support.annotation.Nullable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.PagerTitleStrip
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
@@ -22,40 +22,24 @@ import com.arasthel.swissknife.annotations.InjectView
 public class MainPageFragment extends Fragment implements TabListener
 {
 	@InjectView ViewPager mainPager
+	@InjectView PagerTitleStrip mainPagerTitleStrip
 	private MusicService musicService
-	private ActionBar actionBar
 	private PagerAdaptater fragmentAdapter
 
 	public MainPageFragment(FragmentManager fm , MusicService ms)
 	{
 		super()
 		musicService = ms
-		fragmentAdapter = new PagerAdaptater(fm);
+		fragmentAdapter = new PagerAdaptater(fm)
 	}
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.fragment_main_page, container, false);
+		View view = inflater.inflate(R.layout.fragment_main_page, container, false)
 		SwissKnife.inject(this, view)
 
-		mainPager.setAdapter(fragmentAdapter);
-
-		actionBar = activity.actionBar
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-		actionBar.addTab(actionBar.newTab().setText(R.string.playlist_en).setTabListener(this))
-		actionBar.addTab(actionBar.newTab().setText(R.string.album).setTabListener(this))
-		actionBar.addTab(actionBar.newTab().setText(R.string.artiste).setTabListener(this))
-
-		mainPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-			@Override
-			public void onPageSelected(int arg0){ actionBar.setSelectedNavigationItem(arg0) }
-			@Override public void onPageScrolled(int arg0, float arg1, int arg2){}
-			@Override public void onPageScrollStateChanged(int arg0){}
-		})
-
+		mainPager.setAdapter(fragmentAdapter)
 		return view
 	}
 
@@ -69,9 +53,8 @@ public class MainPageFragment extends Fragment implements TabListener
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft){}
 
-	class PagerAdaptater extends FragmentPagerAdapter
+	class PagerAdaptater extends FragmentStatePagerAdapter
 	{
-
 		private static final int NUM_ITEMS = 2
 
 		public PagerAdaptater(FragmentManager fm){ super(fm) }
@@ -85,11 +68,28 @@ public class MainPageFragment extends Fragment implements TabListener
 				case 1:
 					return new AlbumListFragment(musicService)
 				default:
-					break;
+					break
 			}
-			return null;
+			return null
 		}
 
 		@Override public int getCount(){ return NUM_ITEMS }
+
+		@Override
+		CharSequence getPageTitle(int position)
+		{
+			switch(position)
+			{
+				case 0:
+					return getString(R.string.playlist_en)
+					break
+				case 1:
+					return getString(R.string.album)
+					break
+				default:
+					return getString(R.string.artiste)
+				break
+			}
+		}
 	}
 }
