@@ -6,13 +6,14 @@ import android.support.v4.app.FragmentPagerAdapter
 import augier.fr.phoebius.core.MusicService
 
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+	public class PageFragment extends FragmentPagerAdapter {
 
-    static final int NUM_ITEMS = 3;
+    static final int NUM_ITEMS = 2
+	private MusicService musicService
 
-
-    public FragmentAdapter(FragmentManager fm , MusicService ms) {
-        super(fm, ms);
+    public PageFragment(FragmentManager fm , MusicService ms) {
+        super(fm);
+	    musicService = ms
     }
 
     @Override
@@ -20,9 +21,9 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         // TODO Auto-generated method stub
         switch (arg0) {
             case 0:
-                def frag = new SongListFragment(musicService)fragmentManager.beginTransaction().add(R.id.mainPager, frag).commit()
+                return new SongListFragment(musicService)
             case 1:
-                def frag = new  AlbumListFragment(musicService)fragmentManager.beginTransaction().add(R.id.mainPager, frag).commit()
+                return new AlbumListFragment(musicService)
             default:
                 break;
         }

@@ -8,19 +8,19 @@ import android.app.Activity
 import android.app.FragmentTransaction
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.MediaController
-import augier.fr.phoebius.UI.AlbumListFragment
-import augier.fr.phoebius.UI.FragmentAdapter
+import augier.fr.phoebius.UI.PageFragment
 import augier.fr.phoebius.UI.PlayerControl
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 
-public class MainActivity extends Activity implements TabListener
+public class MainActivity extends FragmentActivity implements TabListener
 {
 	public static final String APP_NAME = R.string.app_name
 	@InjectView MediaController mediaController
@@ -29,14 +29,14 @@ public class MainActivity extends Activity implements TabListener
 	private Intent playIntent
 	private PlayerControl playerControl
 	private ActionBar actionBar;
-    private FragmentAdapter fragmentAdapter;
+    private PageFragment fragmentAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// Class init
 		super.onCreate(savedInstanceState)
-		//contentView = R.layout.activity_main
+		contentView = R.layout.activity_main
 		SwissKnife.inject(this)
 
 		// Variables init
@@ -46,14 +46,11 @@ public class MainActivity extends Activity implements TabListener
 		musicConnection = new MusicServiceConnection()
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
 		playerControl = new PlayerControl(musicConnection, mediaController)
-
-        mainPagerInit();
-
     }
 
     public void mainPagerInit()
     {
-	    fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), musicService);
+	    fragmentAdapter = new PageFragment(supportFragmentManager, musicService);
         actionBar = getActionBar();
         mainPager.setAdapter(fragmentAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -147,8 +144,7 @@ public class MainActivity extends Activity implements TabListener
 	{
 		if(musicService?.songList != null)
 		{
-			def frag = new AlbumListFragment(musicService)
-			fragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
+			mainPagerInit()
 		}
 	}
 
