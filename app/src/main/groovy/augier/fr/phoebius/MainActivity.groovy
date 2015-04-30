@@ -2,6 +2,7 @@ package augier.fr.phoebius
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
@@ -12,12 +13,14 @@ import augier.fr.phoebius.UI.MainPageFragment
 import augier.fr.phoebius.UI.PlayerControl
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
+import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 
 public class MainActivity extends FragmentActivity
 {
 	public static final String APP_NAME = R.string.app_name
+	private static Context context
 	@InjectView MediaController mediaController
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
@@ -28,6 +31,7 @@ public class MainActivity extends FragmentActivity
 	{
 		// Class init
 		super.onCreate(savedInstanceState)
+		context = this
 		contentView = R.layout.activity_main
 		SwissKnife.inject(this)
 
@@ -86,7 +90,7 @@ public class MainActivity extends FragmentActivity
 
 	private void onServiceConnected()
 	{
-		if(musicService?.songList != null)
+		if(SongList.instance?.currSongList != null)
 		{
 			def frag = new MainPageFragment(supportFragmentManager, musicService)
 			supportFragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
@@ -94,4 +98,5 @@ public class MainActivity extends FragmentActivity
 	}
 
 	private MusicService getMusicService(){ return musicConnection.musicService }
+	public static Context getApplicationContext(){ return context }
 }

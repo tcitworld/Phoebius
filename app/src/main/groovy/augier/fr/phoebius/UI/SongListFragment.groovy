@@ -13,6 +13,7 @@ import android.widget.TextView
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
@@ -35,32 +36,32 @@ public class SongListFragment extends Fragment
 		return view
 	}
 
-	@OnItemClick(R.id.songView)
-	public void onItemClick(int position)
-	{
-		Song song = musicService.songList[position]
-		musicService.play(song)
-	}
+	private static ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
 
-	class SongAdapter extends BaseAdapter
+	class SongAdapter extends AbstractAdaptater
 	{
-		private LayoutInflater songInf = LayoutInflater.from(activity)
 		@Override public int getCount(){ return songs.size() }
 		@Override public Object getItem(int arg0){ return null; }
 		@Override public long getItemId(int arg0){ return 0; }
 
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			LinearLayout songLay = songInf.
-					inflate(R.layout.song_item, parent, false) as LinearLayout
-			Song currSong = songs.get(position)
-			TextView songTitle = songLay.findViewById(R.id.songTitle) as TextView
-			TextView songArtist = songLay.findViewById(R.id.songArtist) as TextView
-			songTitle.setText(currSong.getTitle())
-			songArtist.setText(currSong.getArtist())
+			songLay = inflate(activity, R.layout.song_item, parent)
+
+			Song currSong = songs[position]
+
+			getView(R.id.songTitle, TextView.class).setText(currSong.title)
+			getView(R.id.songArtist,TextView.class).setText(currSong.artist)
+
 			songLay.setTag(position)
 			return songLay
 		}
-		private ArrayList<Song> getSongs(){ return musicService.songList }
+	}
+
+	@OnItemClick(R.id.songView)
+	public void onItemClick(int position)
+	{
+		Song song = songs[position]
+		musicService.play(song)
 	}
 }

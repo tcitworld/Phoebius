@@ -22,21 +22,8 @@ public class ConfigManager
 	{
 		def builder = new JsonBuilder()
 
-		def root = builder.people {
-			person {
-				firstName 'Guillame'
-				lastName 'Laforge'
-				// Named arguments are valid values for objects too
-				address(
-						city: 'Paris',
-						country: 'France',
-						zip: 12345,
-						)
-				married true
-				// a list of values
-				conferences 'JavaOne', 'Gr8conf'
-			}
-		}
+		builder{}
+
 		def file = new File("${confDir}${S}config.json")
 		file.write(builder.toPrettyString())
 	}
