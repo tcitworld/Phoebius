@@ -8,15 +8,16 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class Song
 {
-	private long id
+	private Long id
 	private String title
 	private String artist
-	private long albumId
+	private Long albumId
 	private String album
 	private int trackNumber
 	private int year
+	private Uri URI
 
-	public Song(long songID, String songTitle, String songArtist, long songAlbumId,
+	public Song(Long songID, String songTitle, String songArtist, Long songAlbumId,
 	            String songAlbum, int songNb, int songYear)
 	{
 		id = songID
@@ -26,13 +27,14 @@ class Song
 		album = songAlbum
 		trackNumber = songNb
 		year = songYear
+		URI = ContentUris.withAppendedId(SongList.MUSIC_URI, id)
 	}
 
-	public long getID(){ return id }
+	public Long getID(){ return id }
 	public String getTitle(){ return title }
 	public String getArtist(){ return artist }
-	public Uri getURI(){ return ContentUris.withAppendedId(SongList.MUSIC_URI, id) }
-	public long getAlbumId(){ return albumId }
+	public Uri getURI(){ return URI }
+	public Long getAlbumId(){ return albumId }
 	public String getAlbum(){ return album }
 	public int getTrackNumber(){ return trackNumber }
 	public int getYear(){ return year }

@@ -1,7 +1,6 @@
 package augier.fr.phoebius.UI
 
 
-import android.app.ActionBar
 import android.app.ActionBar.Tab
 import android.app.ActionBar.TabListener
 import android.app.FragmentTransaction
@@ -43,53 +42,27 @@ public class MainPageFragment extends Fragment implements TabListener
 		return view
 	}
 
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {}
-
-	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft)
-		{ mainPager.setCurrentItem(tab.getPosition()) }
-
-	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft){}
+	@Override public void onTabReselected(Tab tab, FragmentTransaction ft) {}
+	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
+	@Override public void onTabSelected(Tab tab, FragmentTransaction ft)
+	{ mainPager.setCurrentItem(tab.getPosition()) }
 
 	class PagerAdaptater extends FragmentStatePagerAdapter
 	{
-		private static final int NUM_ITEMS = 2
+		private static int[] HEADER_ITEMS = [
+			R.string.playlist_en,
+			R.string.album
+		]
+
+		private Fragment[] FRAGMENTS = [
+				new SongListFragment(musicService),
+				new AlbumListFragment(musicService)
+		]
 
 		public PagerAdaptater(FragmentManager fm){ super(fm) }
 
-		@Override
-		public Fragment getItem(int arg0)
-		{
-			switch (arg0) {
-				case 0:
-					return new SongListFragment(musicService)
-				case 1:
-					return new AlbumListFragment(musicService)
-				default:
-					break
-			}
-			return null
-		}
-
-		@Override public int getCount(){ return NUM_ITEMS }
-
-		@Override
-		CharSequence getPageTitle(int position)
-		{
-			switch(position)
-			{
-				case 0:
-					return getString(R.string.playlist_en)
-					break
-				case 1:
-					return getString(R.string.album)
-					break
-				default:
-					return getString(R.string.artiste)
-				break
-			}
-		}
+		@Override public Fragment getItem(int arg0){ return FRAGMENTS[arg0] }
+		@Override public int getCount(){ return HEADER_ITEMS.length }
+		@Override CharSequence getPageTitle(int position){ return getText(HEADER_ITEMS[position]) }
 	}
 }

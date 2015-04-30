@@ -38,14 +38,6 @@ public class Album
 	Bitmap getCover(){ return cover }
 
 	@Override
-	boolean equals(Object o)
-	{
-		if(!o instanceof Album){ return false }
-		return ((Album)o).albumTitle.toLowerCase() == this.albumTitle.toLowerCase() &&
-		       ((Album)o).albumArtist.toLowerCase() == this.albumArtist.toLowerCase()
-	}
-
-	@Override
 	public String toString()
 	{
 		return """Album{

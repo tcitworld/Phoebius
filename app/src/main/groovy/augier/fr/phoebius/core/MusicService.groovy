@@ -16,9 +16,8 @@ import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 
-public class MusicService extends Service implements 
-		OnPreparedListener, OnErrorListener,
-		OnCompletionListener
+class MusicService extends Service implements OnPreparedListener,
+		OnErrorListener, OnCompletionListener
 {
 	private MediaPlayer mediaPlayer
 	private SongList songList
@@ -28,7 +27,7 @@ public class MusicService extends Service implements
 	void onCreate()
 	{
 		super.onCreate()
-		songList = new SongList(contentResolver)
+		songList = SongList.getInstance()
 		songList.stopCallback = this.&stop
 		songList.playCallback = this.&play
 		mediaPlayer = new MediaPlayer()

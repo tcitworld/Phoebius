@@ -1,14 +1,11 @@
 package augier.fr.phoebius.utils
 
 
-import android.content.ContentResolver
-import android.database.Cursor
-import android.net.Uri
-import android.provider.MediaStore
-import android.util.Log
+import augier.fr.phoebius.MainActivity
 
 class SongList extends MusicQueryBuilder
 {
+	private static SongList INSTANCE
 	private ArrayList<Song> currSongList = []
 	private ArrayList<Album> thisAlbumList = []
 	private long currentSongId
@@ -16,9 +13,9 @@ class SongList extends MusicQueryBuilder
 	private Closure playCallback = {}
 	private boolean loop
 
-	public SongList(ContentResolver _musicResolver)
+	private SongList()
 	{
-		musicResolver = _musicResolver
+		musicResolver = MainActivity.applicationContext.contentResolver
 		musicCursor = queryCursor
 		createAlbumList()
 		createSongList()
@@ -26,7 +23,7 @@ class SongList extends MusicQueryBuilder
 		loop = false
 	}
 
-	public void createSongList()
+	private void createSongList()
 	{
 		currSongList.clear()
 		musicCursor = queryCursor
@@ -36,54 +33,53 @@ class SongList extends MusicQueryBuilder
 
 			while(musicCursor.moveToNext())
 			{
-				long thisId = musicCursor.getLong(songIdColumn)
-				String thisTitle = musicCursor.getString(songTitleColumn)
-				String thisArtist = musicCursor.getString(songArtistColumn)
-				long thisAlbumId = musicCursor.getLong(songAlbumIdColumn)
-				String thisAlbum = musicCursor.getString(songAlbumColumn)
-				int thisSongNumber = musicCursor.getInt(songNumberColumn)
-				int thisSongYear = musicCursor.getInt(songYearColumn)
-				currSongList.add(
-					new Song(thisId, thisTitle, thisArtist, thisAlbumId,
-					         thisAlbum, thisSongNumber, thisSongYear))
+				currSongList.add(new Song(
+					musicCursor.getLong(songIdColumn),
+			        musicCursor.getString(songTitleColumn),
+			        musicCursor.getString(songArtistColumn),
+			        musicCursor.getLong(songAlbumIdColumn),
+			        musicCursor.getString(songAlbumColumn),
+			        musicCursor.getInt(songNumberColumn),
+			        musicCursor.getInt(songYearColumn))
+				)
 			}
 		}
 		currSongList = this.sort()
 	}
 
-	public void createAlbumList()
+	private void createAlbumList()
 	{
 		thisAlbumList.clear()
-
 		musicCursor = albumCursor
 
 		if(musicCursor != null && musicCursor.moveToFirst())
 		{
 			while(musicCursor.moveToNext())
 			{
-				String thisTitle = musicCursor.getString(albumTitleColumn)
-				String thisArtist = musicCursor.getString(albumArtistColumn)
-				String thisDate = musicCursor.getString(albumDateColumn)
-				String thisNbSongs = musicCursor.getString(albumNbSongsColumn)
-				String albumCoverPath = musicCursor.getString(albumCoverColumn)
-				thisAlbumList.add(new Album(thisTitle, thisArtist, thisDate,
-				                            thisNbSongs, albumCoverPath))
+				thisAlbumList.add(new Album(
+					musicCursor.getString(albumTitleColumn),
+					musicCursor.getString(albumArtistColumn),
+					musicCursor.getString(albumDateColumn),
+					musicCursor.getString(albumNbSongsColumn),
+					musicCursor.getString(albumCoverColumn))
+				)
 			}
 		}
 
-		 thisAlbumList = thisAlbumList.sort({ album1, album2 ->
+		 thisAlbumList = thisAlbumList.sort{ album1, album2 ->
 			int byArtist = album1.albumTitle.compareTo(album2.albumTitle)
 			int byYear = album1.albumTitle.compareTo(album2.albumTitle)
 			int byTitle = album1.albumTitle.compareTo(album2.albumTitle)
 			if(byArtist != 0){ return byArtist }
 			if(byYear != 0){ return byYear }
 			return byTitle
-		})
+		}
 	}
 
 	public ArrayList<Song> sort()
 	{
-		currSongList.sort({ song1, song2 -> return song1.artist.compareTo(song2.artist) })
+		currSongList.sort{ song1, song2 ->
+			return song1.artist.compareTo(song2.artist) }
 		return currSongList
 	}
 
@@ -91,16 +87,16 @@ class SongList extends MusicQueryBuilder
 
 	public Song getNextSong()
 	{
-		int _nextSongIdx = nextSongIdx
-		if(_nextSongIdx < 0){ return null}
-		else{ return currSongList[_nextSongIdx] }
+		int idx = nextSongIdx
+		if(idx < 0){ return null}
+		else{ return currSongList[idx] }
 	}
 
 	public Song getPreviousSong()
 	{
-		int _prevSongIdx = previousSongIdx
-		if(_prevSongIdx < 0){ return null }
-		else{ return  currSongList[_prevSongIdx] }
+		int idx = previousSongIdx
+		if(idx < 0){ return null }
+		else{ return  currSongList[idx] }
 	}
 
 	public SongList moveToNextSong()
@@ -165,5 +161,10 @@ class SongList extends MusicQueryBuilder
 	public void setPlayCallback(Closure playCallback){ this.playCallback = playCallback }
 	public ArrayList<Album> getAlbumList(){ return thisAlbumList }
 	public ArrayList<Song> getSongList(){ return currSongList }
+	public static SongList getInstance()
+	{
+		if(INSTANCE == null){ INSTANCE = new SongList() }
+		return INSTANCE
+	}
 //endregion
 }
