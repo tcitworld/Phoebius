@@ -3,6 +3,8 @@ package augier.fr.phoebius.utils
 
 import android.content.ContentUris
 import android.net.Uri
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 
 
@@ -58,13 +60,36 @@ class Song implements Comparable
 
 	@Override
 	public String toString(){
-		return """
-			ID: ${id},
-			Artist: ${artist},
-			Title: ${title},
-			Album: ${album},
-			Number: ${trackNumber}
-			Year: ${year}"""
+		return new JsonBuilder(toJson()).toPrettyString()
+	}
+
+	public String toJson()
+	{
+		return """{
+	        "ID": ${ID},
+			"title": ${title},
+			"artist": ${artist},
+			"albumId": ${albumId},
+			"album": ${album},
+			"trackNumber": ${trackNumber},
+			"year": ${year}
+		}"""
+	}
+
+	public static Song fromJson(String json)
+	{
+		def result = new JsonSlurper().parseText(json)
+		String ID = result["ID"]
+		String title = result["title"]
+		String artist = result["artist"]
+		String albumId = result["albumId"]
+		String album = result["album"]
+		String trackNumber = result["trackNumber"]
+		String year = result["year"]
+
+		return new Song(
+				new Long(ID), title, artist, new Long(albumId),
+				album, new Integer(trackNumber), new Integer(year))
 	}
 
 	/**

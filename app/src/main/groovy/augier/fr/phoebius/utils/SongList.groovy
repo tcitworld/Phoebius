@@ -18,6 +18,7 @@ class SongList extends MusicQueryBuilder
 	private ArrayList<Song> currSongList = []
 	private ArrayList<Album> thisAlbumList = []
 	private LinkedHashMap<String, Bitmap> covers = [:]
+	private LinkedHashMap<String, ArrayList<Song>> playlists = [:]
 	private long currentSongId
 	private Closure stopCallback = {}
 	private Closure playCallback = {}
@@ -91,6 +92,27 @@ class SongList extends MusicQueryBuilder
 			}
 		}
 		thisAlbumList.sort()
+	}
+
+	public boolean createPlaylist(String name)
+	{
+		if(playlists.containsKey(name)){ return false }
+		playlists[name] = new ArrayList<>()
+		return true
+	}
+
+	public ArrayList<Song> getPlaylist(String name)
+		{ return playlists.containsKey(name) ? playlists[name] : [] }
+	public void addToPlaylist(String name, Song song){ playlists[name].add(song) }
+	public String playlistsAsJson()
+	{
+		String result = "{"
+		playlists.each{
+			result += "${it.key}:["
+			it.value.each{ result += "{${it.toJson()}}, "}
+			result += "]"
+		}
+		return result + "}"
 	}
 
 	/** Overriding of [] operator */

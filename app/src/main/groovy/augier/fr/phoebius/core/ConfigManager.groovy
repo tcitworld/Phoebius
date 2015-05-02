@@ -1,8 +1,11 @@
 package augier.fr.phoebius.core
 
+
 import android.os.Environment
-import groovy.json.JsonBuilder
 import augier.fr.phoebius.MainActivity
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
+import groovy.transform.CompileStatic
 
 
 /**
@@ -12,12 +15,18 @@ import augier.fr.phoebius.MainActivity
  * configuration as a JSON. When the application is started, the configuration is
  * automatically loaded from the file.
  */
+@CompileStatic
 public class ConfigManager
 {
 	/**
 	 * Shorthand for the separator character in paths
 	 */
 	public static final S = File.separator
+
+	static {
+		if(!configFile.exists()) configFile.createNewFile()
+		configs = new JsonSlurper().parse(configFile) as LinkedHashMap
+	}
 
 	/**
 	 * Aquire the directory containing the configuration file
@@ -29,24 +38,21 @@ public class ConfigManager
 	 *
 	 * @return Directory containing the configuration file
 	 */
-	public static final File getConfDir()
+	private static final File getConfDir()
 	{
 		def E = Environment.externalStorageDirectory.absolutePath
 		def A = MainActivity.APP_NAME
 
 		def homeAppDir = new File("${E}/.${A}")
-		if(!homeAppDir.exists()){ homeAppDir.mkdir() }
-		
+		if(!homeAppDir.exists()) homeAppDir.mkdir()
 		return homeAppDir
 	}
 
-	public ConfigManager()
-	{
-		def builder = new JsonBuilder()
+	private ConfigManager(){}
 
-		builder{}
-
-		def file = new File("${confDir}${S}config.json")
-		file.write(builder.toPrettyString())
-	}
+	public static void addKey(String k, String v)
+		{ configs[k] = new JsonSlurper().parseText(v).toString() }
+	public static void dump(){ configFile.write(new JsonSlurper(configs).toString()) }
+	public static String getJson(){ return new JsonBuilder(configs).toPrettyString() }
+	public static getKey(String k){ return configs[k] }
 }

@@ -6,12 +6,14 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import augier.fr.phoebius.UI.MainPageFragment
 import augier.fr.phoebius.UI.PlayerControlFragment
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
+import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
 import java.sql.ResultSet
