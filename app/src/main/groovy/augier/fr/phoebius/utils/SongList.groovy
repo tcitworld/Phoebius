@@ -1,6 +1,7 @@
 package augier.fr.phoebius.utils
 
 
+import android.util.Log
 import augier.fr.phoebius.MainActivity
 
 class SongList extends MusicQueryBuilder
@@ -95,8 +96,10 @@ class SongList extends MusicQueryBuilder
 	public Song getPreviousSong()
 	{
 		int idx = previousSongIdx
-		if(idx < 0){ return null }
-		else{ return  currSongList[idx] }
+		if(idx < 0)
+		{ return null }
+		else
+		{ return  currSongList[idx] }
 	}
 
 	public SongList moveToNextSong()
@@ -118,6 +121,7 @@ class SongList extends MusicQueryBuilder
 	public SongList moveToPreviousSong()
 	{
 		Song prev = getPreviousSong()
+		Log.e(this.class.toString(), "Previous song: ${prev}")
 		if(prev == null)
 		{
 			currentSongId = currSongList[0].ID
@@ -128,6 +132,7 @@ class SongList extends MusicQueryBuilder
 			currentSongId = prev.ID
 			playCallback(prev)
 		}
+
 		return this
 	}
 
@@ -141,13 +146,13 @@ class SongList extends MusicQueryBuilder
 	{
 		int currentSongIdx = findIndexById(currentSongId)
 		if(currentSongIdx == this.lenght - 1){ return -1 }
-		else{ return currentSongIdx + 1 % this.lenght }
+		else{ return (currentSongIdx + 1) % this.lenght }
 	}
 	private int getPreviousSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
 		if(currentSongIdx == 0){ return -1 }
-		else{ return currentSongIdx + this.lenght - 1 % this.lenght }
+		else{ return (currentSongIdx + this.lenght - 1) % this.lenght }
 	}
 
 	//region GET/SET
