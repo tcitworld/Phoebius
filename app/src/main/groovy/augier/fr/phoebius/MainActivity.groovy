@@ -1,7 +1,6 @@
 package augier.fr.phoebius
 
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -37,20 +36,12 @@ public class MainActivity extends FragmentActivity
 		 */
 		musicConnection = new MusicServiceConnection()
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
+		playIntent = new Intent(this, MusicService.class)
+		bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
     }
 
 	@Override
-	protected void onStart()
-	{
-		super.onStart()
-
-		Activity thisActivity = this
-		if(playIntent == null)
-		{
-			playIntent = new Intent(thisActivity, MusicService.class)
-			bindService(playIntent, musicConnection, BIND_AUTO_CREATE)
-		}
-	}
+	protected void onStart(){ super.onStart() }
 
 	@Override
 	protected void onDestroy()
