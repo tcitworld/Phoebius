@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import com.arasthel.swissknife.SwissKnife
@@ -36,10 +37,10 @@ public class MainPageFragment extends Fragment implements TabListener
 	 * @param fm Fragment manager from main activity (just use {@link augier.fr.phoebius.MainActivity#getSupportFragmentManager}
 	 * @param ms Music service from the main activity (just use {@link augier.fr.phoebius.MainActivity#getMusicService}
 	 */
-	public MainPageFragment(FragmentManager fm , MusicService ms)
+	public MainPageFragment(FragmentManager fm)
 	{
 		super()
-		musicService = ms
+		musicService = MainActivity.musicService
 		fragmentAdapter = new PagerAdaptater(fm)
 	}
 

@@ -5,7 +5,7 @@
 
 	<augier.fr.phoebius.UI.SquareImageView
 		android:id="@+id/albumCover"
-		android:src="@drawable/ic_launcher"
+		android:src="@drawable/application_icon"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
 		android:layout_margin="5dp"/>

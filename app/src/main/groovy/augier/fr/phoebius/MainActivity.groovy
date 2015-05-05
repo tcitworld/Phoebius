@@ -22,7 +22,7 @@ public class MainActivity extends FragmentActivity
 	public static final String APP_NAME = R.string.app_name
 	private static Context context
 	private static Resources resources
-	private MusicServiceConnection musicConnection
+	private static MusicServiceConnection musicConnection
 	private Intent playIntent
 
 	@Override
@@ -81,14 +81,14 @@ public class MainActivity extends FragmentActivity
 	{
 		if(SongList.instance?.currSongList != null)
 		{
-			def frag = new MainPageFragment(supportFragmentManager, musicService)
-			def contr = new PlayerControlFragment(musicConnection)
+			def frag = new MainPageFragment(supportFragmentManager)
+			def contr = new PlayerControlFragment()
 			supportFragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
 			supportFragmentManager.beginTransaction().add(R.id.mediaController, contr).commit()
 		}
 	}
 
-	private MusicService getMusicService(){ return musicConnection.musicService }
+	public static MusicService getMusicService(){ return musicConnection.musicService }
 	public static Context getApplicationContext(){ return context }
 	public static Resources getApplicationResources(){ return resources }
 }

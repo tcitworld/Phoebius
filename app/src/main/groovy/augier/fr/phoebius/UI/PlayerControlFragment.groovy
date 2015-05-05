@@ -4,15 +4,14 @@ package augier.fr.phoebius.UI
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.MediaController.MediaPlayerControl
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
@@ -37,16 +36,14 @@ public class PlayerControlFragment extends Fragment
 	@InjectView private SeekBar songProgressBar
 	@InjectView private ImageButton btnPlayPause
 	private SongBarListener songBarListener = new SongBarListener()
-	private MusicServiceConnection musicConnection
+	private MusicService musicService
 	private Handler handler = new Handler()
 	private Runnable refresh = new Refresher()
-
-	PlayerControlFragment(MusicServiceConnection musicConnection)
-	{ this.musicConnection = musicConnection }
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		this.musicService = MainActivity.getMusicService()
 		View view = inflater.inflate(R.layout.fragment_player_control, container, false)
 		SwissKnife.inject(this, view)
 		SwissKnife.runOnBackground(this, "doOnBackground")
@@ -189,7 +186,7 @@ public class PlayerControlFragment extends Fragment
 	void pause(){ musicService.pause() }
 	//endregion
 
-	private MusicService getMusicService(){ return musicConnection.musicService }
+	private MusicService getMusicService(){ return musicService.musicService }
 
 	/**
 	 * Listener for the controller's seekbar
