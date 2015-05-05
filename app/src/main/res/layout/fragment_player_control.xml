@@ -14,7 +14,7 @@
 		android:layout_height="fill_parent">
 
 		<TextView
-			android:id="@+id/currentDuration"
+			android:id="@+id/currentDurationLabel"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
@@ -41,7 +41,7 @@
 			android:layout_weight="100"/>
 		<!-- Total Duration Label -->
 		<TextView
-			android:id="@+id/totalDuration"
+			android:id="@+id/totalDurationLabel"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_weight="1"
@@ -100,7 +100,7 @@
 			android:layout_weight="2"/>
 		<!-- Play Button -->
 		<ImageButton
-			android:id="@+id/btnPlay"
+			android:id="@+id/btnPlayPause"
 			android:src="@drawable/btn_play"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

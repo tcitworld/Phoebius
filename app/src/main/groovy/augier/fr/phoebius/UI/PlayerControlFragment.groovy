@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.MediaController.MediaPlayerControl
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -21,9 +22,10 @@ import com.arasthel.swissknife.annotations.OnClick
 
 public class PlayerControlFragment extends Fragment implements MediaPlayerControl
 {
-	@InjectView private TextView currentDuration
-	@InjectView private TextView totalDuration
+	@InjectView private TextView currentDurationLabel
+	@InjectView private TextView totalDurationLabel
 	@InjectView private SeekBar songProgressBar
+	@InjectView private ImageButton btnPlayPause
 	private boolean userTrackingSongBar = false
 	private int songProgression = 0
 	private MusicServiceConnection musicConnection
@@ -31,10 +33,11 @@ public class PlayerControlFragment extends Fragment implements MediaPlayerContro
 	private Runnable refresh = new Runnable(){
 		@Override void run()
 		{
-			currentDuration.text = fromMilliSeconds(currentPosition)
-			totalDuration.text = fromMilliSeconds(duration)
+			currentDurationLabel.text = fromMilliSeconds(currentPosition)
+			totalDurationLabel.text = fromMilliSeconds(duration)
 			songProgressBar.max = duration
-			songProgressBar.progress = musicService.playing ? currentPosition : songProgression
+			songProgressBar.progress = playing ? currentPosition : songProgression
+			btnPlayPause.imageResource = playing ? R.drawable.btn_pause : R.drawable.btn_play
 			handler.postDelayed(this, 500)
 		}
 	}
@@ -45,7 +48,7 @@ public class PlayerControlFragment extends Fragment implements MediaPlayerContro
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		View view = inflater.inflate(R.layout.fragment_player, container, false)
+		View view = inflater.inflate(R.layout.fragment_player_control, container, false)
 		SwissKnife.inject(this, view)
 		SwissKnife.runOnBackground(this, "doOnBackground")
 		songProgressBar.setOnSeekBarChangeListener(new SongBarListener())
@@ -54,16 +57,27 @@ public class PlayerControlFragment extends Fragment implements MediaPlayerContro
 
 	@OnBackground public void doOnBackground(){ handler.postDelayed(refresh, 500) }
 
-	@OnClick(R.id.btnPlay)
+	@OnClick(R.id.btnPlayPause)
 	public void onBtnPlayClick()
 	{
-		if(playing) pause()
-		else this.start()
+		if(playing)
+		{
+			pause()
+			btnPlayPause.imageResource = R.drawable.btn_play
+		}
+		else
+		{
+			start()
+			btnPlayPause.imageResource = R.drawable.btn_pause
+		}
 	}
+
 	@OnClick(R.id.btnBackward)
 	public void onBtnBackwardClick(){ if(playing) seekTo(currentPosition - 10000) }
+
 	@OnClick(R.id.btnForward)
 	public void onBtnForwardClick(){ if(playing) seekTo(currentPosition + 10000) }
+
 	@OnClick(R.id.btnPrevious)
 	public void onBtnPreviousClick()
 	{
@@ -73,8 +87,10 @@ public class PlayerControlFragment extends Fragment implements MediaPlayerContro
 			else seekTo(0)
 		}
 	}
+
 	@OnClick(R.id.btnNext)
-	public void onBtnNextClick(){ if(playing) playNext() }
+	public void onBtnNextClick()
+	{ if(playing) playNext() }
 
 	private static String fromMilliSeconds(int ms)
 	{
@@ -134,7 +150,7 @@ public class PlayerControlFragment extends Fragment implements MediaPlayerContro
 		@Override void onProgressChanged(SeekBar seekBar, int i, boolean b)
 		{
 			if(b) songProgression = i
-			currentDuration.text = fromMilliSeconds(i)
+			currentDurationLabel.text = fromMilliSeconds(i)
 		}
 
 		@Override void onStartTrackingTouch(SeekBar seekBar){ userTrackingSongBar = true }
