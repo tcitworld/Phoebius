@@ -1,26 +1,28 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
 	android:background="#000"
     android:launchMode="singleTop"
     android:screenOrientation="portrait"
-    tools:context=".MainActivity"
-	android:padding="0dp">
+	android:padding="0dp"
+	android:orientation="vertical"
+	android:baselineAligned="false"
+	tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/mainFrame"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+		android:foregroundGravity="top"
+		android:layout_weight="100">
     </FrameLayout>
 
-	<MediaController
+	<FrameLayout
 		android:id="@+id/mediaController"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignBottom="@+id/mainFrame"
-		android:layout_alignParentEnd="true"
-		android:background="@android:color/black">
-	</MediaController>
+		android:layout_weight="1">
+	</FrameLayout>
 
-</RelativeLayout>
+</LinearLayout>

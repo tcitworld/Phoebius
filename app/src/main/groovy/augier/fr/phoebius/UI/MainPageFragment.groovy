@@ -42,10 +42,10 @@ public class MainPageFragment extends Fragment implements TabListener
 		return view
 	}
 
-	@Override public void onTabReselected(Tab tab, FragmentTransaction ft) {}
+	@Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabSelected(Tab tab, FragmentTransaction ft)
-	{ mainPager.setCurrentItem(tab.getPosition()) }
+		{ mainPager.setCurrentItem(tab.getPosition()) }
 
 	class PagerAdaptater extends FragmentStatePagerAdapter
 	{

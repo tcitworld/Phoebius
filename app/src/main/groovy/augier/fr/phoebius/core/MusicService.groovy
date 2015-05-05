@@ -94,8 +94,5 @@ class MusicService extends Service implements OnPreparedListener,
 	//endregion
 
 
-	public class MusicBinder extends Binder
-	{
-		MusicService getService(){ return MusicService.this }
-	}
+	public class MusicBinder extends Binder{ MusicService getService(){ return MusicService.this } }
 }

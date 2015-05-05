@@ -13,6 +13,7 @@ import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
+import groovy.transform.CompileStatic
 
 public class AlbumListFragment extends Fragment
 {
@@ -37,12 +38,10 @@ public class AlbumListFragment extends Fragment
 	class SongAdapter extends AbstractAdaptater
 	{
 		@Override public int getCount(){ return albums.size() }
-		@Override public Object getItem(int arg0){ return null; }
-		@Override public long getItemId(int arg0){ return 0; }
 
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			songLay = inflate(activity, R.layout.album_item, parent)
+			layout = inflate(activity, R.layout.album_item, parent)
 
 			Album currAlbum = albums[position]
 			getView(R.id.albumTitle, TextView.class).text = currAlbum.albumTitle
@@ -51,7 +50,7 @@ public class AlbumListFragment extends Fragment
 			getView(R.id.albumNbSongs, TextView.class).text = currAlbum.nbSongs
 			getView(R.id.albumCover, ImageView.class).imageBitmap = currAlbum.cover
 
-			return songLay
+			return layout
 		}
 	}
 }
