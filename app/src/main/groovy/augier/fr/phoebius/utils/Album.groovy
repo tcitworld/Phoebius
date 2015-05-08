@@ -45,11 +45,7 @@ public class Album implements Comparable
 
 		if(coverPath != null && new File(coverPath).exists())
 			{ this.cover = BitmapFactory.decodeFile(coverPath) }
-		else
-		{
-			this.cover = BitmapFactory.decodeResource(
-					MainActivity.applicationResources, R.drawable.default_cover)
-		}
+		else this.cover = defaultCover
 
 	}
 
@@ -77,5 +73,11 @@ public class Album implements Comparable
 		if(byArtist) return byArtist
 		if(byDate) return byDate
 		return byTitle
+	}
+
+	public static Bitmap getDefaultCover()
+	{
+		return BitmapFactory.decodeResource(
+			MainActivity.applicationResources, R.drawable.default_cover)
 	}
 }

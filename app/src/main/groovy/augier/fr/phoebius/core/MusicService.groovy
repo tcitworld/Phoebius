@@ -11,6 +11,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
+import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 
@@ -40,6 +41,15 @@ class MusicService extends Service implements OnPreparedListener,
 	 * Variable to ensure the player is in a validate state
 	 */
 	private boolean mediaPlayerPrepared = false
+
+	private NotificationPlayer notificationPlayer = NotificationPlayer.getInstance()
+
+	@Override
+	void onDestroy()
+	{
+		super.onDestroy()
+		notificationPlayer.cancel()
+	}
 
 	@Override
 	void onCreate()
@@ -71,6 +81,7 @@ class MusicService extends Service implements OnPreparedListener,
 		}
 		mediaPlayer.prepareAsync()
 		songList.currentSong = song
+		notificationPlayer.notify(Album.defaultCover, song.title, song.album)
 	}
 
 	/**
