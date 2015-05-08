@@ -6,6 +6,9 @@ import android.util.AttributeSet
 import android.widget.ImageView;
 
 
+/**
+ * Overriding class used to display square images
+ */
 public class SquareImageView extends ImageView
 {
 	SquareImageView(Context context, AttributeSet attrs){ super(context, attrs) }
@@ -13,9 +16,7 @@ public class SquareImageView extends ImageView
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-		int height = measuredHeight
-		setMeasuredDimension(height, height)
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+		setMeasuredDimension(measuredHeight, measuredHeight)
 	}
 }

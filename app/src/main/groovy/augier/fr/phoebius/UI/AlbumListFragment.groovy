@@ -13,10 +13,22 @@ import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import groovy.transform.CompileStatic
 
+
+/**
+ * Fragment to display the album list
+ *
+ * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
+ * The views are injected in the {@link AlbumListFragment#onCreateView onCreateView} method
+ */
 public class AlbumListFragment extends Fragment
 {
+	/**
+	 * Album view (RLY!?)
+	 * The view s automatically injected by SwissKnife on start.
+	 *
+	 * See https://github.com/Arasthel/SwissKnife/wiki#how-to-use-the-annotations
+	 */
 	@InjectView private ListView songView
 	private MusicService musicService
 
@@ -33,8 +45,15 @@ public class AlbumListFragment extends Fragment
 		return view
 	}
 
+	/**
+	 * Shorthand to {@link SongList#getAlbumList()}
+	 * @return List of albums
+	 */
 	private static ArrayList<Album> getAlbums(){ return SongList.instance.albumList }
 
+	/**
+	 * Adaptater to create a grid of albums
+	 */
 	class SongAdapter extends AbstractAdaptater
 	{
 		@Override public int getCount(){ return albums.size() }

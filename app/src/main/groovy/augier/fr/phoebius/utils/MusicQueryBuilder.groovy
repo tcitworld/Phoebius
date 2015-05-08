@@ -7,6 +7,12 @@ import android.net.Uri
 import android.provider.MediaStore
 import groovy.transform.CompileStatic;
 
+
+/**
+ * Utility class for querying Android's {@link ContentResolver}
+ *
+ * Methods getSongXXX and getAlbumXXX are shorthands to {@link Cursor#getColumnIndex(java.lang.String)}
+ */
 @CompileStatic
 public abstract class MusicQueryBuilder
 {

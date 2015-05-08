@@ -17,6 +17,13 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
 
+
+/**
+ * Fragment to display the song list
+ *
+ * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
+ * The views are injected in the {@link SongListFragment#onCreateView onCreateView} method
+ */
 public class SongListFragment extends Fragment
 {
 	@InjectView private ListView songView
@@ -35,6 +42,12 @@ public class SongListFragment extends Fragment
 		return view
 	}
 
+	/**
+	 * Callback when user clicks on a song
+	 *
+	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnItemClick">SwissJnife's @OnItemClick annotation</a>
+	 * @param position
+	 */
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
@@ -42,8 +55,10 @@ public class SongListFragment extends Fragment
 		musicService.play(song)
 	}
 
+	/** @return List of songs @see {@link SongList} */
 	private static ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
 
+	/** Adapter class, nothing special */
 	class SongAdapter extends AbstractAdaptater
 	{
 		@Override public int getCount(){ return songs.size() }

@@ -4,6 +4,13 @@ package augier.fr.phoebius.utils
 import android.util.Log
 import augier.fr.phoebius.MainActivity
 
+
+/**
+ * This class manages the creation, listing and iteration through the musics
+ *
+ * This class is a singleton to easier it's use everywhere in the code.
+ * It is an abstraction of Andrdoid FS
+ */
 class SongList extends MusicQueryBuilder
 {
 	private static SongList INSTANCE
@@ -20,10 +27,17 @@ class SongList extends MusicQueryBuilder
 		musicCursor = queryCursor
 		createAlbumList()
 		createSongList()
-		currentSongId = songList[0].ID // TODO : Gérer le cas liste vide
+		currentSongId = songList.empty ? -1 : songList[0].ID
 		loop = false
 	}
 
+	/**
+	 * Query the DB to retrieve the list of songs
+	 *
+	 * Creates an {@link ArrayList} of {@link Song} from the query an sorts the list.
+	 *
+	 * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
+	 */
 	private void createSongList()
 	{
 		currSongList.clear()
@@ -38,16 +52,22 @@ class SongList extends MusicQueryBuilder
 					musicCursor.getLong(songIdColumn),
 			        musicCursor.getString(songTitleColumn),
 			        musicCursor.getString(songArtistColumn),
-			        musicCursor.getLong(songAlbumIdColumn),
 			        musicCursor.getString(songAlbumColumn),
 			        musicCursor.getInt(songNumberColumn),
 			        musicCursor.getInt(songYearColumn))
 				)
 			}
 		}
-		currSongList = this.sort()
+		currSongList.sort()
 	}
 
+	/**
+	 * Query the DB to retrieve the list of albums
+	 *
+	 * Creates an {@link ArrayList} of {@link Album} from the query an sorts the list.
+	 *
+	 * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
+	 */
 	private void createAlbumList()
 	{
 		thisAlbumList.clear()
@@ -66,42 +86,47 @@ class SongList extends MusicQueryBuilder
 				)
 			}
 		}
-
-		 thisAlbumList = thisAlbumList.sort{ album1, album2 ->
-			int byArtist = album1.albumTitle.compareTo(album2.albumTitle)
-			int byYear = album1.albumTitle.compareTo(album2.albumTitle)
-			int byTitle = album1.albumTitle.compareTo(album2.albumTitle)
-			if(byArtist != 0){ return byArtist }
-			if(byYear != 0){ return byYear }
-			return byTitle
-		}
+		thisAlbumList.sort()
 	}
 
-	public ArrayList<Song> sort()
-	{
-		currSongList.sort{ song1, song2 ->
-			return song1.artist.compareTo(song2.artist) }
-		return currSongList
-	}
-
+	/** Overriding of [] operator */
 	public Song getAt(int idx){ return currSongList[idx] }
 
+	/**
+	 * Retrives the next song to be played
+	 *
+	 * @return The next song in the list or null if last song and
+	 * the list doesn't loop
+	 */
 	public Song getNextSong()
 	{
 		int idx = nextSongIdx
-		if(idx < 0){ return null}
+		if(idx < 0) return null
 		else{ return currSongList[idx] }
 	}
 
+	/**
+	 * Retrives the previous song to be played
+	 *
+	 * @return The next song in the list or null if first song and
+	 * the list doesn't loop
+	 */
 	public Song getPreviousSong()
 	{
 		int idx = previousSongIdx
-		if(idx < 0)
-		{ return null }
-		else
-		{ return  currSongList[idx] }
+		if(idx < 0) return null
+		else return  currSongList[idx]
 	}
 
+	/**
+	 * Change the current song to the next one and play it
+	 *
+	 * If the playback isn't looped and there is no next song, then stops.
+	 *
+	 * @return this
+	 *
+	 * @see {@link #setPlayCallback} and {@link #setStopCallback}
+	 */
 	public SongList moveToNextSong()
 	{
 		Song next = getNextSong()
@@ -118,6 +143,15 @@ class SongList extends MusicQueryBuilder
 		return this
 	}
 
+	/**
+	 * Change the current song to the previous one and play it
+	 *
+	 * If the playback isn't loopeda nd there is no prevous song, then stops.
+	 *
+	 * @return this
+	 *
+	 * @see {@link #setPlayCallback} and {@link #setStopCallback}
+	 */
 	public SongList moveToPreviousSong()
 	{
 		Song prev = getPreviousSong()
@@ -136,18 +170,33 @@ class SongList extends MusicQueryBuilder
 		return this
 	}
 
-	private int findIndexById(long id){ return currSongList.findIndexOf{ it.ID == id } }
-	private Song findById(long id)
+	/**
+	 * Retrives the index of a Song by its {@link Song#getID() ID}
+	 * @param id Song ID
+	 * @return Index in the current list or -1 if not found
+	 */
+	private int findIndexById(Long id){ return currSongList.findIndexOf{ it.ID == id } }
+
+	/**
+	 * Retrieve a Song by its {@link Song#getID() ID}
+	 * @param id Song ID
+	 * @return Song in the current list or null if not found
+	 */
+	private Song findById(Long id)
 	{
-		try{ return currSongList[findIndexById(id)] }
-		catch(ArrayIndexOutOfBoundsException e){ return null }
+		int idx = findIndexById(id)
+		return idx > 0 && idx < currSongList.size() ? currSongList[idx] : null
 	}
+
+	/** @return Index of the next Song or -1 if no next song */
 	private int getNextSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
 		if(currentSongIdx == this.lenght - 1){ return -1 }
 		else{ return (currentSongIdx + 1) % this.lenght }
 	}
+
+	/** @return Index of the previous Song or -1 if no previous song */
 	private int getPreviousSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
@@ -156,16 +205,27 @@ class SongList extends MusicQueryBuilder
 	}
 
 	//region GET/SET
+	/** @return The length of the current playing playlist */
 	public int getLenght(){ return currSongList.size() }
+	/** @return Whether the playback is looped on the list or not */
 	public boolean getLoop(){ return loop }
+	/** Set the playback loop */
 	public void setLoop(boolean loop){ this.loop = loop }
+	/** @return The current playing list */
 	public ArrayList<Song> getCurrSongList(){ return currSongList }
+	/** @return The current playing song */
 	public Song getCurrentSong(){ return findById(currentSongId) }
+	/** Sets the current playing song */
 	public void setCurrentSong(Song song){ this.currentSongId = song.ID }
+	/** Sets the callback to execute when the playback has to stop (e.g. playlist is finished) */
 	public void setStopCallback(Closure stopCallback){ this.stopCallback = stopCallback }
+	/** Sets the callback to execute when the playback has to start */
 	public void setPlayCallback(Closure playCallback){ this.playCallback = playCallback }
+	/** @return The album list*/
 	public ArrayList<Album> getAlbumList(){ return thisAlbumList }
+	/** @return The complete song list */
 	public ArrayList<Song> getSongList(){ return currSongList }
+	/** @return The singleton instance */
 	public static SongList getInstance()
 	{
 		if(INSTANCE == null){ INSTANCE = new SongList() }

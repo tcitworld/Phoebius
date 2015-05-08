@@ -1,15 +1,24 @@
 package augier.fr.phoebius.utils
 
 
-import android.content.res.Resources
+
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.R
-import android.util.Log
+import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.R
 import groovy.transform.CompileStatic
 
+
+/**
+ * Represents an album
+ *
+ * This class is used by {@link augier.fr.phoebius.UI.AlbumListFragment}
+ * in adaptater to display albums
+ *
+ * @see {@link SongList}, {@link MusicQueryBuilder}
+ */
 @CompileStatic
-public class Album
+public class Album implements Comparable
 {
 	private String albumArtist
 	private String albumTitle
@@ -17,35 +26,56 @@ public class Album
 	private String nbSongs
 	private Bitmap cover
 
+	/**
+	 * Constructor
+	 *
+	 * @param albumTitle Title of album
+	 * @param albumArtist Name of album's artist
+	 * @param date Date of release
+	 * @param nbSongs Number of songs on the album
+	 * @param coverPath Artwork path (will be resoved to a {@link Bitmap}
+	 */
 	public Album(String albumTitle,String albumArtist,
 	             String date, String nbSongs, String coverPath)
 	{
 		this.albumArtist = albumArtist
 		this.albumTitle = albumTitle
-		this.date = date
+		this.date = date?:""
 		this.nbSongs = nbSongs
 
 		if(coverPath != null && new File(coverPath).exists())
 			{ this.cover = BitmapFactory.decodeFile(coverPath) }
-		else{ BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.star_on) }
+		else
+		{
+			this.cover = BitmapFactory.decodeResource(
+					MainActivity.applicationResources, R.drawable.default_cover)
+		}
 
 	}
 
+	/** @return Album artist */
 	String getAlbumArtist(){ return albumArtist }
+	/** @return Album titel */
 	String getAlbumTitle(){ return albumTitle }
+	/** @return Album release date */
 	String getDate(){ return date }
+	/** @return Album artist */
 	String getNbSongs(){ return nbSongs }
+	/** @return Album artist */
 	Bitmap getCover(){ return cover }
 
+
 	@Override
-	public String toString()
+	int compareTo(Object o)
 	{
-		return """Album{
-	Artist: ${albumArtist},
-	Title: ${albumTitle},
-	Date : ${date},
-	Number of songs: ${nbSongs},
-	Cover: ${cover?.toString()}
-}"""
+		if(!o instanceof Album) return 0
+		Album other = o as Album
+		int byArtist = this.albumArtist.compareTo(other.albumArtist)
+		int byDate   = this.date.compareTo(other.date)
+		int byTitle  = this.albumTitle.compareTo(other.albumTitle)
+
+		if(byArtist) return byArtist
+		if(byDate) return byDate
+		return byTitle
 	}
 }

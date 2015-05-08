@@ -12,41 +12,45 @@
 
 	<LinearLayout
 		android:orientation="vertical"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="5dp">
 
 		<TextView
 			android:id="@+id/albumTitle"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="#FFFFFF99"
 			android:textSize="20sp"
 			android:textStyle="bold"
+			android:lines="1"
 			android:text="@string/albumTitleText"/>
 
 		<TextView
 			android:id="@+id/albumArtist"
-			android:layout_width="fill_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="#FFFFFF99"
 			android:textSize="18sp"
+			android:lines="1"
 			android:text="@string/albumArtistText"/>
 
 		<TextView
 			android:id="@+id/albumDate"
-			android:layout_width="fill_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="#FFFFFF99"
 			android:textSize="18sp"
+			android:lines="1"
 			android:text="@string/albumDateText"/>
 
 		<TextView
 			android:id="@+id/albumNbSongs"
-			android:layout_width="fill_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:textColor="#FFFFFF99"
 			android:textSize="18sp"
+			android:lines="1"
 			android:text="@string/albumNbSongText"/>
 	</LinearLayout>
 

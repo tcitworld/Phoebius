@@ -7,21 +7,39 @@ import android.media.MediaPlayer
 import android.media.MediaPlayer.OnPreparedListener
 import android.media.MediaPlayer.OnErrorListener
 import android.media.MediaPlayer.OnCompletionListener
-import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
-import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 
+
+/**
+ * This class takes care of playing the music and interacting with the controls
+ */
 class MusicService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener
 {
+	/**
+	 * Our actual music player that will broadcast sound
+	 */
 	private MediaPlayer mediaPlayer
+
+	/**
+	 * Our manager for the songs
+	 */
 	private SongList songList
+
+	/**
+	 * Our binder (thanks, Captain Obvious !)
+	 */
 	private final IBinder musicBinder = new MusicBinder()
+
+	/**
+	 * Variable to ensure the player is in a validate state
+	 */
+	private boolean mediaPlayerPrepared = false
 
 	@Override
 	void onCreate()
@@ -35,21 +53,59 @@ class MusicService extends Service implements OnPreparedListener,
 	}
 
 	//region Player logic
+	/**
+	 * Plays a song
+	 * @param song Song to be played (see {@link Song ])
+	 */
 	public void play(Song song)
 	{
+		mediaPlayerPrepared = false
 		mediaPlayer.reset()
-		try{ mediaPlayer.setDataSource(applicationContext, song.URI) }
-		catch(Exception e){ Log.e("MUSIC SERVICE", "Error setting data source", e) /* TODO: Handle fucking exception */ }
+		try
+		{
+			mediaPlayer.setDataSource(applicationContext, song.URI)
+		}
+		catch(Exception e)
+		{
+			Log.e(this.class.toString(), "Error setting data source: ${e}")
+		}
 		mediaPlayer.prepareAsync()
 		songList.currentSong = song
-		Log.d("PLAYING", "${currentSong}")
 	}
 
+	/**
+	 * Stops the player
+	 */
 	public void stop(){ mediaPlayer.stop() }
+
+	/**
+	 * Pauses the player
+	 */
 	public void pause(){ mediaPlayer.pause() }
+
+	/**
+	 * Seeks the song currently playing to a given position
+	 *
+	 * If nithing is playing, does nothing
+	 * @param position position to seek to given in milliseconds
+	 */
 	public void seek(int position){ mediaPlayer.seekTo(position) }
+
+	/**
+	 * Starts playing the music
+	 */
 	public void start(){ mediaPlayer.start() }
+
+	/**
+	 * Moves the song playing (or song to be played if the player
+	 * is paused) to the previous song. see {@link SongList#moveToPreviousSong()}
+	 */
 	public void playPrevious(){ songList.moveToPreviousSong() }
+
+	/**
+	 * Moves the song playing (or song to be played if the player
+	 * is paused) to the next song. see {@link SongList#moveToNextSong()}
+	 */
 	public void playNext(){ songList.moveToNextSong() }
 	//endregion
 
@@ -65,17 +121,35 @@ class MusicService extends Service implements OnPreparedListener,
 		return false
 	}
 
-	@Override
-	void onCompletion(MediaPlayer mediaPlayer){ playNext() }
+	/**
+	 * Will play the next song as soon as the current on is finished
+	 * @param mediaPlayer
+	 */
+	@Override void onCompletion(MediaPlayer mediaPlayer){ playNext() }
 
-	@Override
-	boolean onError(MediaPlayer mediaPlayer, int i, int i2){ return false }
+	/**
+	 * Does nothing
+	 */
+	@Override boolean onError(MediaPlayer mediaPlayer, int i, int i2){ return false }
 
-	@Override
-	void onPrepared(MediaPlayer mediaPlayer){ mediaPlayer.start() }
+	/**
+	 * Starts the playback directly and validates the playing mode
+	 */
+	@Override void onPrepared(MediaPlayer mediaPlayer)
+	{
+		start()
+		mediaPlayerPrepared = true
+	}
 	//endregion
 
-	private mediaPlayerInit()
+	/**
+	 * Initializes the player
+	 *
+	 * This will set the listeners of the player and confgurate it
+	 *
+	 * @see {@link MusicService#mediaPlayer}
+	 */
+	private void mediaPlayerInit()
 	{
 		mediaPlayer.audioStreamType = AudioManager.STREAM_MUSIC
 		mediaPlayer.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
@@ -85,14 +159,33 @@ class MusicService extends Service implements OnPreparedListener,
 	}
 
 	//region GET/SET
-	ArrayList<Song> getSongList(){ return songList.currSongList }
-	ArrayList<Album> getAlbumList(){ return songList.albumList }
-	int getDuration(){ return mediaPlayer.duration }
+	/**
+	 * Returns the total duration of the song
+	 * @return Total duration in milliseconds
+	 */
+	int getDuration(){ return mediaPlayerPrepared ? mediaPlayer.duration : 0 }
+
+	/**
+	 * Inidicates whether our player is actually playing
+	 * @return Playing or not
+	 */
 	boolean isPlaying(){ return mediaPlayer.playing }
-	Song getCurrentSong(){ return songList.getCurrentSong() }
-	int getPosition(){ return mediaPlayer.currentPosition }
+
+	/**
+	 * Indicates if the media player is ready to play
+	 * @return Reafy or not
+	 */
+	boolean isReady(){ return mediaPlayerPrepared }
+
+	/**
+	 * Returns the elapsed time the song has been playing
+	 * @return Position in the playback in milliseconds
+	 */
+	int getPosition(){ return mediaPlayerPrepared ? mediaPlayer.currentPosition : 0 }
 	//endregion
 
-
+	/**
+	 * Our Binder
+	 */
 	public class MusicBinder extends Binder{ MusicService getService(){ return MusicService.this } }
 }

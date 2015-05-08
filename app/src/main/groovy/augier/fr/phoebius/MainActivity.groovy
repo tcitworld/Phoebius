@@ -3,6 +3,7 @@ package augier.fr.phoebius
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.Menu
@@ -13,12 +14,14 @@ import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
 import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
+import java.sql.ResultSet
 
 @CompileStatic
 public class MainActivity extends FragmentActivity
 {
 	public static final String APP_NAME = R.string.app_name
 	private static Context context
+	private static Resources resources
 	private MusicServiceConnection musicConnection
 	private Intent playIntent
 
@@ -28,12 +31,9 @@ public class MainActivity extends FragmentActivity
 		// Class init
 		super.onCreate(savedInstanceState)
 		context = this
+		resources = getResources()
 		contentView = R.layout.activity_main
 
-		// Variables init
-		/*
-		 * TODO : Intencier dans un thread à part
-		 */
 		musicConnection = new MusicServiceConnection()
 		musicConnection.serviceConnectedEvent = this.&onServiceConnected
 		playIntent = new Intent(this, MusicService.class)
@@ -74,6 +74,9 @@ public class MainActivity extends FragmentActivity
 		return super.onOptionsItemSelected(item)
 	}
 
+	/**
+	 * Callback executed when the service is conneted
+	 */
 	private void onServiceConnected()
 	{
 		if(SongList.instance?.currSongList != null)
@@ -87,4 +90,5 @@ public class MainActivity extends FragmentActivity
 
 	private MusicService getMusicService(){ return musicConnection.musicService }
 	public static Context getApplicationContext(){ return context }
+	public static Resources getApplicationResources(){ return resources }
 }
