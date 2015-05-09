@@ -1,11 +1,12 @@
 package augier.fr.phoebius.UI
 
 
+import android.content.Intent
 import android.widget.TextView
+import augier.fr.phoebius.PlaylistDetailActivity
 import augier.fr.phoebius.R
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +38,9 @@ public class PlaylistsFragment extends Fragment
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
-		Log.d(this.class.toString(), allPlaylists[position])
+		Intent intent = new Intent(activity, PlaylistDetailActivity.class)
+		intent.putExtra("songs", songList.songList)
+		startActivity(intent)
 	}
 
 	private ArrayList<String> getAllPlaylists(){ return songList.allPlaylists }

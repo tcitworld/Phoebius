@@ -2,6 +2,8 @@ package augier.fr.phoebius.UI
 
 
 import android.app.Activity
+import android.content.ContentResolver
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.BaseAdapter

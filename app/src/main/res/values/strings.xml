@@ -12,4 +12,6 @@
 	<string name="albumArtistText">Artiste</string>
 	<string name="albumTitleText">Titre</string>
 	<string name="albumNbSongText">Nombre de pistes</string>
+	<string name="title_playlistsong_list">PlaylistSongs</string>
+	<string name="title_playlistsong_detail">PlaylistSong Detail</string>
 </resources>

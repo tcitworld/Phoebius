@@ -51,12 +51,13 @@ public class SongListFragment extends Fragment
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
+		Log.e(this.class.toString(), "lol")
 		Song song = songs[position]
-		musicService.play(song)
+		musicService?.play(song)
 	}
 
 	/** @return List of songs @see {@link SongList} */
-	private static ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
+	protected ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
 
 	/** Adapter class, nothing special */
 	class SongAdapter extends AbstractAdaptater

@@ -3,6 +3,7 @@ package augier.fr.phoebius.utils
 
 import android.content.ContentUris
 import android.net.Uri
+import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
@@ -11,15 +12,15 @@ import groovy.transform.CompileStatic
 /**
  * Representation of a song
  */
-@CompileStatic
+@CompileStatic @Parcelable(exclude={URI})
 class Song implements Comparable
 {
 	private Long id
 	private String title
 	private String artist
 	private String album
-	private int trackNumber
-	private int year
+	private Integer trackNumber
+	private Integer year
 	private Uri URI
 
 	/**
@@ -32,7 +33,7 @@ class Song implements Comparable
 	 * @param songYear Song's year of release
 	 */
 	public Song(Long songID, String songTitle, String songArtist,
-	            String songAlbum, int songNb, int songYear)
+	            String songAlbum, Integer songNb, Integer songYear)
 	{
 		id = songID
 		title = songTitle
