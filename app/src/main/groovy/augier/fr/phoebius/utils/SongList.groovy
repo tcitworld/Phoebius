@@ -18,8 +18,8 @@ class SongList extends MusicQueryBuilder
 	private ArrayList<Song> currSongList = []
 	private ArrayList<Album> thisAlbumList = []
 	private LinkedHashMap<String, Bitmap> covers = [:]
-	private LinkedHashMap<String, ArrayList<Song>> playlists = [:]
-	private long currentSongId
+	private LinkedHashMap<String, ArrayList<Song>> playlists = ["Test":[]]
+	private Long currentSongId
 	private Closure stopCallback = {}
 	private Closure playCallback = {}
 	private boolean loop
@@ -30,7 +30,7 @@ class SongList extends MusicQueryBuilder
 		musicCursor = queryCursor
 		createAlbumList()
 		createSongList()
-		currentSongId = songList.empty ? -1 : songList[0].ID
+		currentSongId = songList[0]?.ID ?: -1
 		loop = false
 	}
 
@@ -101,10 +101,8 @@ class SongList extends MusicQueryBuilder
 		return true
 	}
 
-	public ArrayList<Song> getPlaylist(String name)
-		{ return playlists.containsKey(name) ? playlists[name] : [] }
 	public void addToPlaylist(String name, Song song){ playlists[name].add(song) }
-	public String playlistsAsJson()
+	private String playlistsAsJson()
 	{
 		String result = "{"
 		playlists.each{
@@ -259,5 +257,8 @@ class SongList extends MusicQueryBuilder
 	}
 	/** @return Cover for album title or default cover */
 	public Bitmap getCoverFor(String albumTitle){ return covers[albumTitle] ?: Album.defaultCover }
+	public ArrayList<String> getAllPlaylists(){ return playlists.keySet() }
+	public ArrayList<Song> getPlaylist(String name){ return playlists[name] ?: [] }
+
 //endregion
 }

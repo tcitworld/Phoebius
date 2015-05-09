@@ -16,14 +16,16 @@ import groovy.transform.CompileStatic
  * automatically loaded from the file.
  */
 @CompileStatic
-public class ConfigManager
+abstract class ConfigManager
 {
 	/**
 	 * Shorthand for the separator character in paths
 	 */
-	public static final S = File.separator
+	private static File configFile
+	private static def configs = [:]
 
 	static {
+		configFile = new File(getConfDir(), "configs.json")
 		if(!configFile.exists()) configFile.createNewFile()
 		configs = new JsonSlurper().parse(configFile) as LinkedHashMap
 	}
@@ -38,21 +40,19 @@ public class ConfigManager
 	 *
 	 * @return Directory containing the configuration file
 	 */
-	private static final File getConfDir()
+	private static File getConfDir()
 	{
 		def E = Environment.externalStorageDirectory.absolutePath
 		def A = MainActivity.APP_NAME
 
-		def homeAppDir = new File("${E}/.${A}")
+		def homeAppDir = new File("${E}", ".${A}")
 		if(!homeAppDir.exists()) homeAppDir.mkdir()
 		return homeAppDir
 	}
 
-	private ConfigManager(){}
-
 	public static void addKey(String k, String v)
 		{ configs[k] = new JsonSlurper().parseText(v).toString() }
-	public static void dump(){ configFile.write(new JsonSlurper(configs).toString()) }
+	public static void dump(){ configFile.write(new JsonBuilder(configs).toString()) }
 	public static String getJson(){ return new JsonBuilder(configs).toPrettyString() }
 	public static getKey(String k){ return configs[k] }
 }

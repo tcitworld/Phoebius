@@ -69,7 +69,6 @@ class Song implements Comparable
 	        "ID": ${ID},
 			"title": ${title},
 			"artist": ${artist},
-			"albumId": ${albumId},
 			"album": ${album},
 			"trackNumber": ${trackNumber},
 			"year": ${year}
@@ -82,13 +81,12 @@ class Song implements Comparable
 		String ID = result["ID"]
 		String title = result["title"]
 		String artist = result["artist"]
-		String albumId = result["albumId"]
 		String album = result["album"]
 		String trackNumber = result["trackNumber"]
 		String year = result["year"]
 
 		return new Song(
-				new Long(ID), title, artist, new Long(albumId),
+				new Long(ID), title, artist,
 				album, new Integer(trackNumber), new Integer(year))
 	}
 

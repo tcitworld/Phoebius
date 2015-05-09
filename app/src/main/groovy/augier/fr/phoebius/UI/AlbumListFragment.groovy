@@ -58,6 +58,7 @@ public class AlbumListFragment extends Fragment
 	{
 		@Override public int getCount(){ return albums.size() }
 
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
 			layout = inflate(activity, R.layout.album_item, parent)

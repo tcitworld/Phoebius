@@ -72,9 +72,10 @@ public class MainPageFragment extends Fragment implements TabListener
 		 *
 		 * @see {@link #FRAGMENTS}
 		 */
-		private static int[] HEADER_ITEMS = [
-			R.string.playlist_en,
-			R.string.album
+		private int[] HEADER_ITEMS = [
+			R.string.titles,
+			R.string.album,
+			R.string.playlist
 		]
 
 		/**
@@ -87,7 +88,8 @@ public class MainPageFragment extends Fragment implements TabListener
 		 */
 		private Fragment[] FRAGMENTS = [
 				new SongListFragment(musicService),
-				new AlbumListFragment(musicService)
+				new AlbumListFragment(musicService),
+				new PlaylistsFragment(musicService)
 		]
 
 		/** Constructor. Nothing special */

@@ -24,12 +24,6 @@ abstract class AbstractAdaptater extends BaseAdapter
 
 	/**
 	 * Does nothing
-	 * @return 0
-	 */
-	@Override public int getCount(){ return 0 }
-
-	/**
-	 * Does nothing
 	 * @param arg0
 	 * @return null
 	 */
