@@ -3,4 +3,5 @@
 		<item name="android:windowActionBarOverlay">true</item>
     </style>
 	<color name="GlobalBG">#000</color>
+	<color name="ControllBG">#2f2f2f</color>
 </resources>
