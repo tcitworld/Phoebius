@@ -1,6 +1,7 @@
 package augier.fr.phoebius.utils
 
 
+import android.graphics.Bitmap
 import android.util.Log
 import augier.fr.phoebius.MainActivity
 
@@ -16,6 +17,7 @@ class SongList extends MusicQueryBuilder
 	private static SongList INSTANCE
 	private ArrayList<Song> currSongList = []
 	private ArrayList<Album> thisAlbumList = []
+	private LinkedHashMap<String, Bitmap> covers = [:]
 	private long currentSongId
 	private Closure stopCallback = {}
 	private Closure playCallback = {}
@@ -77,13 +79,15 @@ class SongList extends MusicQueryBuilder
 		{
 			while(musicCursor.moveToNext())
 			{
-				thisAlbumList.add(new Album(
-					musicCursor.getString(albumTitleColumn),
-					musicCursor.getString(albumArtistColumn),
-					musicCursor.getString(albumDateColumn),
-					musicCursor.getString(albumNbSongsColumn),
-					musicCursor.getString(albumCoverColumn))
-				)
+				def album = new Album(
+						musicCursor.getString(albumTitleColumn),
+						musicCursor.getString(albumArtistColumn),
+						musicCursor.getString(albumDateColumn),
+						musicCursor.getString(albumNbSongsColumn),
+						musicCursor.getString(albumCoverColumn))
+
+				thisAlbumList.add(album)
+				covers[album.albumTitle] = album.cover
 			}
 		}
 		thisAlbumList.sort()
@@ -231,5 +235,7 @@ class SongList extends MusicQueryBuilder
 		if(INSTANCE == null){ INSTANCE = new SongList() }
 		return INSTANCE
 	}
+	/** @return Cover for album title or default cover */
+	public Bitmap getCoverFor(String albumTitle){ return covers[albumTitle] ?: Album.defaultCover }
 //endregion
 }

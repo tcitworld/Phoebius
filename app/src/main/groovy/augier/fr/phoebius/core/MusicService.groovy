@@ -81,7 +81,7 @@ class MusicService extends Service implements OnPreparedListener,
 		}
 		mediaPlayer.prepareAsync()
 		songList.currentSong = song
-		notificationPlayer.notify(Album.defaultCover, song.title, song.album)
+		notificationPlayer.notify(songList.getCoverFor(song.album), song.title, song.album)
 	}
 
 	/**
