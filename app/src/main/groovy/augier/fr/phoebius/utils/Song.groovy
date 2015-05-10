@@ -3,22 +3,26 @@ package augier.fr.phoebius.utils
 
 import android.content.ContentUris
 import android.net.Uri
+import com.arasthel.swissknife.annotations.Parcelable
+import groovy.json.JsonBuilder
 import groovy.transform.CompileStatic
 
 
 /**
  * Representation of a song
  */
-@CompileStatic
+@CompileStatic @Parcelable(exclude={URI})
 class Song implements Comparable
 {
 	private Long id
 	private String title
 	private String artist
 	private String album
-	private int trackNumber
-	private int year
+	private Integer trackNumber
+	private Integer year
 	private Uri URI
+	private static final Song defaultSong = new Song(
+			new Long(-1), "Song title", "Song artist", "Song album", 0, 0)
 
 	/**
 	 * Builds a new song
@@ -30,7 +34,7 @@ class Song implements Comparable
 	 * @param songYear Song's year of release
 	 */
 	public Song(Long songID, String songTitle, String songArtist,
-	            String songAlbum, int songNb, int songYear)
+	            String songAlbum, Integer songNb, Integer songYear)
 	{
 		id = songID
 		title = songTitle
@@ -58,14 +62,36 @@ class Song implements Comparable
 
 	@Override
 	public String toString(){
-		return """
-			ID: ${id},
-			Artist: ${artist},
-			Title: ${title},
-			Album: ${album},
-			Number: ${trackNumber}
-			Year: ${year}"""
+		return new JsonBuilder(toMap()).toPrettyString()
 	}
+
+	public LinkedHashMap<String, String> toMap()
+	{
+		return [
+			ID: "${ID}",
+			title: "${title}",
+			artist: "${artist}",
+			album: "${album}",
+			trackNumber: "${trackNumber}",
+			year: "${year}"
+		]
+	}
+
+	public static Song fromMap(Map values)
+	{
+		String ID = values["ID"]
+		String title = values["title"]
+		String artist = values["artist"]
+		String album = values["album"]
+		String trackNumber = values["trackNumber"]
+		String year = values["year"]
+
+		return new Song(
+				new Long(ID), title, artist,
+				album, new Integer(trackNumber), new Integer(year))
+	}
+
+	public static Song getDefaultSong(){ return defaultSong }
 
 	/**
 	 * Compares for sorting

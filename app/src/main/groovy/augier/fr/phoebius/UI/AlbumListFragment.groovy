@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
+import groovy.transform.CompileStatic
 
 
 /**
@@ -21,6 +23,7 @@ import com.arasthel.swissknife.annotations.InjectView
  * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
  * The views are injected in the {@link AlbumListFragment#onCreateView onCreateView} method
  */
+@CompileStatic
 public class AlbumListFragment extends Fragment
 {
 	/**
@@ -30,9 +33,7 @@ public class AlbumListFragment extends Fragment
 	 * See https://github.com/Arasthel/SwissKnife/wiki#how-to-use-the-annotations
 	 */
 	@InjectView private ListView songView
-	private MusicService musicService
 
-	public AlbumListFragment(MusicService musicService){ this.musicService = musicService }
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -50,19 +51,21 @@ public class AlbumListFragment extends Fragment
 	 * @return List of albums
 	 */
 	private static ArrayList<Album> getAlbums(){ return SongList.instance.albumList }
+	private static MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
 	/**
 	 * Adaptater to create a grid of albums
 	 */
 	class SongAdapter extends AbstractAdaptater
 	{
-		@Override public int getCount(){ return albums.size() }
+		@Override public int getCount(){ return getAlbums().size() }
 
+		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			layout = inflate(activity, R.layout.album_item, parent)
+			layout = inflate(getActivity(), R.layout.album_item, parent)
 
-			Album currAlbum = albums[position]
+			Album currAlbum = getAlbums()[position]
 			getView(R.id.albumTitle, TextView.class).text = currAlbum.albumTitle
 			getView(R.id.albumArtist, TextView.class).text = currAlbum.albumArtist
 			getView(R.id.albumDate, TextView.class).text = currAlbum.date

@@ -8,7 +8,9 @@ import android.graphics.Bitmap
 import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
+import groovy.transform.CompileStatic
 
 
 /**
@@ -17,14 +19,14 @@ import augier.fr.phoebius.R
  * This class makes heavy use of the {@link NotificationCompat.Builder} helper
  * class to create notifications in a backward-compatible way.
  */
+@CompileStatic
 public class NotificationPlayer
 {
     /** Unique identifier for this type of notification. */
-    private static final String NOTIFICATION_TAG = "${MainActivity.APP_NAME}#NotifPlayer"
+    private static final String NOTIFICATION_TAG = "${PhoebiusApplication.APP_NAME}#NotifPlayer"
 	private static NotificationPlayer INSTANCE
 
 	private Notification notification
-	private Context context = MainActivity.applicationContext
 	private RemoteViews remoteViews
 
 	private NotificationPlayer()
@@ -32,7 +34,7 @@ public class NotificationPlayer
 		notification = new NotificationCompat.Builder(context)
 				.setDefaults(Notification.DEFAULT_VIBRATE)
 				.setSmallIcon(R.drawable.notification_player_icon)
-				.setTicker("${MainActivity.APP_NAME}")
+				.setTicker("${PhoebiusApplication.APP_NAME}")
 				.setOngoing(true).build()
 
 		remoteViews = new RemoteViews(context.packageName, R.layout.player_notification)
@@ -74,4 +76,6 @@ public class NotificationPlayer
 		if(!INSTANCE) INSTANCE = new NotificationPlayer()
 		return INSTANCE
 	}
+
+	private Context getContext(){ return PhoebiusApplication.context }
 }

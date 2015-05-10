@@ -47,6 +47,9 @@ dependencies{
 	compile "com.arasthel:swissknife:1.2.2"
 }
 
+dependencies{
+	compile 'com.android.support:support-v4:20.+'
+}
 project.androidGroovy{
 	options{
 		sourceCompatibility = '1.7'

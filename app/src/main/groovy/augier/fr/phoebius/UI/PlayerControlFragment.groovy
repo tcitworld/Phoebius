@@ -4,6 +4,7 @@ package augier.fr.phoebius.UI
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
@@ -19,6 +21,7 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnBackground
 import com.arasthel.swissknife.annotations.OnClick
+import groovy.transform.CompileStatic
 
 
 /**
@@ -27,6 +30,7 @@ import com.arasthel.swissknife.annotations.OnClick
  * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
  * The views are injected in the {@link MainPageFragment#onCreateView onCreateView} method
  */
+@CompileStatic
 public class PlayerControlFragment extends Fragment
 {
 	/** Frequency of refresh, in milliseconds */
@@ -36,14 +40,12 @@ public class PlayerControlFragment extends Fragment
 	@InjectView private SeekBar songProgressBar
 	@InjectView private ImageButton btnPlayPause
 	private SongBarListener songBarListener = new SongBarListener()
-	private MusicService musicService
 	private Handler handler = new Handler()
 	private Runnable refresh = new Refresher()
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		this.musicService = MainActivity.getMusicService()
 		View view = inflater.inflate(R.layout.fragment_player_control, container, false)
 		SwissKnife.inject(this, view)
 		SwissKnife.runOnBackground(this, "doOnBackground")
@@ -119,7 +121,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnNext)
-	public void onBtnNextClick(){ if(playing) playNext() }
+	public void onBtnNextClick(){ if(isPlaying()) playNext() }
 
 	/**
 	 * Convert a given time in milliseconds to a human readable format
@@ -131,9 +133,9 @@ public class PlayerControlFragment extends Fragment
 	private static String fromMilliSeconds(int ms)
 	{
 		ms /= 1000
-		int hours = ms / 3600
+		int hours = (int)(ms / 3600)
 		int remainder = ms % 3600
-		int _mins = remainder / 60
+		int _mins = (int)(remainder / 60)
 		remainder = remainder % 60
 		int _secs = remainder
 
@@ -186,7 +188,7 @@ public class PlayerControlFragment extends Fragment
 	void pause(){ musicService.pause() }
 	//endregion
 
-	private MusicService getMusicService(){ return musicService.musicService }
+	private MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
 	/**
 	 * Listener for the controller's seekbar
@@ -211,7 +213,7 @@ public class PlayerControlFragment extends Fragment
 
 		@Override void onStopTrackingTouch(SeekBar seekBar)
 		{
-			if(musicService.ready)
+			if(getMusicService().ready)
 			{
 				seekTo(songProgression)
 				userTrackingSongBar = false
@@ -241,11 +243,12 @@ public class PlayerControlFragment extends Fragment
 	{
 		@Override void run()
 		{
-			currentDurationLabel.text = fromMilliSeconds(currentPosition)
-			totalDurationLabel.text = fromMilliSeconds(duration)
-			songProgressBar.max = duration
-			songProgressBar.progress = currentPosition
-			btnPlayPause.imageResource = playing ? R.drawable.btn_pause : R.drawable.btn_play
+			currentDurationLabel.text = fromMilliSeconds(currentPosition as int)
+			totalDurationLabel.text = fromMilliSeconds(duration as int)
+			songProgressBar.max = (int)duration
+			songProgressBar.progress = (int)currentPosition
+			if(isPlaying()) btnPlayPause.imageResource = (int)R.drawable.btn_pause
+			else btnPlayPause.imageResource = (int)R.drawable.btn_play
 			handler.postDelayed(this, REFRESH_TIME)
 		}
 	}

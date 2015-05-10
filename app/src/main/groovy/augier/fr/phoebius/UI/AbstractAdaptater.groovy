@@ -2,6 +2,8 @@ package augier.fr.phoebius.UI
 
 
 import android.app.Activity
+import android.content.ContentResolver
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -21,12 +23,6 @@ abstract class AbstractAdaptater extends BaseAdapter
 	 * Inflated layout
 	 */
 	protected LinearLayout layout
-
-	/**
-	 * Does nothing
-	 * @return 0
-	 */
-	@Override public int getCount(){ return 0 }
 
 	/**
 	 * Does nothing

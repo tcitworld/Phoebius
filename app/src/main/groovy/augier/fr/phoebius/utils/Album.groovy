@@ -5,6 +5,7 @@ package augier.fr.phoebius.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import groovy.transform.CompileStatic
 
@@ -78,6 +79,6 @@ public class Album implements Comparable
 	public static Bitmap getDefaultCover()
 	{
 		return BitmapFactory.decodeResource(
-			MainActivity.applicationResources, R.drawable.default_cover)
+			PhoebiusApplication.resources, R.drawable.default_cover)
 	}
 }
