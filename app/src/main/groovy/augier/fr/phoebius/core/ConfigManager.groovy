@@ -3,6 +3,7 @@ package augier.fr.phoebius.core
 
 import android.os.Environment
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
@@ -43,7 +44,7 @@ abstract class ConfigManager
 	private static File getConfDir()
 	{
 		def E = Environment.externalStorageDirectory.absolutePath
-		def A = MainActivity.APP_NAME
+		def A = PhoebiusApplication.APP_NAME
 
 		def homeAppDir = new File("${E}", ".${A}")
 		if(!homeAppDir.exists()) homeAppDir.mkdir()

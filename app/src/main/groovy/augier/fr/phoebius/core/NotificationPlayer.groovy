@@ -21,7 +21,7 @@ import augier.fr.phoebius.R
 public class NotificationPlayer
 {
     /** Unique identifier for this type of notification. */
-    private static final String NOTIFICATION_TAG = "${MainActivity.APP_NAME}#NotifPlayer"
+    private static final String NOTIFICATION_TAG = "${PhoebiusApplication.APP_NAME}#NotifPlayer"
 	private static NotificationPlayer INSTANCE
 
 	private Notification notification
@@ -33,7 +33,7 @@ public class NotificationPlayer
 		notification = new NotificationCompat.Builder(context)
 				.setDefaults(Notification.DEFAULT_VIBRATE)
 				.setSmallIcon(R.drawable.notification_player_icon)
-				.setTicker("${MainActivity.APP_NAME}")
+				.setTicker("${PhoebiusApplication.APP_NAME}")
 				.setOngoing(true).build()
 
 		remoteViews = new RemoteViews(context.packageName, R.layout.player_notification)

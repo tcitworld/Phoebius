@@ -20,10 +20,7 @@ import com.arasthel.swissknife.annotations.OnItemClick
 public class PlaylistsFragment extends Fragment
 {
 	@InjectView private ListView songView
-	private MusicService musicService
 	private SongList songList = SongList.instance
-
-	public PlaylistsFragment(MusicService musicService){ this.musicService = musicService }
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

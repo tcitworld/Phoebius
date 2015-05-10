@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import com.arasthel.swissknife.SwissKnife
@@ -29,18 +30,16 @@ import com.arasthel.swissknife.annotations.InjectView
 public class MainPageFragment extends Fragment implements TabListener
 {
 	@InjectView ViewPager mainPager
-	private MusicService musicService
 	private PagerAdaptater fragmentAdapter
 
 	/**
 	 * Constructor
-	 * @param fm Fragment manager from main activity (just use {@link augier.fr.phoebius.MainActivity#getSupportFragmentManager}
-	 * @param ms Music service from the main activity (just use {@link augier.fr.phoebius.MainActivity#getMusicService}
+	 * @param fm Fragment manager from main activity (just use {@link MainActivity#getSupportFragmentManager}
+	 * @param ms Music service from the main activity (just use {@link PhoebiusApplication#getMusicService}
 	 */
 	public MainPageFragment(FragmentManager fm)
 	{
 		super()
-		musicService = MainActivity.musicService
 		fragmentAdapter = new PagerAdaptater(fm)
 	}
 
@@ -53,6 +52,8 @@ public class MainPageFragment extends Fragment implements TabListener
 		mainPager.setAdapter(fragmentAdapter)
 		return view
 	}
+
+	private MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
 	@Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
@@ -87,9 +88,9 @@ public class MainPageFragment extends Fragment implements TabListener
 		 * @see {@link #HEADER_ITEMS}
 		 */
 		private Fragment[] FRAGMENTS = [
-				new SongListFragment(musicService),
-				new AlbumListFragment(musicService),
-				new PlaylistsFragment(musicService)
+				new SongListFragment(),
+				new AlbumListFragment(),
+				new PlaylistsFragment()
 		]
 
 		/** Constructor. Nothing special */

@@ -10,7 +10,7 @@ public class PlaylistDetailFragment extends SongListFragment
 
 	PlaylistDetailFragment(ArrayList<Song> songs)
 	{
-		super(null)
+		super()
 		this.songs = songs
 	}
 

@@ -29,8 +29,6 @@ public class SongListFragment extends Fragment
 {
 	@InjectView private ListView songView
 
-	public SongListFragment(MusicService musicService){}
-
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{

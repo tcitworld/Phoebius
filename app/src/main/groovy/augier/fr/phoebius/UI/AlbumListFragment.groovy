@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Album
@@ -30,9 +31,7 @@ public class AlbumListFragment extends Fragment
 	 * See https://github.com/Arasthel/SwissKnife/wiki#how-to-use-the-annotations
 	 */
 	@InjectView private ListView songView
-	private MusicService musicService
 
-	public AlbumListFragment(MusicService musicService){ this.musicService = musicService }
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -50,6 +49,7 @@ public class AlbumListFragment extends Fragment
 	 * @return List of albums
 	 */
 	private static ArrayList<Album> getAlbums(){ return SongList.instance.albumList }
+	private static MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
 	/**
 	 * Adaptater to create a grid of albums

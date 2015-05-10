@@ -1,9 +1,10 @@
 package augier.fr.phoebius.utils
 
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 
 
 /**
@@ -26,7 +27,7 @@ class SongList extends MusicQueryBuilder
 
 	private SongList()
 	{
-		musicResolver = MainActivity.applicationContext.contentResolver
+		musicResolver = context.contentResolver
 		musicCursor = queryCursor
 		createAlbumList()
 		createSongList()
@@ -231,6 +232,8 @@ class SongList extends MusicQueryBuilder
 	}
 
 	//region GET/SET
+	/** @return The context of the application */
+	private Context getContext(){ return PhoebiusApplication.context }
 	/** @return The length of the current playing playlist */
 	public int getLenght(){ return currSongList.size() }
 	/** @return Whether the playback is looped on the list or not */
