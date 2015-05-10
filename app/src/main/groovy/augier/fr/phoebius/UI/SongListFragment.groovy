@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Song
@@ -27,9 +28,8 @@ import com.arasthel.swissknife.annotations.OnItemClick
 public class SongListFragment extends Fragment
 {
 	@InjectView private ListView songView
-	private MusicService musicService
 
-	public SongListFragment(MusicService musicService){ this.musicService = musicService }
+	public SongListFragment(MusicService musicService){}
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -51,13 +51,13 @@ public class SongListFragment extends Fragment
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
-		Log.e(this.class.toString(), "lol")
 		Song song = songs[position]
 		musicService?.play(song)
 	}
 
 	/** @return List of songs @see {@link SongList} */
 	protected ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
+	protected MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
 	/** Adapter class, nothing special */
 	class SongAdapter extends AbstractAdaptater

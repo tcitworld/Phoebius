@@ -61,6 +61,7 @@ class SongList extends MusicQueryBuilder
 				)
 			}
 		}
+		musicCursor.close()
 		currSongList.sort()
 	}
 
@@ -91,6 +92,7 @@ class SongList extends MusicQueryBuilder
 				covers[album.albumTitle] = album.cover
 			}
 		}
+		musicCursor.close()
 		thisAlbumList.sort()
 	}
 

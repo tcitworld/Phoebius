@@ -41,7 +41,6 @@ public abstract class MusicQueryBuilder
 	protected int getSongIdColumn()         { return gci(SONG_ID) }
 	protected int getSongArtistColumn()     { return gci(SONG_ARTIST) }
 	protected int getSongAlbumColumn()      { return gci(SONG_ALBUM) }
-	protected int getSongAlbumIdColumn()    { return gci(SONG_ALBUM_ID) }
 	protected int getSongYearColumn()       { return gci(SONG_YEAR) }
 	protected int getSongNumberColumn()     { return gci(SONG_NUMBER) }
 	protected int getAlbumArtistColumn()    { return gci(ALBUM_ARTIST) }

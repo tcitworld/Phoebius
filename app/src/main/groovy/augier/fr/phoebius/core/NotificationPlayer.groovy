@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import augier.fr.phoebius.MainActivity
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 
 
@@ -24,7 +25,7 @@ public class NotificationPlayer
 	private static NotificationPlayer INSTANCE
 
 	private Notification notification
-	private Context context = MainActivity.applicationContext
+	private Context context = PhoebiusApplication.context
 	private RemoteViews remoteViews
 
 	private NotificationPlayer()
