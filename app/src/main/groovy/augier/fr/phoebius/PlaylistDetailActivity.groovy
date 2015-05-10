@@ -8,7 +8,9 @@ import android.view.MenuItem
 import android.support.v4.app.NavUtils
 import augier.fr.phoebius.UI.PlaylistDetailFragment
 import augier.fr.phoebius.utils.Song
+import groovy.transform.CompileStatic
 
+@CompileStatic
 public class PlaylistDetailActivity extends FragmentActivity
 {
 	ArrayList<Song> songs

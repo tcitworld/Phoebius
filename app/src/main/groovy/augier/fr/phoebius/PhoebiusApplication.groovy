@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.util.Log
 import augier.fr.phoebius.core.ConfigManager
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
@@ -40,6 +39,7 @@ public class PhoebiusApplication extends Application
 		SongList.instance.finalize()
 		configManager.dump()
 		super.onTerminate()
+		System.exit(0)
 	}
 
 	public static Context getContext(){ return context }

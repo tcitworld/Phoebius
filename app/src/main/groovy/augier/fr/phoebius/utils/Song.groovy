@@ -65,15 +65,15 @@ class Song implements Comparable
 		return new JsonBuilder(toMap()).toPrettyString()
 	}
 
-	public Map toMap()
+	public LinkedHashMap<String, String> toMap()
 	{
 		return [
-			ID: ID,
-			title: title,
-			artist: artist,
-			album: album,
-			trackNumber: trackNumber,
-			year: year
+			ID: "${ID}",
+			title: "${title}",
+			artist: "${artist}",
+			album: "${album}",
+			trackNumber: "${trackNumber}",
+			year: "${year}"
 		]
 	}
 

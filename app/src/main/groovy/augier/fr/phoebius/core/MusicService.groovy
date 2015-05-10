@@ -11,14 +11,15 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
-import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
+import groovy.transform.CompileStatic
 
 
 /**
  * This class takes care of playing the music and interacting with the controls
  */
+@CompileStatic
 class MusicService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener
 {

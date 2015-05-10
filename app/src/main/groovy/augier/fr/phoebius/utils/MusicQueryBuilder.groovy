@@ -20,7 +20,6 @@ public abstract class MusicQueryBuilder
 	public static final String SONG_TITLE       = MediaStore.Audio.Media.TITLE
 	public static final String SONG_ARTIST      = MediaStore.Audio.Media.ARTIST
 	public static final String SONG_YEAR        = MediaStore.Audio.Media.YEAR
-	public static final String SONG_ALBUM_ID    = MediaStore.Audio.Media.ALBUM_ID
 	public static final String SONG_ALBUM       = MediaStore.Audio.Media.ALBUM
 	public static final String SONG_NUMBER      = MediaStore.Audio.Media.TRACK
 	public static final String ALBUM_TITLE      = MediaStore.Audio.Albums.ALBUM

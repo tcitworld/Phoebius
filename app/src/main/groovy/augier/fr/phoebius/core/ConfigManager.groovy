@@ -35,7 +35,7 @@ class ConfigManager
 			try{ configs  = new JsonSlurper().parse(configFile) as Map }
 			catch(Exception e)
 			{
-				Log.d(this.class.toString(), "Enable to parse file: ${e}")
+				Log.e(this.class.toString(), "Enable to parse file: ${e}")
 				flushFile()
 			}
 
@@ -49,10 +49,7 @@ class ConfigManager
 	public Object getAt(String k){ return configs[k] }
 
 	private flushFile(){ configFile.write("{}") }
-	public void dump(){ configFile.write(
-			new JsonBuilder(configs)
-					.toString())
-	}
+	public void dump(){ configFile.write(new JsonBuilder(configs).toString()) }
 
 	/**
 	 * Aquire the directory containing the configuration file

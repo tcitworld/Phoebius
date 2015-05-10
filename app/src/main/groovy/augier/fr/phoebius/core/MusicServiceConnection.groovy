@@ -5,11 +5,13 @@ import android.os.IBinder
 import android.content.ComponentName
 import android.content.ServiceConnection
 import augier.fr.phoebius.core.MusicService.MusicBinder
+import groovy.transform.CompileStatic
 
 
 /**
  * Class for binding a class to the {@link MusicService}
  */
+@CompileStatic
 public class MusicServiceConnection implements ServiceConnection
 {
 	/**

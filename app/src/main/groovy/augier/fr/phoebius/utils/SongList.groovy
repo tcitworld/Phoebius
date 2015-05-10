@@ -7,6 +7,7 @@ import android.util.Log
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.core.ConfigManager
 import groovy.json.JsonBuilder
+import groovy.transform.CompileStatic
 
 
 /**
@@ -15,13 +16,14 @@ import groovy.json.JsonBuilder
  * This class is a singleton to easier it's use everywhere in the code.
  * It is an abstraction of Andrdoid FS
  */
+@CompileStatic
 class SongList extends MusicQueryBuilder
 {
 	private static SongList INSTANCE
 	private ArrayList<Song> currSongList = []
 	private ArrayList<Album> thisAlbumList = []
 	private LinkedHashMap<String, Bitmap> covers = [:]
-	private LinkedHashMap<String, ArrayList<Song>> playlists = ["Test":[]]
+	private LinkedHashMap<String, ArrayList<Song>> playlists = [:]
 	private Long currentSongId
 	private Closure stopCallback = {}
 	private Closure playCallback = {}
@@ -103,7 +105,7 @@ class SongList extends MusicQueryBuilder
 	public boolean newPlaylist(String name)
 	{
 		if(playlists.containsKey(name)){ return false }
-		playlists[name] = []
+		playlists[name] = new ArrayList<>()
 		return true
 	}
 
@@ -113,14 +115,13 @@ class SongList extends MusicQueryBuilder
 	{
 		def res = configManager[ConfigManager.WKK_PLAYLIST] as Map
 		res.each{
-			def name = it.key as String
+			String name = it.key as String
 			def songs = it.value as List
-			playlists[name] = []
+			playlists[name] = new ArrayList<>()
 			songs.each{
 				def song = it as Map<String, String>
 				playlists[name].add(Song.fromMap(song)) }
 		}
-		Log.e(this.class.toString(), "${playlists}")
 	}
 
 	public void finalize()
@@ -200,7 +201,6 @@ class SongList extends MusicQueryBuilder
 	public SongList moveToPreviousSong()
 	{
 		Song prev = getPreviousSong()
-		Log.e(this.class.toString(), "Previous song: ${prev}")
 		if(prev == null)
 		{
 			currentSongId = currSongList[0].ID
@@ -220,7 +220,11 @@ class SongList extends MusicQueryBuilder
 	 * @param id Song ID
 	 * @return Index in the current list or -1 if not found
 	 */
-	private int findIndexById(Long id){ return currSongList.findIndexOf{ it.ID == id } }
+	private int findIndexById(Long id)
+	{
+		return currSongList.findIndexOf{
+			Song it -> return it.ID == id }
+	}
 
 	/**
 	 * Retrieve a Song by its {@link Song#getID() ID}
@@ -280,9 +284,12 @@ class SongList extends MusicQueryBuilder
 		return INSTANCE
 	}
 	/** @return Cover for album title or default cover */
-	public Bitmap getCoverFor(String albumTitle){ return covers[albumTitle] ?: Album.defaultCover }
-	public ArrayList<String> getAllPlaylists(){ return playlists.keySet() }
-	public ArrayList<Song> getPlaylist(String name){ return playlists[name] ?: [] }
+	public Bitmap getCoverFor(String albumTitle){
+		return covers[albumTitle] ?: Album.defaultCover }
+	public ArrayList<String> getAllPlaylists(){
+		return playlists.keySet() as ArrayList<String> }
+	public ArrayList<Song> getPlaylist(String name){
+		return playlists[name] ?: [] as ArrayList<Song> }
 
 //endregion
 }

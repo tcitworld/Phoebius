@@ -10,6 +10,7 @@ import android.widget.RemoteViews
 import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
+import groovy.transform.CompileStatic
 
 
 /**
@@ -18,6 +19,7 @@ import augier.fr.phoebius.R
  * This class makes heavy use of the {@link NotificationCompat.Builder} helper
  * class to create notifications in a backward-compatible way.
  */
+@CompileStatic
 public class NotificationPlayer
 {
     /** Unique identifier for this type of notification. */

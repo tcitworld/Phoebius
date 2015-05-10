@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.PagerTitleStrip
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
+import groovy.transform.CompileStatic
 
 
 /**
@@ -27,6 +27,7 @@ import com.arasthel.swissknife.annotations.InjectView
  * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
  * The views are injected in the {@link MainPageFragment#onCreateView onCreateView} method
  */
+@CompileStatic
 public class MainPageFragment extends Fragment implements TabListener
 {
 	@InjectView ViewPager mainPager
@@ -73,10 +74,10 @@ public class MainPageFragment extends Fragment implements TabListener
 		 *
 		 * @see {@link #FRAGMENTS}
 		 */
-		private int[] HEADER_ITEMS = [
-			R.string.titles,
-			R.string.album,
-			R.string.playlist
+		private final int[] HEADER_ITEMS = [
+			R.string.titles as int,
+			R.string.album as int,
+			R.string.playlist as int
 		]
 
 		/**
@@ -87,7 +88,7 @@ public class MainPageFragment extends Fragment implements TabListener
 		 *
 		 * @see {@link #HEADER_ITEMS}
 		 */
-		private Fragment[] FRAGMENTS = [
+		private final Fragment[] FRAGMENTS = [
 				new SongListFragment(),
 				new AlbumListFragment(),
 				new PlaylistsFragment()

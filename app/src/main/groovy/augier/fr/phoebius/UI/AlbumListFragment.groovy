@@ -14,6 +14,7 @@ import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
+import groovy.transform.CompileStatic
 
 
 /**
@@ -22,6 +23,7 @@ import com.arasthel.swissknife.annotations.InjectView
  * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
  * The views are injected in the {@link AlbumListFragment#onCreateView onCreateView} method
  */
+@CompileStatic
 public class AlbumListFragment extends Fragment
 {
 	/**
@@ -56,14 +58,14 @@ public class AlbumListFragment extends Fragment
 	 */
 	class SongAdapter extends AbstractAdaptater
 	{
-		@Override public int getCount(){ return albums.size() }
+		@Override public int getCount(){ return getAlbums().size() }
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			layout = inflate(activity, R.layout.album_item, parent)
+			layout = inflate(getActivity(), R.layout.album_item, parent)
 
-			Album currAlbum = albums[position]
+			Album currAlbum = getAlbums()[position]
 			getView(R.id.albumTitle, TextView.class).text = currAlbum.albumTitle
 			getView(R.id.albumArtist, TextView.class).text = currAlbum.albumArtist
 			getView(R.id.albumDate, TextView.class).text = currAlbum.date
