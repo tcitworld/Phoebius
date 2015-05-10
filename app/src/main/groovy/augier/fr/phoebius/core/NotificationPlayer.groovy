@@ -25,7 +25,6 @@ public class NotificationPlayer
 	private static NotificationPlayer INSTANCE
 
 	private Notification notification
-	private Context context = PhoebiusApplication.context
 	private RemoteViews remoteViews
 
 	private NotificationPlayer()
@@ -75,4 +74,6 @@ public class NotificationPlayer
 		if(!INSTANCE) INSTANCE = new NotificationPlayer()
 		return INSTANCE
 	}
+
+	private Context getContext(){ return PhoebiusApplication.context }
 }

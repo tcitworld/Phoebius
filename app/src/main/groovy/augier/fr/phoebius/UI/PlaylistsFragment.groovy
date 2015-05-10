@@ -2,6 +2,7 @@ package augier.fr.phoebius.UI
 
 
 import android.content.Intent
+import android.util.Log
 import android.widget.TextView
 import augier.fr.phoebius.PlaylistDetailActivity
 import augier.fr.phoebius.R
@@ -11,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
-import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
@@ -35,8 +35,9 @@ public class PlaylistsFragment extends Fragment
 	@OnItemClick(R.id.songView)
 	public void onItemClick(int position)
 	{
+		String playlistName = allPlaylists[position]
 		Intent intent = new Intent(activity, PlaylistDetailActivity.class)
-		intent.putExtra("songs", songList.songList)
+		intent.putExtra("songs", songList.getPlaylist(playlistName))
 		startActivity(intent)
 	}
 
