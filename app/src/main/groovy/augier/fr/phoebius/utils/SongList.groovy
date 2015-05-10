@@ -5,6 +5,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import augier.fr.phoebius.PhoebiusApplication
+import augier.fr.phoebius.core.ConfigManager
+import groovy.json.JsonBuilder
 
 
 /**
@@ -31,6 +33,7 @@ class SongList extends MusicQueryBuilder
 		musicCursor = queryCursor
 		createAlbumList()
 		createSongList()
+		createPlaylists()
 		currentSongId = songList[0]?.ID ?: -1
 		loop = false
 	}
@@ -97,23 +100,38 @@ class SongList extends MusicQueryBuilder
 		thisAlbumList.sort()
 	}
 
-	public boolean createPlaylist(String name)
+	public boolean newPlaylist(String name)
 	{
 		if(playlists.containsKey(name)){ return false }
-		playlists[name] = new ArrayList<>()
+		playlists[name] = []
 		return true
 	}
 
 	public void addToPlaylist(String name, Song song){ playlists[name].add(song) }
-	private String playlistsAsJson()
+
+	private void createPlaylists()
 	{
-		String result = "{"
-		playlists.each{
-			result += "${it.key}:["
-			it.value.each{ result += "{${it.toJson()}}, "}
-			result += "]"
+		def res = configManager[ConfigManager.WKK_PLAYLIST] as Map
+		res.each{
+			def name = it.key as String
+			def songs = it.value as List
+			playlists[name] = []
+			songs.each{
+				def song = it as Map<String, String>
+				playlists[name].add(Song.fromMap(song)) }
 		}
-		return result + "}"
+		Log.e(this.class.toString(), "${playlists}")
+	}
+
+	public void finalize()
+	{
+		def bckpPl = [:]
+		playlists.each{
+			def plName = []
+			it.value.each{ plName.add(it.toMap()) }
+			bckpPl[it.key] = plName
+		}
+		configManager.addValue(ConfigManager.WKK_PLAYLIST, bckpPl)
 	}
 
 	/** Overriding of [] operator */
@@ -234,6 +252,7 @@ class SongList extends MusicQueryBuilder
 	//region GET/SET
 	/** @return The context of the application */
 	private Context getContext(){ return PhoebiusApplication.context }
+	private ConfigManager getConfigManager(){ return PhoebiusApplication.configManager }
 	/** @return The length of the current playing playlist */
 	public int getLenght(){ return currSongList.size() }
 	/** @return Whether the playback is looped on the list or not */

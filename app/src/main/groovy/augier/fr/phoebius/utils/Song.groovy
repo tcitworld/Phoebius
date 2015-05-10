@@ -5,7 +5,6 @@ import android.content.ContentUris
 import android.net.Uri
 import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
-import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 
 
@@ -22,6 +21,8 @@ class Song implements Comparable
 	private Integer trackNumber
 	private Integer year
 	private Uri URI
+	private static final Song defaultSong = new Song(
+			new Long(-1), "Song title", "Song artist", "Song album", 0, 0)
 
 	/**
 	 * Builds a new song
@@ -61,35 +62,36 @@ class Song implements Comparable
 
 	@Override
 	public String toString(){
-		return new JsonBuilder(toJson()).toPrettyString()
+		return new JsonBuilder(toMap()).toPrettyString()
 	}
 
-	public String toJson()
+	public Map toMap()
 	{
-		return """{
-	        "ID": ${ID},
-			"title": ${title},
-			"artist": ${artist},
-			"album": ${album},
-			"trackNumber": ${trackNumber},
-			"year": ${year}
-		}"""
+		return [
+			ID: ID,
+			title: title,
+			artist: artist,
+			album: album,
+			trackNumber: trackNumber,
+			year: year
+		]
 	}
 
-	public static Song fromJson(String json)
+	public static Song fromMap(Map values)
 	{
-		def result = new JsonSlurper().parseText(json)
-		String ID = result["ID"]
-		String title = result["title"]
-		String artist = result["artist"]
-		String album = result["album"]
-		String trackNumber = result["trackNumber"]
-		String year = result["year"]
+		String ID = values["ID"]
+		String title = values["title"]
+		String artist = values["artist"]
+		String album = values["album"]
+		String trackNumber = values["trackNumber"]
+		String year = values["year"]
 
 		return new Song(
 				new Long(ID), title, artist,
 				album, new Integer(trackNumber), new Integer(year))
 	}
+
+	public static Song getDefaultSong(){ return defaultSong }
 
 	/**
 	 * Compares for sorting

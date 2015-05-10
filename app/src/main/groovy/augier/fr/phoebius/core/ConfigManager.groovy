@@ -2,6 +2,7 @@ package augier.fr.phoebius.core
 
 
 import android.os.Environment
+import android.util.Log
 import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.PhoebiusApplication
 import groovy.json.JsonBuilder
@@ -17,18 +18,40 @@ import groovy.transform.CompileStatic
  * automatically loaded from the file.
  */
 @CompileStatic
-abstract class ConfigManager
+class ConfigManager
 {
+	// Well known keys
+	public static final String WKK_PLAYLIST = "playlists"
 	/**
 	 * Shorthand for the separator character in paths
 	 */
-	private static File configFile
-	private static def configs = [:]
+	private Map configs = [:]
 
-	static {
-		configFile = new File(getConfDir(), "configs.json")
+	ConfigManager()
+	{
 		if(!configFile.exists()) configFile.createNewFile()
-		configs = new JsonSlurper().parse(configFile) as LinkedHashMap
+		else
+		{
+			try{ configs  = new JsonSlurper().parse(configFile) as Map }
+			catch(Exception e)
+			{
+				Log.d(this.class.toString(), "Enable to parse file: ${e}")
+				flushFile()
+			}
+
+		}
+	}
+
+	public void addValue(String k, String v){ configs[k] = v }
+	public void addValue(String k, Map v){ configs[k] = v }
+	public void addValue(String k, List v){ configs[k] = v }
+
+	public Object getAt(String k){ return configs[k] }
+
+	private flushFile(){ configFile.write("{}") }
+	public void dump(){ configFile.write(
+			new JsonBuilder(configs)
+					.toString())
 	}
 
 	/**
@@ -51,9 +74,5 @@ abstract class ConfigManager
 		return homeAppDir
 	}
 
-	public static void addKey(String k, String v)
-		{ configs[k] = new JsonSlurper().parseText(v).toString() }
-	public static void dump(){ configFile.write(new JsonBuilder(configs).toString()) }
-	public static String getJson(){ return new JsonBuilder(configs).toPrettyString() }
-	public static getKey(String k){ return configs[k] }
+	private static File getConfigFile(){ return new File(getConfDir(), "configs.json") }
 }

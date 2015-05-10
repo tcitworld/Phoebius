@@ -45,7 +45,8 @@ public class MainActivity extends FragmentActivity
 		switch(item.itemId)
 		{
 			case R.id.action_end:
-				System.exit(0)
+				application.onTerminate()
+				this.finish()
 				break
 			default:
 				break
