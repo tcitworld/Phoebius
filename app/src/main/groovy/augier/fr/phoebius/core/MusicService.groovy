@@ -10,6 +10,8 @@ import android.media.MediaPlayer.OnCompletionListener
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
+import android.util.Log
+import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
@@ -22,6 +24,20 @@ import groovy.transform.CompileStatic
 class MusicService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener
 {
+   	public static final enum ACTIONS
+	{
+		ACTION_PLAY_PAUSE("action_play_pause"),
+		ACTION_BACKWARD("action_rewind"),
+		ACTION_FORWARD("action_fast_foward"),
+		ACTION_NEXT("action_next"),
+		ACTION_PREVIOUS("action_previous")
+
+		private String value
+		private ACTIONS(String val){ value = val }
+		public String getVAL(){ return value.toUpperCase() }
+	}
+
+
 	/**
 	 * Our actual music player that will broadcast sound
 	 */
@@ -43,6 +59,40 @@ class MusicService extends Service implements OnPreparedListener,
 	private IdleStateHandler idle = new IdleStateHandler()
 
 	private NotificationPlayer notificationPlayer = NotificationPlayer.getInstance()
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        handleIntent( intent );
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void handleIntent(Intent intent)
+    {
+        if(intent == null || intent.getAction() == null) return
+        String action = intent.getAction();
+
+	    switch(action)
+	    {
+		    case ACTIONS.ACTION_PLAY_PAUSE.VAL:
+			    if(playing) pause()
+			    else start()
+			    break
+		    case ACTIONS.ACTION_PREVIOUS.VAL:
+			    playPrevious()
+			    break
+		    case ACTIONS.ACTION_NEXT.VAL:
+			    playNext()
+			    break
+		    case ACTIONS.ACTION_FORWARD.VAL:
+			    forward()
+			    break
+		    case ACTIONS.ACTION_BACKWARD.VAL:
+			    backward()
+			    break
+	    }
+    }
+
 
 	@Override
 	void onDestroy()
@@ -89,7 +139,11 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Pauses the player
 	 */
-	public void pause(){ mediaPlayer.pause() }
+	public void pause()
+	{
+		mediaPlayer.pause()
+		notificationPlayer.fireNotification()
+	}
 
 	/**
 	 * Seeks the song currently playing to a given position
@@ -117,7 +171,11 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Starts playing the music
 	 */
-	public void start(){ mediaPlayer.start() }
+	public void start()
+	{
+		mediaPlayer.start()
+		notificationPlayer.fireNotification()
+	}
 
 	/**
 	 * Moves the song playing (or song to be played if the player

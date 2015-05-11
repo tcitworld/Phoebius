@@ -37,6 +37,7 @@ public class PhoebiusApplication extends Application
 	{
 		SongList.instance.finalize()
 		configManager.dump()
+		unbindService(musicCo)
 		super.onTerminate()
 		System.exit(0)
 	}
