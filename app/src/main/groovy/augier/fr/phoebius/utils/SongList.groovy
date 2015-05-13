@@ -234,7 +234,7 @@ class SongList extends MusicQueryBuilder
 	private Song findById(Long id)
 	{
 		int idx = findIndexById(id)
-		return idx > 0 && idx < currSongList.size() ? currSongList[idx] : null
+		return idx >= 0 && idx < currSongList.size() ? currSongList[idx] : null
 	}
 
 	/** @return Index of the next Song or -1 if no next song */

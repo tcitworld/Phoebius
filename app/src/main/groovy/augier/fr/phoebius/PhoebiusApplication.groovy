@@ -3,7 +3,6 @@ package augier.fr.phoebius
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.content.res.Resources
 import augier.fr.phoebius.core.ConfigManager
 import augier.fr.phoebius.core.MusicService
@@ -27,10 +26,8 @@ public class PhoebiusApplication extends Application
 		super.onCreate()
 		context = applicationContext
 		resources = getResources()
-		musicCo = new MusicServiceConnection()
-		musicCo.callback = { musicService = musicCo.musicService }
-		def intent = new Intent(this, MusicService.class)
-		bindService(intent, musicCo, BIND_AUTO_CREATE)
+		def callback = { musicService = musicCo.musicService }
+		musicCo = new MusicServiceConnection(this, callback)
 	}
 
 	@Override
@@ -44,6 +41,6 @@ public class PhoebiusApplication extends Application
 
 	public static Context getContext(){ return context }
 	public static MusicService getMusicService(){ return musicService }
-	public static Resources getResources(){ return resources }
+	public static Resources getResources(){ return context.resources }
 	public static ConfigManager getConfigManager(){ return configManager }
 }

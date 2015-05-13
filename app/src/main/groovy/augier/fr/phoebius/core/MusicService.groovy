@@ -41,7 +41,7 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Variable to ensure the player is in a validate state
 	 */
-	private boolean mediaPlayerPrepared = false
+	private IdleStateHandler idle = new IdleStateHandler()
 
 	private NotificationPlayer notificationPlayer = NotificationPlayer.getInstance()
 
@@ -70,7 +70,6 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void play(Song song)
 	{
-		mediaPlayerPrepared = false
 		mediaPlayer.reset()
 		try
 		{
@@ -80,7 +79,8 @@ class MusicService extends Service implements OnPreparedListener,
 		{
 			Log.e(this.class.toString(), "Error setting data source: ${e}")
 		}
-		mediaPlayer.prepareAsync()
+		mediaPlayer.prepare()
+		mediaPlayer.start()
 		songList.currentSong = song
 		notificationPlayer.notify(songList.getCoverFor(song.album), song.title, song.album)
 	}
@@ -106,7 +106,10 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Starts playing the music
 	 */
-	public void start(){ mediaPlayer.start() }
+	public void start()
+	{
+		mediaPlayer.start()
+	}
 
 	/**
 	 * Moves the song playing (or song to be played if the player
@@ -127,7 +130,8 @@ class MusicService extends Service implements OnPreparedListener,
 	IBinder onBind(Intent intent){ return musicBinder }
 
 	@Override
-	public boolean onUnbind(Intent intent){
+	public boolean onUnbind(Intent intent)
+	{
 		mediaPlayer.stop()
 		mediaPlayer.release()
 		return false
@@ -139,19 +143,11 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	@Override void onCompletion(MediaPlayer mediaPlayer){ playNext() }
 
-	/**
-	 * Does nothing
-	 */
+	/** Does nothing  */
 	@Override boolean onError(MediaPlayer mediaPlayer, int i, int i2){ return false }
 
-	/**
-	 * Starts the playback directly and validates the playing mode
-	 */
-	@Override void onPrepared(MediaPlayer mediaPlayer)
-	{
-		start()
-		mediaPlayerPrepared = true
-	}
+	/** Does nothing */
+	@Override void onPrepared(MediaPlayer mediaPlayer){}
 	//endregion
 
 	/**
@@ -168,6 +164,13 @@ class MusicService extends Service implements OnPreparedListener,
 		mediaPlayer.onPreparedListener = this
 		mediaPlayer.onCompletionListener = this
 		mediaPlayer.onErrorListener = this
+		def uri = songList.currentSong?.URI
+		if(uri != null)
+		{
+			mediaPlayer.setDataSource(applicationContext, uri)
+			mediaPlayer.prepare()
+			idle.validate()
+		}
 	}
 
 	//region GET/SET
@@ -175,29 +178,36 @@ class MusicService extends Service implements OnPreparedListener,
 	 * Returns the total duration of the song
 	 * @return Total duration in milliseconds
 	 */
-	int getDuration(){ return mediaPlayerPrepared ? mediaPlayer.duration : 0 }
+	int getDuration(){ return ready ? mediaPlayer.duration : 0 }
 
 	/**
 	 * Inidicates whether our player is actually playing
 	 * @return Playing or not
 	 */
-	boolean isPlaying(){ return mediaPlayer.playing }
+	boolean isPlaying(){ return ready ? mediaPlayer.playing : false }
 
 	/**
 	 * Indicates if the media player is ready to play
 	 * @return Reafy or not
 	 */
-	boolean isReady(){ return mediaPlayerPrepared }
+	boolean isReady(){ return idle.ready }
 
 	/**
 	 * Returns the elapsed time the song has been playing
 	 * @return Position in the playback in milliseconds
 	 */
-	int getPosition(){ return mediaPlayerPrepared ? mediaPlayer.currentPosition : 0 }
+	int getPosition(){ return ready ? mediaPlayer.currentPosition : 0 }
 	//endregion
 
 	/**
 	 * Our Binder
 	 */
 	public class MusicBinder extends Binder{ MusicService getService(){ return MusicService.this } }
+
+	private class IdleStateHandler
+	{
+		private boolean ready = false
+		public boolean isReady(){ return ready }
+		public void validate(){ ready = true }
+	}
 }

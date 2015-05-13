@@ -213,11 +213,8 @@ public class PlayerControlFragment extends Fragment
 
 		@Override void onStopTrackingTouch(SeekBar seekBar)
 		{
-			if(getMusicService().ready)
-			{
-				seekTo(songProgression)
-				userTrackingSongBar = false
-			}
+			seekTo(songProgression)
+			userTrackingSongBar = false
 		}
 
 		/** @return Whether the user is currently seeking */
