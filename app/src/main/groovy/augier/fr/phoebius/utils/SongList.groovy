@@ -36,7 +36,7 @@ class SongList extends MusicQueryBuilder
 		createAlbumList()
 		createSongList()
 		createPlaylists()
-		currentSongId = songList[0]?.ID ?: -1
+		currentSongId = getFirstId()
 		loop = false
 	}
 
@@ -138,6 +138,18 @@ class SongList extends MusicQueryBuilder
 	/** Overriding of [] operator */
 	public Song getAt(int idx){ return currSongList[idx] }
 
+	public SongList next()
+	{
+		currentSongId = nextSong?.ID ?: firstId
+		return this
+	}
+
+	public SongList previous()
+	{
+		currentSongId = previousSong?.ID ?: firstId
+		return this
+	}
+
 	/**
 	 * Retrives the next song to be played
 	 *
@@ -162,57 +174,6 @@ class SongList extends MusicQueryBuilder
 		int idx = previousSongIdx
 		if(idx < 0) return null
 		else return  currSongList[idx]
-	}
-
-	/**
-	 * Change the current song to the next one and play it
-	 *
-	 * If the playback isn't looped and there is no next song, then stops.
-	 *
-	 * @return this
-	 *
-	 * @see {@link #setPlayCallback} and {@link #setStopCallback}
-	 */
-	public SongList moveToNextSong()
-	{
-		Song next = getNextSong()
-		if(next == null)
-		{
-			currentSongId = currSongList[0].ID
-			stopCallback()
-		}
-		else
-		{
-			currentSongId = next.ID
-			playCallback(next)
-		}
-		return this
-	}
-
-	/**
-	 * Change the current song to the previous one and play it
-	 *
-	 * If the playback isn't loopeda nd there is no prevous song, then stops.
-	 *
-	 * @return this
-	 *
-	 * @see {@link #setPlayCallback} and {@link #setStopCallback}
-	 */
-	public SongList moveToPreviousSong()
-	{
-		Song prev = getPreviousSong()
-		if(prev == null)
-		{
-			currentSongId = currSongList[0].ID
-			stopCallback()
-		}
-		else
-		{
-			currentSongId = prev.ID
-			playCallback(prev)
-		}
-
-		return this
 	}
 
 	/**
@@ -241,7 +202,7 @@ class SongList extends MusicQueryBuilder
 	private int getNextSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
-		if(currentSongIdx == this.lenght - 1){ return -1 }
+		if(currentSongIdx == this.lenght - 1 && !loop){ return -1 }
 		else{ return (currentSongIdx + 1) % this.lenght }
 	}
 
@@ -249,7 +210,7 @@ class SongList extends MusicQueryBuilder
 	private int getPreviousSongIdx()
 	{
 		int currentSongIdx = findIndexById(currentSongId)
-		if(currentSongIdx == 0){ return -1 }
+		if(currentSongIdx == 0 && !loop){ return -1 }
 		else{ return (currentSongIdx + this.lenght - 1) % this.lenght }
 	}
 
@@ -257,6 +218,7 @@ class SongList extends MusicQueryBuilder
 	/** @return The context of the application */
 	private Context getContext(){ return PhoebiusApplication.context }
 	private ConfigManager getConfigManager(){ return PhoebiusApplication.configManager }
+	private Long getFirstId(){ return songList[0]?.ID ?: -1 }
 	/** @return The length of the current playing playlist */
 	public int getLenght(){ return currSongList.size() }
 	/** @return Whether the playback is looped on the list or not */
@@ -268,11 +230,7 @@ class SongList extends MusicQueryBuilder
 	/** @return The current playing song */
 	public Song getCurrentSong(){ return findById(currentSongId) }
 	/** Sets the current playing song */
-	public void setCurrentSong(Song song){ this.currentSongId = song.ID }
-	/** Sets the callback to execute when the playback has to stop (e.g. playlist is finished) */
-	public void setStopCallback(Closure stopCallback){ this.stopCallback = stopCallback }
-	/** Sets the callback to execute when the playback has to start */
-	public void setPlayCallback(Closure playCallback){ this.playCallback = playCallback }
+	public void setCurrentSong(Song song){ this.currentSongId = song?.ID ?: getFirstId() }
 	/** @return The album list*/
 	public ArrayList<Album> getAlbumList(){ return thisAlbumList }
 	/** @return The complete song list */
