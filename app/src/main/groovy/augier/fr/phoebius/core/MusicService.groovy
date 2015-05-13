@@ -26,7 +26,12 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Our actual music player that will broadcast sound
 	 */
-	private MediaPlayer mediaPlayer
+	private MediaPlayer mediaPlayer = new MediaPlayer()
+
+	/**
+	 * The next music player for gapless playing
+	 */
+	private MediaPlayer nextMediaPlayer = new MediaPlayer()
 
 	/**
 	 * Our manager for the songs
@@ -57,10 +62,9 @@ class MusicService extends Service implements OnPreparedListener,
 	{
 		super.onCreate()
 		songList = SongList.getInstance()
-		songList.stopCallback = this.&stop
-		songList.playCallback = this.&play
-		mediaPlayer = new MediaPlayer()
-		mediaPlayerInit()
+		mediaPlayerInit(mediaPlayer)
+		mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+		prepareNextPlayer()
 	}
 
 	//region Player logic
@@ -70,19 +74,15 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void play(Song song)
 	{
-		mediaPlayer.reset()
-		try
+		if(song == null) stop()
+		else
 		{
-			mediaPlayer.setDataSource(applicationContext, song.URI)
+			songList.currentSong = song
+			mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+			prepareNextPlayer()
+			start()
+			notificationPlayer.notify(songList.getCoverFor(song.album), song.title, song.album)
 		}
-		catch(Exception e)
-		{
-			Log.e(this.class.toString(), "Error setting data source: ${e}")
-		}
-		mediaPlayer.prepare()
-		mediaPlayer.start()
-		songList.currentSong = song
-		notificationPlayer.notify(songList.getCoverFor(song.album), song.title, song.album)
 	}
 
 	/**
@@ -106,22 +106,19 @@ class MusicService extends Service implements OnPreparedListener,
 	/**
 	 * Starts playing the music
 	 */
-	public void start()
-	{
-		mediaPlayer.start()
-	}
+	public void start(){ mediaPlayer.start() }
 
 	/**
 	 * Moves the song playing (or song to be played if the player
-	 * is paused) to the previous song. see {@link SongList#moveToPreviousSong()}
+	 * is paused) to the previous song.
 	 */
-	public void playPrevious(){ songList.moveToPreviousSong() }
+	public void playPrevious(){ play(songList.previousSong) }
 
 	/**
 	 * Moves the song playing (or song to be played if the player
-	 * is paused) to the next song. see {@link SongList#moveToNextSong()}
+	 * is paused) to the next song.
 	 */
-	public void playNext(){ songList.moveToNextSong() }
+	public void playNext(){ play(songList.nextSong) }
 	//endregion
 
 
@@ -141,7 +138,13 @@ class MusicService extends Service implements OnPreparedListener,
 	 * Will play the next song as soon as the current on is finished
 	 * @param mediaPlayer
 	 */
-	@Override void onCompletion(MediaPlayer mediaPlayer){ playNext() }
+	@Override void onCompletion(MediaPlayer me)
+	{
+		songList++
+		mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+		prepareNextPlayer()
+		start()
+	}
 
 	/** Does nothing  */
 	@Override boolean onError(MediaPlayer mediaPlayer, int i, int i2){ return false }
@@ -157,19 +160,33 @@ class MusicService extends Service implements OnPreparedListener,
 	 *
 	 * @see {@link MusicService#mediaPlayer}
 	 */
-	private void mediaPlayerInit()
+	private void mediaPlayerInit(MediaPlayer m)
 	{
-		mediaPlayer.audioStreamType = AudioManager.STREAM_MUSIC
-		mediaPlayer.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
-		mediaPlayer.onPreparedListener = this
-		mediaPlayer.onCompletionListener = this
-		mediaPlayer.onErrorListener = this
-		def uri = songList.currentSong?.URI
-		if(uri != null)
+		m.audioStreamType = AudioManager.STREAM_MUSIC
+		m.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
+		m.onPreparedListener = this
+		m.onCompletionListener = this
+		m.onErrorListener = this
+	}
+
+	private void mediaPlayerPrepare(MediaPlayer m , Song song)
+	{
+		m.reset()
+		if(song.URI != null)
 		{
-			mediaPlayer.setDataSource(applicationContext, uri)
-			mediaPlayer.prepare()
+			m.setDataSource(applicationContext, song.URI)
+			m.prepare()
 			idle.validate()
+		}
+	}
+
+	private void prepareNextPlayer()
+	{
+		Song next = songList.nextSong
+		if(next != null)
+		{
+			mediaPlayerPrepare(nextMediaPlayer, next)
+			mediaPlayer.nextMediaPlayer = nextMediaPlayer
 		}
 	}
 
