@@ -10,11 +10,13 @@
 			  android:baselineAligned="false"
 			  tools:context=".MainActivity">
 
-	<FrameLayout
+	<fragment
 		android:id="@+id/playlistDetailFrame"
 		android:layout_width="fill_parent"
 		android:layout_height="0dp"
 		android:foregroundGravity="top"
-		android:layout_weight="100">
-	</FrameLayout>
+		android:layout_weight="100"
+		android:name="augier.fr.phoebius.UI.PlaylistDetailFragment"
+		tools:layout="@layout/fragment_song_list">
+	</fragment>
 </LinearLayout>

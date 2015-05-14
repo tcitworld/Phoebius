@@ -34,7 +34,7 @@ import groovy.transform.CompileStatic
 public class PlayerControlFragment extends Fragment
 {
 	/** Frequency of refresh, in milliseconds */
-	private static final int REFRESH_TIME = 500
+	private static final int REFRESH_TIME = 1000
 	@InjectView private TextView currentDurationLabel
 	@InjectView private TextView totalDurationLabel
 	@InjectView private SeekBar songProgressBar
@@ -89,7 +89,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnBackward)
-	public void onBtnBackwardClick(){ if(playing) seekTo(Math.max(currentPosition - 10000, 0)) }
+	public void onBtnBackwardClick(){ if(playing) musicService.backward() }
 
 	/**
 	 * Callback for forward button
@@ -97,8 +97,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnForward)
-	public void onBtnForwardClick()
-		{ if(playing) seekTo(Math.min(currentPosition + 10000, duration)) }
+	public void onBtnForwardClick(){ if(playing) musicService.forward() }
 
 	/**
 	 * Callback for previous button

@@ -9,24 +9,19 @@
 	sothree:umanoPanelHeight="60dp"
 	sothree:umanoShadowHeight="0dp">
 
-	<FrameLayout
+	<fragment
 		android:id="@+id/mainFrame"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:foregroundGravity="top"
-		android:layout_weight="100"/>
+		android:layout_weight="100"
+		android:name="augier.fr.phoebius.UI.MainPageFragment"
+		tools:layout="@layout/fragment_main_page"/>
 
-	<FrameLayout
+	<fragment
 		android:id="@+id/mediaController"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:gravity="center|top"
-		android:background="@android:color/darker_gray"
-		android:layout_weight="1">
-		<fragment
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:name="augier.fr.phoebius.UI.PlayingFragment"
-			tools:layout="@layout/fragment_main_playing"/>
-	</FrameLayout>
+		android:name="augier.fr.phoebius.UI.PlayingFragment"
+		tools:layout="@layout/fragment_main_playing"/>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

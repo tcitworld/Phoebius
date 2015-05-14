@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.support.v4.app.NavUtils
 import augier.fr.phoebius.UI.PlaylistDetailFragment
 import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -19,27 +20,12 @@ public class PlaylistDetailActivity extends FragmentActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_playlist_detail)
 		Intent intent = getIntent()
 		songs = intent.getParcelableArrayListExtra("songs")
-		def playlistDetail = new PlaylistDetailFragment(songs)
-		supportFragmentManager.beginTransaction()
-		                      .add(R.id.playlistDetailFrame, playlistDetail)
-		                      .commit()
+		setContentView(R.layout.activity_playlist_detail)
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		int id = item.itemId
-		if(id == android.R.id.home)
-		{
-			NavUtils.navigateUpFromSameTask(this)
-			return true
-		}
-		return super.onOptionsItemSelected(item)
-	}
+	@Override void onBackPressed(){ NavUtils.navigateUpFromSameTask(this) }
 
-	@Override
-	void onBackPressed(){ this.finish() }
+	public ArrayList<Song> getSongs(){ return songs }
 }

@@ -10,6 +10,8 @@ import android.widget.RemoteViews
 import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
+import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
 
 
@@ -49,11 +51,12 @@ public class NotificationPlayer
 	 *
 	 * @see #cancel()
 	 */
-	public void notify(Bitmap picture, String songTitle, String songArtiste)
+	public void fireNotification()
 	{
-		remoteViews.setImageViewBitmap(R.id.notifAlbumCover, picture)
-		remoteViews.setTextViewText(R.id.notifSongTitleLabel, songTitle)
-		remoteViews.setTextViewText(R.id.notifSongArtistLabel, songArtiste)
+		Song song = songList.currentSong
+		remoteViews.setImageViewBitmap(R.id.notifAlbumCover, song.cover)
+		remoteViews.setTextViewText(R.id.notifSongTitleLabel, song.title)
+		remoteViews.setTextViewText(R.id.notifSongArtistLabel, song.artist)
 
 		notification.contentView = remoteViews
 		notification.bigContentView = remoteViews
@@ -63,7 +66,7 @@ public class NotificationPlayer
 
     /**
      * Cancels any notifications of this type previously shown using
-     * {@link #notify(Bitmap, String, String)}.
+     * {@link #notify()}.
      */
     public void cancel()
     {
@@ -78,4 +81,5 @@ public class NotificationPlayer
 	}
 
 	private Context getContext(){ return PhoebiusApplication.context }
+	private SongList getSongList(){ return  SongList.instance }
 }

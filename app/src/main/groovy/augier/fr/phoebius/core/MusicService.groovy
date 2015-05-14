@@ -10,7 +10,6 @@ import android.media.MediaPlayer.OnCompletionListener
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
-import android.util.Log
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
@@ -32,11 +31,6 @@ class MusicService extends Service implements OnPreparedListener,
 	 * The next music player for gapless playing
 	 */
 	private MediaPlayer nextMediaPlayer = new MediaPlayer()
-
-	/**
-	 * Our manager for the songs
-	 */
-	private SongList songList
 
 	/**
 	 * Our binder (thanks, Captain Obvious !)
@@ -61,9 +55,7 @@ class MusicService extends Service implements OnPreparedListener,
 	void onCreate()
 	{
 		super.onCreate()
-		songList = SongList.getInstance()
-		mediaPlayerInit(mediaPlayer)
-		mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+		mediaPlayerInit(mediaPlayer, songList.currentSong)
 		prepareNextPlayer()
 	}
 
@@ -78,17 +70,21 @@ class MusicService extends Service implements OnPreparedListener,
 		else
 		{
 			songList.currentSong = song
-			mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+			mediaPlayerInit(mediaPlayer, songList.currentSong)
 			prepareNextPlayer()
 			start()
-			notificationPlayer.notify(songList.getCoverFor(song.album), song.title, song.album)
+			notificationPlayer.fireNotification()
 		}
 	}
 
 	/**
 	 * Stops the player
 	 */
-	public void stop(){ mediaPlayer.stop() }
+	public void stop()
+	{
+		mediaPlayer.stop()
+		notificationPlayer.cancel()
+	}
 
 	/**
 	 * Pauses the player
@@ -101,7 +97,22 @@ class MusicService extends Service implements OnPreparedListener,
 	 * If nithing is playing, does nothing
 	 * @param position position to seek to given in milliseconds
 	 */
-	public void seek(int position){ mediaPlayer.seekTo(position) }
+	public void seek(int position)
+	{
+		if(position > duration) mediaPlayer.seekTo(position - 2000)
+		else if (position < 0) mediaPlayer.seekTo(0)
+		else mediaPlayer.seekTo(position)
+	}
+
+	/**
+	 * Goes forward 10 seconds
+	 */
+	public void forward(){ seek(position + 10000) }
+
+	/**
+	 * Goes backward 10 seconds
+	 */
+	public void backward(){ seek(position - 10000) }
 
 	/**
 	 * Starts playing the music
@@ -129,8 +140,8 @@ class MusicService extends Service implements OnPreparedListener,
 	@Override
 	public boolean onUnbind(Intent intent)
 	{
-		mediaPlayer.stop()
-		mediaPlayer.release()
+		releasePlayers()
+		notificationPlayer.cancel()
 		return false
 	}
 
@@ -140,10 +151,10 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	@Override void onCompletion(MediaPlayer me)
 	{
-		songList++
-		mediaPlayerPrepare(mediaPlayer, songList.currentSong)
+		songList.next()
+		mediaPlayer = nextMediaPlayer
+		nextMediaPlayer = new MediaPlayer()
 		prepareNextPlayer()
-		start()
 	}
 
 	/** Does nothing  */
@@ -160,19 +171,16 @@ class MusicService extends Service implements OnPreparedListener,
 	 *
 	 * @see {@link MusicService#mediaPlayer}
 	 */
-	private void mediaPlayerInit(MediaPlayer m)
+	private void mediaPlayerInit(MediaPlayer m, Song song)
 	{
 		m.audioStreamType = AudioManager.STREAM_MUSIC
 		m.setWakeMode(applicationContext, PowerManager.PARTIAL_WAKE_LOCK)
 		m.onPreparedListener = this
 		m.onCompletionListener = this
 		m.onErrorListener = this
-	}
 
-	private void mediaPlayerPrepare(MediaPlayer m , Song song)
-	{
 		m.reset()
-		if(song.URI != null)
+		if(song?.URI != null)
 		{
 			m.setDataSource(applicationContext, song.URI)
 			m.prepare()
@@ -183,11 +191,20 @@ class MusicService extends Service implements OnPreparedListener,
 	private void prepareNextPlayer()
 	{
 		Song next = songList.nextSong
-		if(next != null)
-		{
-			mediaPlayerPrepare(nextMediaPlayer, next)
-			mediaPlayer.nextMediaPlayer = nextMediaPlayer
-		}
+		if(next != null) mediaPlayerInit(nextMediaPlayer, next)
+		else nextMediaPlayer = null
+		mediaPlayer.nextMediaPlayer = nextMediaPlayer
+	}
+
+	private void releasePlayers()
+	{
+		mediaPlayer.stop()
+		mediaPlayer.release()
+		mediaPlayer = null
+
+		nextMediaPlayer.stop()
+		nextMediaPlayer.release()
+		nextMediaPlayer = null
 	}
 
 	//region GET/SET
@@ -214,6 +231,8 @@ class MusicService extends Service implements OnPreparedListener,
 	 * @return Position in the playback in milliseconds
 	 */
 	int getPosition(){ return ready ? mediaPlayer.currentPosition : 0 }
+
+	private SongList getSongList(){ return SongList.instance }
 	//endregion
 
 	/**

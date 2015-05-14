@@ -1,7 +1,9 @@
 package augier.fr.phoebius.UI
 
 
+import android.app.Activity
 import android.util.Log
+import augier.fr.phoebius.PlaylistDetailActivity
 import augier.fr.phoebius.utils.Song
 import groovy.transform.CompileStatic
 
@@ -10,10 +12,15 @@ public class PlaylistDetailFragment extends SongListFragment
 {
 	ArrayList<Song> songs
 
-	PlaylistDetailFragment(ArrayList<Song> songs){ this.songs = songs }
+	@Override
+	void onAttach(Activity activity)
+	{
+		super.onAttach(activity)
+		songs = ((PlaylistDetailActivity)activity).songs
+	}
 
 	@Override
-	protected ArrayList<Song> getSongs(){ return songs}
+	protected ArrayList<Song> getSongs(){ return songs }
 
 	@Override
 	void onItemClick(int position){

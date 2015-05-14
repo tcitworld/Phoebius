@@ -3,9 +3,11 @@ package augier.fr.phoebius.UI
 
 import android.app.ActionBar.Tab
 import android.app.ActionBar.TabListener
+import android.app.Activity
 import android.app.FragmentTransaction
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
@@ -15,7 +17,6 @@ import android.view.ViewGroup
 import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
-import augier.fr.phoebius.core.MusicService
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import groovy.transform.CompileStatic
@@ -31,17 +32,21 @@ import groovy.transform.CompileStatic
 public class MainPageFragment extends Fragment implements TabListener
 {
 	@InjectView ViewPager mainPager
-	private PagerAdaptater fragmentAdapter
+	private PagerAdaptater pagerAdaptater
 
 	/**
 	 * Constructor
 	 * @param fm Fragment manager from main activity (just use {@link MainActivity#getSupportFragmentManager}
 	 * @param ms Music service from the main activity (just use {@link PhoebiusApplication#getMusicService}
 	 */
-	public MainPageFragment(FragmentManager fm)
+	public MainPageFragment(){ super() }
+
+	@Override
+	void onAttach(Activity activity)
 	{
-		super()
-		fragmentAdapter = new PagerAdaptater(fm)
+		super.onAttach(activity)
+		def a = activity as FragmentActivity
+		pagerAdaptater = new PagerAdaptater(a.supportFragmentManager)
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class MainPageFragment extends Fragment implements TabListener
 		View view = inflater.inflate(R.layout.fragment_main_page, container, false)
 		SwissKnife.inject(this, view)
 
-		mainPager.setAdapter(fragmentAdapter)
+		mainPager.setAdapter(pagerAdaptater)
 		return view
 	}
 
