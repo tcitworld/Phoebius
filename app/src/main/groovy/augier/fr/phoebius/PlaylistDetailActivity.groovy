@@ -39,4 +39,7 @@ public class PlaylistDetailActivity extends FragmentActivity
 		}
 		return super.onOptionsItemSelected(item)
 	}
+
+	@Override
+	void onBackPressed(){ this.finish() }
 }

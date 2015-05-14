@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity
 import android.view.Menu
 import android.view.MenuItem
 import augier.fr.phoebius.UI.MainPageFragment
-import augier.fr.phoebius.UI.PlayerControlFragment
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -18,7 +17,6 @@ public class MainActivity extends FragmentActivity
 		// Class init
 		super.onCreate(savedInstanceState)
 		contentView = R.layout.activity_main
-
     }
 
 	@Override
@@ -27,9 +25,7 @@ public class MainActivity extends FragmentActivity
 		super.onStart()
 
 		def frag = new MainPageFragment(supportFragmentManager)
-		def contr = new PlayerControlFragment()
-		supportFragmentManager.beginTransaction().add(R.id.mainFrame, frag).commit()
-		supportFragmentManager.beginTransaction().add(R.id.mediaController, contr).commit()
+		getSupportFragmentManager().beginTransaction().add((int)R.id.mainFrame, frag).commit()
 	}
 
 	@Override
@@ -45,8 +41,6 @@ public class MainActivity extends FragmentActivity
 		switch(item.itemId)
 		{
 			case R.id.action_end:
-				application.onTerminate()
-				this.finish()
 				break
 			default:
 				break

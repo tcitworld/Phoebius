@@ -1,27 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-	android:background="@color/GlobalBG"
-    android:launchMode="singleTop"
-    android:screenOrientation="portrait"
-	android:padding="0dp"
-	android:orientation="vertical"
-	android:baselineAligned="false"
-	tools:context=".MainActivity">
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+	xmlns:sothree="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/sliding_layout"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="bottom"
+	sothree:umanoPanelHeight="60dp"
+	sothree:umanoShadowHeight="0dp">
 
-    <FrameLayout
-        android:id="@+id/mainFrame"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+	<FrameLayout
+		android:id="@+id/mainFrame"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
 		android:foregroundGravity="top"
-		android:layout_weight="100">
-    </FrameLayout>
+		android:layout_weight="100"/>
 
 	<FrameLayout
 		android:id="@+id/mediaController"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center|top"
+		android:background="@android:color/darker_gray"
 		android:layout_weight="1">
+		<fragment
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:name="augier.fr.phoebius.UI.PlayingFragment"
+			tools:layout="@layout/fragment_main_playing"/>
 	</FrameLayout>
-</LinearLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

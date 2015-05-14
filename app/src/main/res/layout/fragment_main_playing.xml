@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4a4a4a"
+	android:orientation="vertical">
+
+    <!-- Player Header -->
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+					xmlns:tools="http://schemas.android.com/tools"
+					android:layout_width="match_parent"
+					android:layout_height="@dimen/NavBarHeigth"
+					android:background="@drawable/bg_player_header"
+					android:padding="0dp"
+					tools:context="augier.fr.phoebius.UI.NavbarFragment">
+
+		<augier.fr.phoebius.UI.SquareImageView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:id="@+id/playbarMinCover"
+			android:src="@drawable/default_cover"
+			android:layout_marginRight="5dp"/>
+
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_centerVertical="true"
+			android:layout_toEndOf="@id/playbarMinCover">
+			<TextView
+				android:id="@+id/playbarMinSongTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#FFFFFF99"
+				android:text="Title"
+				android:textSize="18sp"
+				android:layout_gravity="center_vertical"
+				android:padding="2dp"/>
+			<TextView
+				android:id="@+id/playbarMinArtistName"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#FFFFFF99"
+				android:text="Artist"
+				android:textSize="16sp"
+				android:layout_gravity="center_vertical"
+				android:padding="2dp"/>
+		</LinearLayout>
+	</RelativeLayout>
+
+    <!-- Song Thumbnail Image -->
+    <RelativeLayout
+        android:id="@+id/songThumbnail"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+		android:layout_weight="10"
+		android:layout_gravity="top"
+		android:orientation="vertical">
+        <augier.fr.phoebius.UI.SquareImageView
+			android:id="@+id/mainPlayingCoverView"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:src="@drawable/default_cover"
+			android:padding="20dp"/>
+	</RelativeLayout>
+
+	<fragment
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:name="augier.fr.phoebius.UI.PlayerControlFragment"
+		tools:layout="@layout/fragment_player_control"
+		android:id="@+id/playViewPlayerControl"
+		android:layout_gravity="bottom"/>
+
+</LinearLayout>

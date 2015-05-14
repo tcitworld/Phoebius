@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			 xmlns:tools="http://schemas.android.com/tools"
+			 android:layout_width="match_parent"
+			 android:layout_height="@dimen/NavBarHeigth"
+			 android:background="@drawable/bg_player_header"
+			 tools:context="augier.fr.phoebius.UI.NavbarFragment">
+	<ImageButton
+		android:id="@+id/action_end"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:src="@drawable/end"
+		android:background="@null"
+		android:layout_margin="0dp"
+		android:padding="20dp"
+		tools:ignore="ContentDescription"
+		android:layout_alignParentEnd="true"/>
+</RelativeLayout>

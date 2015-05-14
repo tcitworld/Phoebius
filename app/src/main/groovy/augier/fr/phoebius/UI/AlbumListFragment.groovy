@@ -41,7 +41,7 @@ public class AlbumListFragment extends Fragment
 		View view = inflater.inflate(R.layout.fragment_song_list, container, false)
 		SwissKnife.inject(this, view)
 		SongAdapter songAdapter = new SongAdapter()
-		songView.setAdapter(songAdapter)
+		songView.adapter = songAdapter
 
 		return view
 	}

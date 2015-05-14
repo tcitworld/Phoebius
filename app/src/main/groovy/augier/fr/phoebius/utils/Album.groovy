@@ -79,6 +79,6 @@ public class Album implements Comparable
 	public static Bitmap getDefaultCover()
 	{
 		return BitmapFactory.decodeResource(
-			PhoebiusApplication.resources, R.drawable.default_cover)
+				PhoebiusApplication.resources, R.drawable.default_cover)
 	}
 }

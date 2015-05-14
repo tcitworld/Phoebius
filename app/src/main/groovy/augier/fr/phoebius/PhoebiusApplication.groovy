@@ -18,12 +18,14 @@ public class PhoebiusApplication extends Application
 	private static MusicService musicService
 	private static Resources resources
 	private static ConfigManager configManager = new ConfigManager()
+	private static Closure terminate
 	private MusicServiceConnection musicCo
 
 	@Override
 	public void onCreate()
 	{
 		super.onCreate()
+		terminate = this.&onTerminate
 		context = applicationContext
 		resources = getResources()
 		def callback = { musicService = musicCo.musicService }
@@ -43,4 +45,5 @@ public class PhoebiusApplication extends Application
 	public static MusicService getMusicService(){ return musicService }
 	public static Resources getResources(){ return context.resources }
 	public static ConfigManager getConfigManager(){ return configManager }
+	public static Closure getTerminate(){ return terminate }
 }
