@@ -2,11 +2,18 @@ package augier.fr.phoebius
 
 
 import android.app.Application
+import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Resources
+import android.media.AudioManager
 import augier.fr.phoebius.core.ConfigManager
+import augier.fr.phoebius.core.MediaButtonReceiver
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
+import augier.fr.phoebius.core.NotificationPlayer
 import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
 
@@ -37,7 +44,7 @@ public class PhoebiusApplication extends Application
 	{
 		SongList.instance.finalize()
 		configManager.dump()
-		unbindService(musicCo)
+		NotificationPlayer.instance.cancel()
 		super.onTerminate()
 		System.exit(0)
 	}
