@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="augier.fr.phoebius" >
 
+	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
@@ -20,16 +21,22 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".core.MusicService" />
+		<activity
+			android:name=".PlaylistDetailActivity"
+			android:label="@string/title_playlistsong_list"
+			android:parentActivityName=".MainActivity" >
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value="augier.fr.phoebius.MainActivity" />
+		</activity>
 
-        <activity
-            android:name=".PlaylistDetailActivity"
-            android:label="@string/title_playlistsong_list"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="augier.fr.phoebius.MainActivity" />
-        </activity>
+		<service android:name=".core.MusicService" />
+
+		<receiver android:name=".core.MediaButtonReceiver">
+			<intent-filter android:priority="100">
+				<action android:name="android.intent.action.MEDIA_BUTTON" />
+			</intent-filter>
+		</receiver>
     </application>
 
 </manifest>
