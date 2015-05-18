@@ -27,6 +27,4 @@ public class MainActivity extends FragmentActivity
 	}
 
 	@Override protected void onResume(){ super.onResume() }
-
-
 }
