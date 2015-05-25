@@ -17,6 +17,7 @@ import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
+import augier.fr.phoebius.utils.Refresher
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnBackground
@@ -34,34 +35,32 @@ import groovy.transform.CompileStatic
 public class PlayerControlFragment extends Fragment
 {
 	/** Frequency of refresh, in milliseconds */
-	private static final int REFRESH_TIME = 1000
 	@InjectView private TextView currentDurationLabel
 	@InjectView private TextView totalDurationLabel
 	@InjectView private SeekBar songProgressBar
 	@InjectView private ImageButton btnPlayPause
 	private SongBarListener songBarListener = new SongBarListener()
-	private Handler handler = new Handler()
-	private Runnable refresh = new Refresher()
+	private Refresher refresher = new Refresher(this.&onRefresh)
 
 	@Override
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_player_control, container, false)
 		SwissKnife.inject(this, view)
-		SwissKnife.runOnBackground(this, "doOnBackground")
+		refresher.start()
 		songProgressBar.setOnSeekBarChangeListener(songBarListener)
 		return view
 	}
 
-	/**
-	 * Launch the recurrent refresh of the controller the first time on a separate thread
-	 *
-	 * The refreshing will then go on by calling itself recursively.
-	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnBackground">SwissKnife's @OnBackground annotation </a>
-	 *
-	 * @see {@link Refresher}
-	 */
-	@OnBackground public void doOnBackground(){ handler.postDelayed(refresh, REFRESH_TIME) }
+	private void onRefresh()
+	{
+		currentDurationLabel.text = fromMilliSeconds(currentPosition as int)
+		totalDurationLabel.text = fromMilliSeconds(duration as int)
+		songProgressBar.max = (int)duration
+		songProgressBar.progress = (int)currentPosition
+		if(isPlaying()) btnPlayPause.imageResource = (int)R.drawable.btn_pause
+		else btnPlayPause.imageResource = (int)R.drawable.btn_play
+	}
 
 	/**
 	 * Callback for play button
@@ -220,32 +219,5 @@ public class PlayerControlFragment extends Fragment
 		public boolean getUserTrackingSongBar(){ return userTrackingSongBar }
 		/** @return The time the user is seeking */
 		public int getSongProgression(){ return songProgression }
-	}
-
-	/**
-	 * This {@link Runnable} is responsible for regularly refresh the diaplsy
-	 *
-	 * Here is what it does :
-	 *
-	 *  <ol>
-	 *      <li> setting the text for the elapsed time (text label right to the seekbar) </li>
-	 *      <li> setting the the text for  total suration of the song </li>
-	 *      <li> setting the max of the seekbar to the duration of the song </li>
-	 *      <li> setting the correct {@link android.graphics.drawable.Drawable} for the play/pause button </li>
-	 *      <li> plan to recall itself when the refresh time has elapsed (see {@link #REFRESH_TIME}) </li>
-	 *  </ol>
-	 */
-	private class Refresher implements Runnable
-	{
-		@Override void run()
-		{
-			currentDurationLabel.text = fromMilliSeconds(currentPosition as int)
-			totalDurationLabel.text = fromMilliSeconds(duration as int)
-			songProgressBar.max = (int)duration
-			songProgressBar.progress = (int)currentPosition
-			if(isPlaying()) btnPlayPause.imageResource = (int)R.drawable.btn_pause
-			else btnPlayPause.imageResource = (int)R.drawable.btn_play
-			handler.postDelayed(this, REFRESH_TIME)
-		}
 	}
 }

@@ -149,6 +149,45 @@ class SongList extends MusicQueryBuilder
 	}
 
 	/**
+	 * Retrives the index of a Song by its {@link Song#getID() ID}
+	 * @param id Song ID
+	 * @return Index in the current list or -1 if not found
+	 */
+	private int findIndexById(Long id)
+	{
+		return currSongList.findIndexOf{
+			Song it -> return it.ID == id }
+	}
+
+	/**
+	 * Retrieve a Song by its {@link Song#getID() ID}
+	 * @param id Song ID
+	 * @return Song in the current list or null if not found
+	 */
+	private Song findById(Long id)
+	{
+		int idx = findIndexById(id)
+		return idx >= 0 && idx < currSongList.size() ? currSongList[idx] : null
+	}
+
+	//region GET/SET
+	/** @return Index of the next Song or -1 if no next song */
+	private int getNextSongIdx()
+	{
+		int currentSongIdx = findIndexById(currentSongId)
+		if(currentSongIdx == this.lenght - 1 && !loop){ return -1 }
+		else{ return (currentSongIdx + 1) % this.lenght }
+	}
+
+	/** @return Index of the previous Song or -1 if no previous song */
+	private int getPreviousSongIdx()
+	{
+		int currentSongIdx = findIndexById(currentSongId)
+		if(currentSongIdx == 0 && !loop){ return -1 }
+		else{ return (currentSongIdx + this.lenght - 1) % this.lenght }
+	}
+
+	/**
 	 * Retrives the next song to be played
 	 *
 	 * @return The next song in the list or null if last song and
@@ -173,46 +212,6 @@ class SongList extends MusicQueryBuilder
 		if(idx < 0) return null
 		else return  currSongList[idx]
 	}
-
-	/**
-	 * Retrives the index of a Song by its {@link Song#getID() ID}
-	 * @param id Song ID
-	 * @return Index in the current list or -1 if not found
-	 */
-	private int findIndexById(Long id)
-	{
-		return currSongList.findIndexOf{
-			Song it -> return it.ID == id }
-	}
-
-	/**
-	 * Retrieve a Song by its {@link Song#getID() ID}
-	 * @param id Song ID
-	 * @return Song in the current list or null if not found
-	 */
-	private Song findById(Long id)
-	{
-		int idx = findIndexById(id)
-		return idx >= 0 && idx < currSongList.size() ? currSongList[idx] : null
-	}
-
-	/** @return Index of the next Song or -1 if no next song */
-	private int getNextSongIdx()
-	{
-		int currentSongIdx = findIndexById(currentSongId)
-		if(currentSongIdx == this.lenght - 1 && !loop){ return -1 }
-		else{ return (currentSongIdx + 1) % this.lenght }
-	}
-
-	/** @return Index of the previous Song or -1 if no previous song */
-	private int getPreviousSongIdx()
-	{
-		int currentSongIdx = findIndexById(currentSongId)
-		if(currentSongIdx == 0 && !loop){ return -1 }
-		else{ return (currentSongIdx + this.lenght - 1) % this.lenght }
-	}
-
-	//region GET/SET
 	/** @return The context of the application */
 	private Context getContext(){ return PhoebiusApplication.context }
 	private ConfigManager getConfigManager(){ return PhoebiusApplication.configManager }
@@ -246,6 +245,5 @@ class SongList extends MusicQueryBuilder
 		return playlists.keySet() as ArrayList<String> }
 	public ArrayList<Song> getPlaylist(String name){
 		return playlists[name] ?: [] as ArrayList<Song> }
-
-//endregion
+	//endregion
 }

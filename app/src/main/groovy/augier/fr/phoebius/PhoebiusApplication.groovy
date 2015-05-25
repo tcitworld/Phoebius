@@ -2,15 +2,9 @@ package augier.fr.phoebius
 
 
 import android.app.Application
-import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.res.Resources
-import android.media.AudioManager
 import augier.fr.phoebius.core.ConfigManager
-import augier.fr.phoebius.core.MediaButtonReceiver
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.MusicServiceConnection
 import augier.fr.phoebius.core.NotificationPlayer
@@ -20,7 +14,6 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public class PhoebiusApplication extends Application
 {
-	public static final String APP_NAME = R.string.app_name
 	private static Context context
 	private static MusicService musicService
 	private static Resources resources

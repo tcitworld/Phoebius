@@ -1,41 +1,33 @@
 package augier.fr.phoebius.core
 
+
 import android.app.Service
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.media.MediaPlayer.OnPreparedListener
-import android.media.MediaPlayer.OnErrorListener
 import android.media.MediaPlayer.OnCompletionListener
+import android.media.MediaPlayer.OnErrorListener
+import android.media.MediaPlayer.OnPreparedListener
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
-import android.util.Log
-import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
-import groovy.transform.CompileStatic
 
 
 /**
  * This class takes care of playing the music and interacting with the controls
  */
-@CompileStatic
 class MusicService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener
 {
-   	public static final enum ACTIONS
-	{
-		ACTION_PLAY_PAUSE("action_play_pause"),
-		ACTION_BACKWARD("action_rewind"),
-		ACTION_FORWARD("action_fast_foward"),
-		ACTION_NEXT("action_next"),
-		ACTION_PREVIOUS("action_previous")
-
-		private String value
-		private ACTIONS(String val){ value = val }
-		public String getVAL(){ return value.toUpperCase() }
-	}
+   	public static final def ACTIONS = [
+		ACTION_PLAY_PAUSE: "action_play_pause",
+		ACTION_BACKWARD: "action_rewind",
+		ACTION_FORWARD: "action_fast_foward",
+		ACTION_NEXT: "action_next",
+		ACTION_PREVIOUS: "action_previous"
+    ]
 
 
 	/**
@@ -63,7 +55,7 @@ class MusicService extends Service implements OnPreparedListener,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        handleIntent( intent );
+        handleIntent(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -74,20 +66,20 @@ class MusicService extends Service implements OnPreparedListener,
 
 	    switch(action)
 	    {
-		    case ACTIONS.ACTION_PLAY_PAUSE.VAL:
+		    case ACTIONS.ACTION_PLAY_PAUSE:
 			    if(playing) pause()
 			    else start()
 			    break
-		    case ACTIONS.ACTION_PREVIOUS.VAL:
+		    case ACTIONS.ACTION_PREVIOUS:
 			    playPrevious()
 			    break
-		    case ACTIONS.ACTION_NEXT.VAL:
+		    case ACTIONS.ACTION_NEXT:
 			    playNext()
 			    break
-		    case ACTIONS.ACTION_FORWARD.VAL:
+		    case ACTIONS.ACTION_FORWARD:
 			    forward()
 			    break
-		    case ACTIONS.ACTION_BACKWARD.VAL:
+		    case ACTIONS.ACTION_BACKWARD:
 			    backward()
 			    break
 	    }

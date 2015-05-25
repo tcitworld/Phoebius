@@ -12,8 +12,6 @@ import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
-import augier.fr.phoebius.core.MusicService.ACTIONS
-import groovy.transform.CompileStatic
 
 
 /**
@@ -22,13 +20,18 @@ import groovy.transform.CompileStatic
  * This class makes heavy use of the {@link NotificationCompat.Builder} helper
  * class to create notifications in a backward-compatible way.
  */
-@CompileStatic
 public class NotificationPlayer
 {
     /** Unique identifier for this type of notification. */
-    private static final String NOTIFICATION_TAG = "${PhoebiusApplication.APP_NAME}#NotifPlayer"
+    private static final String NOTIFICATION_TAG = "${R.string.app_name}#NotifPlayer"
+	private static final def FOR_BUTTON = [
+		(R.id.btnPlayPause): MusicService.ACTIONS.ACTION_PLAY_PAUSE,
+		(R.id.btnBackward) : MusicService.ACTIONS.ACTION_BACKWARD,
+		(R.id.btnForward)  : MusicService.ACTIONS.ACTION_FORWARD,
+		(R.id.btnNext)     : MusicService.ACTIONS.ACTION_NEXT,
+		(R.id.btnPrevious) : MusicService.ACTIONS.ACTION_PREVIOUS
+	]
 	private static NotificationPlayer INSTANCE
-
 	private Notification notification
 	private RemoteViews remoteViews
 
@@ -37,39 +40,19 @@ public class NotificationPlayer
 		notification = new NotificationCompat.Builder(context)
 				.setDefaults(Notification.DEFAULT_VIBRATE)
 				.setSmallIcon(R.drawable.notification_player_icon)
-				.setTicker("${PhoebiusApplication.APP_NAME}")
+				.setTicker("${R.string.app_name}")
 				.setOngoing(true).build()
 
 		remoteViews = new RemoteViews(context.packageName, R.layout.player_notification)
 
-		[R.id.btnPrevious, R.id.btnBackward, R.id.btnPlayPause,
-		 R.id.btnForward,R.id.btnNext].each{
-			remoteViews.setOnClickPendingIntent(
-					(int)it, generateAction(it))
+		FOR_BUTTON.keySet().each{
+			remoteViews.setOnClickPendingIntent(it, generateAction(it))
 		}
 	}
 
 	private PendingIntent generateAction(int btn)
 	{
-		String action = ""
-		switch(btn)
-		{
-			case R.id.btnPrevious:
-				action = ACTIONS.ACTION_PREVIOUS.VAL
-				break
-			case R.id.btnNext:
-				action = ACTIONS.ACTION_NEXT.VAL
-				break
-			case R.id.btnBackward:
-				action = ACTIONS.ACTION_BACKWARD.VAL
-				break
-			case R.id.btnForward:
-				action = ACTIONS.ACTION_FORWARD.VAL
-				break
-			case R.id.btnPlayPause:
-				action = ACTIONS.ACTION_PLAY_PAUSE.VAL
-				break
-		}
+		String action = FOR_BUTTON[btn]
 		Intent intent = new Intent(context, MusicService.class)
 		intent.setAction(action)
 		return PendingIntent.getService(context, 1, intent, 0);
