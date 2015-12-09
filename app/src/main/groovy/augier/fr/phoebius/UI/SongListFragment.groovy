@@ -32,9 +32,8 @@ public class SongListFragment extends Fragment
 	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_song_list, container, false)
-		SwissKnife.inject(this, view)
-		SongAdapter songAdapter = new SongAdapter()
-		songView.setAdapter(songAdapter)
+        SwissKnife.inject(this, view)
+        songView.adapter = new SongAdapter()
 		registerForContextMenu(songView)
 
 		return view
@@ -46,7 +45,7 @@ public class SongListFragment extends Fragment
 		super.onCreateContextMenu(menu, v, menuInfo)
 		MenuInflater inflater = activity.menuInflater
 		inflater.inflate(R.menu.playlists_contextual, menu)
-		SongList.instance.allPlaylists.each{ menu.add(it) }
+		songList.allPlaylists.each{ menu.add(it) }
 	}
 
 	@Override
@@ -84,11 +83,11 @@ public class SongListFragment extends Fragment
 	}
 
 	/** @return List of songs @see {@link SongList} */
-	protected ArrayList<Song> getSongs(){ return SongList.instance.currSongList }
+	protected ArrayList<Song> getSongs(){ return songList.currSongList }
 
 	protected MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
-	protected SongList getSongList(){ return SongList.instance }
+	protected SongList getSongList(){ return SongList.INSTANCE }
 
 	/** Adapter class, nothing special */
 	class SongAdapter extends AbstractAdaptater
@@ -101,10 +100,10 @@ public class SongListFragment extends Fragment
 
 			Song currSong = songs[position]
 
-			getView(R.id.songTitle, TextView.class).setText(currSong.title)
-			getView(R.id.songArtist, TextView.class).setText(currSong.artist)
+			this.<TextView>getView(R.id.songTitle).text = currSong.title
+			this.<TextView>getView(R.id.songArtist).text = currSong.artist
 
-			layout.setTag(position)
+			layout.tag = position
 			return layout
 		}
 	}

@@ -16,7 +16,7 @@ public class PlaylistDetailFragment extends SongListFragment
 	void onAttach(Activity activity)
 	{
 		super.onAttach(activity)
-		songs = ((PlaylistDetailActivity)activity).songs
+		songs = (activity as PlaylistDetailActivity).songs
 	}
 
 	@Override

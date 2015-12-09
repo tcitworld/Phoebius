@@ -4,8 +4,6 @@ package augier.fr.phoebius
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.Menu
-import android.view.MenuItem
-import augier.fr.phoebius.UI.MainPageFragment
 import groovy.transform.CompileStatic
 
 @CompileStatic
@@ -14,7 +12,6 @@ public class MainActivity extends FragmentActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		// Class init
 		super.onCreate(savedInstanceState)
 		contentView = R.layout.activity_main
     }
@@ -27,4 +24,10 @@ public class MainActivity extends FragmentActivity
 	}
 
 	@Override protected void onResume(){ super.onResume() }
+
+	@Override protected void onPause()
+    {
+		PhoebiusApplication.save()
+        super.onPause()
+    }
 }

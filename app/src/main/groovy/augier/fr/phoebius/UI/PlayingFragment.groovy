@@ -2,23 +2,18 @@ package augier.fr.phoebius.UI
 
 
 import android.os.Bundle
-import android.os.Handler
-import android.support.annotation.Nullable
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.utils.Refresher
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnBackground
-import groovy.transform.CompileStatic;
+import groovy.transform.CompileStatic
 
 @CompileStatic
 public class PlayingFragment extends Fragment
@@ -39,13 +34,13 @@ public class PlayingFragment extends Fragment
 		return view
 	}
 
-	public Song getCurrentSong(){ return SongList.instance.currentSong }
+	public Song getCurrentSong(){ return SongList.INSTANCE.currentSong }
 
 	private void onRefresh()
 	{
-		playbarMinArtistName.setText(getCurrentSong().getArtist())
-		playbarMinSongTitle.setText(getCurrentSong().getTitle())
-		mainPlayingCoverView.setImageBitmap(getCurrentSong().getCover())
-		playbarMinCover.setImageBitmap(getCurrentSong().getCover())
+		playbarMinArtistName.setText(currentSong.artist)
+		playbarMinSongTitle.setText(currentSong.title)
+		mainPlayingCoverView.setImageBitmap(currentSong.cover)
+		playbarMinCover.setImageBitmap(currentSong.cover)
 	}
 }

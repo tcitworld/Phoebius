@@ -2,14 +2,11 @@ package augier.fr.phoebius.UI
 
 
 import android.app.Activity
-import android.content.ContentResolver
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import groovy.transform.CompileStatic
-
 
 /**
  * Convenient class
@@ -44,7 +41,7 @@ abstract class AbstractAdaptater extends BaseAdapter
 	 * @param tClass Class to cast the view to (example: TextView)
 	 * @return The view casted in the specified type T
 	 */
-	protected <T> T getView(int idx, Class<T> tClass){ return layout.findViewById(idx) as T }
+	protected <T> T getView(int idx){ return layout.findViewById(idx) as T }
 
 	/**
 	 * Shorthand to inflate a LinearLayout

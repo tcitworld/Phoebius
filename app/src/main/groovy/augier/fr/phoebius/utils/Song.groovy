@@ -4,6 +4,7 @@ package augier.fr.phoebius.utils
 import android.content.ContentUris
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
 import groovy.transform.CompileStatic
@@ -43,7 +44,7 @@ class Song implements Comparable
 		album = songAlbum
 		trackNumber = songNb
 		year = songYear
-		URI = ContentUris.withAppendedId(SongList.MUSIC_URI, id)
+		URI = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
 	}
 
 	/** @return Song id */
@@ -63,7 +64,7 @@ class Song implements Comparable
 	public Bitmap getCover()
 	{
 		if(id < 0) return Album.defaultCover
-		else return SongList.instance.getCoverFor(this.album) ?: Album.defaultCover
+		else return SongList.INSTANCE.getCoverFor(this.album) ?: Album.defaultCover
 	}
 
 	@Override

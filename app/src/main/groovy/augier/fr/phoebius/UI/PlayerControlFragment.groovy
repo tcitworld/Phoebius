@@ -2,9 +2,7 @@ package augier.fr.phoebius.UI
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,18 +10,14 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
-import augier.fr.phoebius.MainActivity
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
-import augier.fr.phoebius.core.MusicServiceConnection
 import augier.fr.phoebius.utils.Refresher
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-import com.arasthel.swissknife.annotations.OnBackground
 import com.arasthel.swissknife.annotations.OnClick
 import groovy.transform.CompileStatic
-
 
 /**
  * {@link Fragment} to display the customized player controller
@@ -48,7 +42,7 @@ public class PlayerControlFragment extends Fragment
 		View view = inflater.inflate(R.layout.fragment_player_control, container, false)
 		SwissKnife.inject(this, view)
 		refresher.start()
-		songProgressBar.setOnSeekBarChangeListener(songBarListener)
+		songProgressBar.onSeekBarChangeListener = songBarListener
 		return view
 	}
 
@@ -58,7 +52,7 @@ public class PlayerControlFragment extends Fragment
 		totalDurationLabel.text = fromMilliSeconds(duration as int)
 		songProgressBar.max = (int)duration
 		songProgressBar.progress = (int)currentPosition
-		if(isPlaying()) btnPlayPause.imageResource = (int)R.drawable.btn_pause
+		if(playing) btnPlayPause.imageResource = (int)R.drawable.btn_pause
 		else btnPlayPause.imageResource = (int)R.drawable.btn_play
 	}
 
@@ -88,7 +82,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnBackward)
-	public void onBtnBackwardClick(){ if(playing) musicService.backward() }
+	public void onBtnBackwardClick(){ if(playing) musicService?.backward() }
 
 	/**
 	 * Callback for forward button
@@ -96,7 +90,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnForward)
-	public void onBtnForwardClick(){ if(playing) musicService.forward() }
+	public void onBtnForwardClick(){ if(playing) musicService?.forward() }
 
 	/**
 	 * Callback for previous button
@@ -119,7 +113,7 @@ public class PlayerControlFragment extends Fragment
 	 * This method uses <a href="https://github.com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
 	 */
 	@OnClick(R.id.btnNext)
-	public void onBtnNextClick(){ if(isPlaying()) playNext() }
+	public void onBtnNextClick(){ if(playing) playNext() }
 
 	/**
 	 * Convert a given time in milliseconds to a human readable format
@@ -177,7 +171,7 @@ public class PlayerControlFragment extends Fragment
 	}
 
 	/** Shorthand for {@link MusicService#isPlaying}, false is {@link #getMusicService()} is null */
-	boolean isPlaying(){ return musicService != null ? musicService.playing : false }
+	boolean isPlaying(){ return musicService?.playing ?: false }
 	/** Shorthand for {@link MusicService#seek(int)} */
 	void seekTo(int i){ musicService.seek(i) }
 	/** Shorthand for {@link MusicService#start()} */

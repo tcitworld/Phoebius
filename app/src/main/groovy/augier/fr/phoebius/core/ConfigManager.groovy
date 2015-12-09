@@ -3,13 +3,10 @@ package augier.fr.phoebius.core
 
 import android.os.Environment
 import android.util.Log
-import augier.fr.phoebius.MainActivity
-import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
-
 
 /**
  * This class takes care of centralizing the whole configuration of the application
@@ -19,58 +16,61 @@ import groovy.transform.CompileStatic
  * automatically loaded from the file.
  */
 @CompileStatic
-class ConfigManager
+enum ConfigManager
 {
-	// Well known keys
-	public static final String WKK_PLAYLIST = "playlists"
-	/**
-	 * Shorthand for the separator character in paths
-	 */
-	private Map configs = [:]
+    INSTANCE()
 
-	ConfigManager()
-	{
-		if(!configFile.exists()) configFile.createNewFile()
-		else
-		{
-			try{ configs  = new JsonSlurper().parse(configFile) as Map }
-			catch(Exception e)
-			{
-				Log.e(this.class.toString(), "Enable to parse file: ${e}")
-				flushFile()
-			}
+    // Well known keys
+    public static final String WKK_PLAYLIST = "playlists"
+    /**
+     * Shorthand for the separator character in paths
+     */
+    private Map configs = [:]
 
-		}
-	}
+    private ConfigManager()
+    {
+        if(!configFile.exists()) configFile.createNewFile()
+        else
+        {
+            try{ configs = new JsonSlurper().parse(configFile) as Map }
+            catch(Exception e)
+            {
+                Log.e(this.class.toString(), "Enable to parse file: ${e}")
+                configFile.write("{}")
+            }
 
-	public void addValue(String k, String v){ configs[k] = v }
-	public void addValue(String k, Map v){ configs[k] = v }
-	public void addValue(String k, List v){ configs[k] = v }
+        }
+    }
 
-	public Object getAt(String k){ return configs[k] }
+    public void addValue(String k, String v){ configs[k] = v }
 
-	private flushFile(){ configFile.write("{}") }
-	public void dump(){ configFile.write(new JsonBuilder(configs).toString()) }
+    public void addValue(String k, Map v){ configs[k] = v }
 
-	/**
-	 * Aquire the directory containing the configuration file
-	 *
-	 * If the directory does not exists, then creates it. The
-	 * configuration directory is a hidden directory in the user's
-	 * home whose name corresponds to the name of the applications
-	 * according to the Linux' configurations conventions.
-	 *
-	 * @return Directory containing the configuration file
-	 */
-	private static File getConfDir()
-	{
-		def E = Environment.externalStorageDirectory.absolutePath
-		def A = R.string.app_name
+    public void addValue(String k, List v){ configs[k] = v }
 
-		def homeAppDir = new File("${E}", ".${A}")
-		if(!homeAppDir.exists()) homeAppDir.mkdir()
-		return homeAppDir
-	}
+    public Object getAt(String k){ return configs[k] }
 
-	private static File getConfigFile(){ return new File(getConfDir(), "configs.json") }
+    public void dump(){ configFile.write(new JsonBuilder(configs).toString()) }
+
+    /**
+     * Aquire the directory containing the configuration file
+     *
+     * If the directory does not exists, then creates it. The
+     * configuration directory is a hidden directory in the user's
+     * home whose name corresponds to the name of the applications
+     * according to the Linux' configurations conventions.
+     *
+     * @return Directory containing the configuration file
+     */
+    private static File getConfDir()
+    {
+        def E = Environment.externalStorageDirectory.absolutePath
+        def A = R.string.app_name
+
+        def homeAppDir = new File("${E}", ".${A}")
+        if(!homeAppDir.exists()) homeAppDir.mkdir()
+        return homeAppDir
+    }
+
+    private static File getConfigFile(){ return new File(getConfDir(), "configs.json") }
 }

@@ -50,7 +50,7 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	private IdleStateHandler idle = new IdleStateHandler()
 
-	private NotificationPlayer notificationPlayer = NotificationPlayer.getInstance()
+	private NotificationPlayer notificationPlayer = NotificationPlayer.INSTANCE
 
 
     @Override
@@ -108,7 +108,7 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void play(Song song)
 	{
-		if(song == null) stop()
+		if(!song) stop()
 		else
 		{
 			songList.currentSong = song
@@ -134,7 +134,7 @@ class MusicService extends Service implements OnPreparedListener,
 	public void pause()
 	{
 		mediaPlayer.pause()
-		notificationPlayer.fireNotification()
+		//notificationPlayer.fireNotification()
 	}
 
 	/**
@@ -230,7 +230,7 @@ class MusicService extends Service implements OnPreparedListener,
 		m.onErrorListener = this
 
 		m.reset()
-		if(song?.URI != null)
+		if(song?.URI)
 		{
 			m.setDataSource(applicationContext, song.URI)
 			m.prepare()
@@ -241,7 +241,7 @@ class MusicService extends Service implements OnPreparedListener,
 	private void prepareNextPlayer()
 	{
 		Song next = songList.nextSong
-		if(next != null) mediaPlayerInit(nextMediaPlayer, next)
+		if(next) mediaPlayerInit(nextMediaPlayer, next)
 		else nextMediaPlayer = null
 		mediaPlayer.nextMediaPlayer = nextMediaPlayer
 	}
@@ -282,7 +282,7 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	int getPosition(){ return ready ? mediaPlayer.currentPosition : 0 }
 
-	private SongList getSongList(){ return SongList.instance }
+	private SongList getSongList(){ return SongList.INSTANCE }
 	//endregion
 
 	/**

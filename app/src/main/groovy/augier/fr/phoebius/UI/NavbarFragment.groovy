@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.OnClick
@@ -23,5 +22,5 @@ public class NavbarFragment extends Fragment
 	}
 
 	@OnClick(R.id.action_end)
-	public void onClick(){ PhoebiusApplication.terminate() }
+	public void onClick(){ System.exit(0) }
 }

@@ -55,14 +55,14 @@ public class MainPageFragment extends Fragment implements TabListener
 		View view = inflater.inflate(R.layout.fragment_main_page, container, false)
 		SwissKnife.inject(this, view)
 
-		mainPager.setAdapter(pagerAdaptater)
+		mainPager.adapter = pagerAdaptater
 		return view
 	}
 
 	@Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
 	@Override public void onTabSelected(Tab tab, FragmentTransaction ft)
-		{ mainPager.setCurrentItem(tab.getPosition()) }
+		{ mainPager.currentItem = tab.position }
 
 	/**
 	 * Adaptater to manage displaying of the tabs
