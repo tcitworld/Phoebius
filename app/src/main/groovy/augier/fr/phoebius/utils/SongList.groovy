@@ -9,6 +9,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.core.ConfigManager
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.OnBackground
 import groovy.transform.CompileStatic
 
 /**
@@ -230,7 +232,10 @@ enum SongList
          *
          * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
          */
-        public void createSongList()
+        public void createSongList(){ SwissKnife.runOnBackground(this, "bgCreateSongList") }
+
+        @OnBackground
+        private void bgCreateSongList()
         {
             currSongList.clear()
             musicCursor = queryCursor
@@ -261,7 +266,9 @@ enum SongList
          *
          * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
          */
-        public void createAlbumList()
+        public void createAlbumList(){ SwissKnife.runOnBackground(this, "bgCreateAlbumList") }
+
+        private void bgCreateAlbumList()
         {
             thisAlbumList.clear()
             musicCursor = albumCursor

@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.res.Resources
 import android.os.IBinder
-import android.util.Log
 import augier.fr.phoebius.core.ConfigManager
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.NotificationPlayer
@@ -28,9 +27,8 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
     {
         super.onCreate()
         instance = this;
-        Runtime.runtime.addShutdownHook(new ShutdownHook(this))
-        def intent = new Intent(context, MusicService.class)
-        context.bindService(intent, this, BIND_AUTO_CREATE)
+        Runtime.runtime.addShutdownHook(new ShutdownHook())
+        SwissKnife.runOnBackground(this, "backgroundBind")
     }
 
     @Override
@@ -49,6 +47,13 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
         ConfigManager.INSTANCE.dump()
     }
 
+    @OnBackground
+    private void backgroundBind()
+    {
+        def intent = new Intent(context, MusicService.class)
+        context.bindService(intent, this, BIND_AUTO_CREATE)
+    }
+
     public static Context getContext(){ return instance.applicationContext }
 
     public static MusicService getMusicService(){ return instance.@musicService }
@@ -59,15 +64,11 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
 
     private class ShutdownHook extends Thread
     {
-        PhoebiusApplication application
-
-        ShutdownHook(PhoebiusApplication instance){ application = instance }
-
         @Override void run()
         {
-            application.dumpConfig()
+            dumpConfig()
             NotificationPlayer.INSTANCE.cancel()
-            application.musicService.stop()
+            musicService.stop()
         }
     }
 }
