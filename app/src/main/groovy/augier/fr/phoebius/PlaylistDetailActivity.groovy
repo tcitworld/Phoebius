@@ -4,28 +4,25 @@ package augier.fr.phoebius
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import android.view.MenuItem
 import android.support.v4.app.NavUtils
-import augier.fr.phoebius.UI.PlaylistDetailFragment
 import augier.fr.phoebius.utils.Song
-import augier.fr.phoebius.utils.SongList
 import groovy.transform.CompileStatic
 
 @CompileStatic
 public class PlaylistDetailActivity extends FragmentActivity
 {
-	ArrayList<Song> songs
+    ArrayList<Song> songs
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState)
-		Intent intent = getIntent()
-		songs = intent.getParcelableArrayListExtra("songs")
-		setContentView(R.layout.activity_playlist_detail)
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState)
+        Intent intent = getIntent()
+        songs = intent.getParcelableArrayListExtra("songs")
+        setContentView(R.layout.activity_playlist_detail)
+    }
 
-	@Override void onBackPressed(){ NavUtils.navigateUpFromSameTask(this) }
+    @Override void onBackPressed(){ NavUtils.navigateUpFromSameTask(this) }
 
-	public ArrayList<Song> getSongs(){ return songs }
+    public ArrayList<Song> getSongs(){ return songs }
 }

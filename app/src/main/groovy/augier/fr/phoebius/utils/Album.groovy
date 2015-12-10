@@ -47,19 +47,19 @@ public class Album implements Comparable
 
     }
 
-    /** @return Album artist  */
+    /** @return Album artist     */
     String getAlbumArtist(){ return albumArtist }
 
-    /** @return Album titel  */
+    /** @return Album titel     */
     String getAlbumTitle(){ return albumTitle }
 
-    /** @return Album release date  */
+    /** @return Album release date     */
     String getDate(){ return date }
 
-    /** @return Album artist  */
+    /** @return Album artist     */
     String getNbSongs(){ return nbSongs }
 
-    /** @return Album artist  */
+    /** @return Album artist     */
     Bitmap getCover(){ return cover }
 
     @Override

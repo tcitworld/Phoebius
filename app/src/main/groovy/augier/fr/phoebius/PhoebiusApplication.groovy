@@ -23,14 +23,13 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
 {
     private static PhoebiusApplication instance
     private MusicService musicService
-    private static Bus bus
+    public static final Bus bus = new Bus(ThreadEnforcer.ANY)
 
     @Override
     void onCreate()
     {
         super.onCreate()
         instance = this;
-        bus = new Bus(ThreadEnforcer.ANY)
         Runtime.runtime.addShutdownHook(new ShutdownHook())
         SwissKnife.runOnBackground(this, "backgroundBind")
     }
@@ -65,8 +64,6 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
     public static Resources getResources(){ return instance.applicationContext.resources }
 
     public static void save(){ instance.dumpConfig() }
-
-    public static getBus(){ return bus }
 
     private class ShutdownHook extends Thread
     {

@@ -18,37 +18,37 @@ import com.arasthel.swissknife.annotations.OnItemClick
 
 public class PlaylistsFragment extends Fragment
 {
-	@InjectView private ListView songView
+    @InjectView private ListView songView
 
-	@Override
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_song_list, container, false)
-		SwissKnife.inject(this, view)
-		songView.adapter = new PlaylistAdaptater()
-		return view
-	}
+    @Override
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_song_list, container, false)
+        SwissKnife.inject(this, view)
+        songView.adapter = new PlaylistAdaptater()
+        return view
+    }
 
-	@OnItemClick(R.id.songView)
-	public void onItemClick(int position)
-	{
-		String playlistName = allPlaylists[position]
-		Intent intent = new Intent(activity, PlaylistDetailActivity.class)
-		intent.putExtra("songs", SongList.INSTANCE.getPlaylist(playlistName))
-		startActivity(intent)
-	}
+    @OnItemClick(R.id.songView)
+    public void onItemClick(int position)
+    {
+        String playlistName = allPlaylists[position]
+        Intent intent = new Intent(activity, PlaylistDetailActivity.class)
+        intent.putExtra("songs", SongList.INSTANCE.getPlaylist(playlistName))
+        startActivity(intent)
+    }
 
-	private ArrayList<String> getAllPlaylists(){ return SongList.INSTANCE.allPlaylists }
+    private ArrayList<String> getAllPlaylists(){ return SongList.INSTANCE.allPlaylists }
 
-	class PlaylistAdaptater extends AbstractAdaptater
-	{
-		@Override int getCount(){ return allPlaylists.size() }
+    class PlaylistAdaptater extends AbstractAdaptater
+    {
+        @Override int getCount(){ return allPlaylists.size() }
 
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			layout = inflate(activity, R.layout.playlist_item, parent)
-			this.<TextView>getView(R.id.playlistName).text = allPlaylists[position]
-			return layout
-		}
-	}
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            layout = inflate(activity, R.layout.playlist_item, parent)
+            this.<TextView> getView(R.id.playlistName).text = allPlaylists[position]
+            return layout
+        }
+    }
 }

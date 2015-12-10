@@ -12,15 +12,16 @@ import com.arasthel.swissknife.annotations.OnClick
 
 public class NavbarFragment extends Fragment
 {
-	@Override
-	View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_navbar, container, false)
-		SwissKnife.inject(this, view)
+    @Override
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_navbar, container, false)
+        SwissKnife.inject(this, view)
 
-		return view
-	}
+        return view
+    }
 
-	@OnClick(R.id.action_end)
-	public void onClick(){ System.exit(0) }
+    @OnClick(R.id.action_end)
+    public void onClick()
+    { System.exit(0) }
 }

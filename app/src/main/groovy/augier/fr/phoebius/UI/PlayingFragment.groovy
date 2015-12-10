@@ -16,28 +16,28 @@ import com.squareup.otto.Subscribe
 
 public class PlayingFragment extends Fragment
 {
-	@InjectView private TextView playbarMinSongTitle
-	@InjectView private TextView playbarMinArtistName
-	@InjectView private SquareImageView mainPlayingCoverView
-	@InjectView private SquareImageView playbarMinCover
+    @InjectView private TextView playbarMinSongTitle
+    @InjectView private TextView playbarMinArtistName
+    @InjectView private SquareImageView mainPlayingCoverView
+    @InjectView private SquareImageView playbarMinCover
 
-	@Override
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_main_playing, container, false)
-		SwissKnife.inject(this, view)
+    @Override
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_main_playing, container, false)
+        SwissKnife.inject(this, view)
         PhoebiusApplication.bus.register(this)
         getSong(Song.defaultSong)
 
-		return view
-	}
+        return view
+    }
 
     @Subscribe
     public void getSong(Song currentSong)
-	{
+    {
         playbarMinArtistName.text = currentSong.artist
         playbarMinSongTitle.text = currentSong.title
         mainPlayingCoverView.imageBitmap = currentSong.cover
         playbarMinCover.imageBitmap = currentSong.cover
-	}
+    }
 }

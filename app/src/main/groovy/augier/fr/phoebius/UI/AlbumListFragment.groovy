@@ -9,9 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
-import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.utils.Album
 import augier.fr.phoebius.utils.SongList
 import com.arasthel.swissknife.SwissKnife
@@ -25,53 +23,51 @@ import com.arasthel.swissknife.annotations.InjectView
  */
 public class AlbumListFragment extends Fragment
 {
-	/**
-	 * Album view (RLY!?)
-	 * The view s automatically injected by SwissKnife on start.
-	 *
-	 * See https://github.com/Arasthel/SwissKnife/wiki#how-to-use-the-annotations
-	 */
-	@InjectView private ListView songView
+    /**
+     * Album view (RLY!?)
+     * The view s automatically injected by SwissKnife on start.
+     *
+     * See https://github.com/Arasthel/SwissKnife/wiki#how-to-use-the-annotations
+     */
+    @InjectView private ListView songView
 
+    @Override
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_song_list, container, false)
+        SwissKnife.inject(this, view)
+        SongAdapter songAdapter = new SongAdapter()
+        songView.adapter = songAdapter
 
-	@Override
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_song_list, container, false)
-		SwissKnife.inject(this, view)
-		SongAdapter songAdapter = new SongAdapter()
-		songView.adapter = songAdapter
+        return view
+    }
 
-		return view
-	}
+    /**
+     * Shorthand to {@link SongList#getAlbumList()}
+     * @return List of albums
+     */
+    private static ArrayList<Album> getAlbums(){ return SongList.INSTANCE.albumList }
 
-	/**
-	 * Shorthand to {@link SongList#getAlbumList()}
-	 * @return List of albums
-	 */
-	private static ArrayList<Album> getAlbums(){ return SongList.INSTANCE.albumList }
-	private static MusicService getMusicService(){ return PhoebiusApplication.musicService }
+    /**
+     * Adaptater to create a grid of albums
+     */
+    class SongAdapter extends AbstractAdaptater
+    {
+        @Override public int getCount(){ return albums.size() }
 
-	/**
-	 * Adaptater to create a grid of albums
-	 */
-	class SongAdapter extends AbstractAdaptater
-	{
-		@Override public int getCount(){ return albums.size() }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            layout = inflate(activity, R.layout.album_item, parent)
 
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			layout = inflate(activity, R.layout.album_item, parent)
+            Album currAlbum = albums[position]
+            this.<TextView>getView(R.id.albumTitle).text = currAlbum.albumTitle
+            this.<TextView>getView(R.id.albumArtist).text = currAlbum.albumArtist
+            this.<TextView>getView(R.id.albumDate).text = currAlbum.date
+            this.<TextView>getView(R.id.albumNbSongs).text = currAlbum.nbSongs
+            this.<ImageView>getView(R.id.albumCover).imageBitmap = currAlbum.cover
 
-			Album currAlbum = albums[position]
-			this.<TextView>getView(R.id.albumTitle).text = currAlbum.albumTitle
-			this.<TextView>getView(R.id.albumArtist).text = currAlbum.albumArtist
-			this.<TextView>getView(R.id.albumDate).text = currAlbum.date
-			this.<TextView>getView(R.id.albumNbSongs).text = currAlbum.nbSongs
-			this.<ImageView>getView(R.id.albumCover).imageBitmap = currAlbum.cover
-
-			return layout
-		}
-	}
+            return layout
+        }
+    }
 }

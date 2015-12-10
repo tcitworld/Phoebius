@@ -114,7 +114,7 @@ enum SongList
     }
 
     //region GET/SET
-    /** @return Index of the next Song or -1 if no next song  */
+    /** @return Index of the next Song or -1 if no next song    */
     private int getNextSongIdx()
     {
         int currentSongIdx = findIndexById(currentSongId)
@@ -124,7 +124,7 @@ enum SongList
         { return (currentSongIdx + 1) % this.lenght }
     }
 
-    /** @return Index of the previous Song or -1 if no previous song  */
+    /** @return Index of the previous Song or -1 if no previous song    */
     private int getPreviousSongIdx()
     {
         int currentSongIdx = findIndexById(currentSongId)
@@ -161,64 +161,65 @@ enum SongList
         else return currSongList[idx]
     }
 
-    /** @return The context of the application  */
+    /** @return The context of the application    */
     private Context getContext(){ return PhoebiusApplication.context }
 
     private ConfigManager getConfigManager(){ return ConfigManager.INSTANCE }
 
     private Long getFirstId(){ return songList[0]?.ID ?: -1 }
 
-    /** @return The length of the current playing playlist  */
+    /** @return The length of the current playing playlist    */
     public int getLenght(){ return currSongList.size() }
 
-    /** @return Whether the playback is looped on the list or not  */
+    /** @return Whether the playback is looped on the list or not    */
     public boolean isLooped(){ return loop }
 
     /** Set the playback loop */
     public void setLoop(boolean loop){ this.loop = loop }
 
-    /** @return The current playing list  */
+    /** @return The current playing list    */
     public ArrayList<Song> getCurrSongList(){ return currSongList }
 
-    /** @return The current playing song  */
+    /** @return The current playing song    */
     public Song getCurrentSong(){ return findById(currentSongId) }
 
     /** Sets the current playing song */
     public void setCurrentSong(Song song){ this.currentSongId = song?.ID ?: getFirstId() }
 
-    /** @return The album list */
+    /** @return The album list   */
     public ArrayList<Album> getAlbumList(){ return thisAlbumList }
 
-    /** @return The complete song list  */
+    /** @return The complete song list    */
     public ArrayList<Song> getSongList(){ return currSongList }
 
-    /** @return Cover for album title or default cover  */
+    /** @return Cover for album title or default cover    */
     public Bitmap getCoverFor(String albumTitle){ return covers[albumTitle] ?: Album.defaultCover }
 
     public ArrayList<String> getAllPlaylists(){ return playlists.keySet() as ArrayList<String> }
 
     public ArrayList<Song> getPlaylist(String name)
-        { return playlists[name] ?: [] as ArrayList<Song> }
+    { return playlists[name] ?: [] as ArrayList<Song> }
+
     //endregion
 
     private class MusicQueryBuilder
     {
-        public static final String SONG_ID          = MediaStore.Audio.Media._ID
-        public static final String SONG_TITLE       = MediaStore.Audio.Media.TITLE
-        public static final String SONG_ARTIST      = MediaStore.Audio.Media.ARTIST
-        public static final String SONG_YEAR        = MediaStore.Audio.Media.YEAR
-        public static final String SONG_ALBUM       = MediaStore.Audio.Media.ALBUM
-        public static final String SONG_NUMBER      = MediaStore.Audio.Media.TRACK
-        public static final String ALBUM_TITLE      = MediaStore.Audio.Albums.ALBUM
-        public static final String ALBUM_ARTIST     = MediaStore.Audio.Albums.ARTIST
-        public static final String ALBUM_DATE       = MediaStore.Audio.Albums.FIRST_YEAR
-        public static final String ALBUM_NB_SONG    = MediaStore.Audio.Albums.NUMBER_OF_SONGS
-        public static final String ALBUM_COVER      = MediaStore.Audio.Albums.ALBUM_ART
+        public static final String SONG_ID = MediaStore.Audio.Media._ID
+        public static final String SONG_TITLE = MediaStore.Audio.Media.TITLE
+        public static final String SONG_ARTIST = MediaStore.Audio.Media.ARTIST
+        public static final String SONG_YEAR = MediaStore.Audio.Media.YEAR
+        public static final String SONG_ALBUM = MediaStore.Audio.Media.ALBUM
+        public static final String SONG_NUMBER = MediaStore.Audio.Media.TRACK
+        public static final String ALBUM_TITLE = MediaStore.Audio.Albums.ALBUM
+        public static final String ALBUM_ARTIST = MediaStore.Audio.Albums.ARTIST
+        public static final String ALBUM_DATE = MediaStore.Audio.Albums.FIRST_YEAR
+        public static final String ALBUM_NB_SONG = MediaStore.Audio.Albums.NUMBER_OF_SONGS
+        public static final String ALBUM_COVER = MediaStore.Audio.Albums.ALBUM_ART
 
-        public static final Uri MUSIC_URI           = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        public static final Uri ALBUM_URI           = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-        public static final String[] ALBUM_COLS     = [ ALBUM_TITLE, ALBUM_ARTIST,
-                                                        ALBUM_DATE,  ALBUM_NB_SONG, ALBUM_COVER ]
+        public static final Uri MUSIC_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        public static final Uri ALBUM_URI = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
+        public static final String[] ALBUM_COLS = [ALBUM_TITLE, ALBUM_ARTIST,
+                                                   ALBUM_DATE, ALBUM_NB_SONG, ALBUM_COVER]
 
         private Cursor musicCursor
         private ContentResolver resolver = PhoebiusApplication.context.contentResolver
@@ -292,21 +293,34 @@ enum SongList
             thisAlbumList.sort()
         }
 
-        private int getSongTitleColumn()      { return gci(SONG_TITLE) }
-        private int getSongIdColumn()         { return gci(SONG_ID) }
-        private int getSongArtistColumn()     { return gci(SONG_ARTIST) }
-        private int getSongAlbumColumn()      { return gci(SONG_ALBUM) }
-        private int getSongYearColumn()       { return gci(SONG_YEAR) }
-        private int getSongNumberColumn()     { return gci(SONG_NUMBER) }
-        private int getAlbumArtistColumn()    { return gci(ALBUM_ARTIST) }
-        private int getAlbumTitleColumn()     { return gci(ALBUM_TITLE) }
-        private int getAlbumDateColumn()      { return gci(ALBUM_DATE) }
-        private int getAlbumNbSongsColumn()   { return gci(ALBUM_NB_SONG) }
-        private int getAlbumCoverColumn()     { return gci(ALBUM_COVER) }
-        private Cursor getQueryCursor()       { return query(MUSIC_URI, null) }
-        private Cursor getAlbumCursor()       { return query(ALBUM_URI, ALBUM_COLS) }
+        private int getSongTitleColumn(){ return gci(SONG_TITLE) }
+
+        private int getSongIdColumn(){ return gci(SONG_ID) }
+
+        private int getSongArtistColumn(){ return gci(SONG_ARTIST) }
+
+        private int getSongAlbumColumn(){ return gci(SONG_ALBUM) }
+
+        private int getSongYearColumn(){ return gci(SONG_YEAR) }
+
+        private int getSongNumberColumn(){ return gci(SONG_NUMBER) }
+
+        private int getAlbumArtistColumn(){ return gci(ALBUM_ARTIST) }
+
+        private int getAlbumTitleColumn(){ return gci(ALBUM_TITLE) }
+
+        private int getAlbumDateColumn(){ return gci(ALBUM_DATE) }
+
+        private int getAlbumNbSongsColumn(){ return gci(ALBUM_NB_SONG) }
+
+        private int getAlbumCoverColumn(){ return gci(ALBUM_COVER) }
+
+        private Cursor getQueryCursor(){ return query(MUSIC_URI, null) }
+
+        private Cursor getAlbumCursor(){ return query(ALBUM_URI, ALBUM_COLS) }
 
         private int gci(String columnName){ return musicCursor.getColumnIndex(columnName) }
+
         private Cursor query(Uri a, String[] b){ return resolver.query(a, b, null, null, null) }
     }
 }

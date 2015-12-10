@@ -21,7 +21,6 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import groovy.transform.CompileStatic
 
-
 /**
  * Fragment for the main view of the application. Manages the {@link ViewPager} and the tabs.
  *
@@ -31,93 +30,97 @@ import groovy.transform.CompileStatic
 @CompileStatic
 public class MainPageFragment extends Fragment implements TabListener
 {
-	@InjectView ViewPager mainPager
-	private PagerAdaptater pagerAdaptater
+    @InjectView ViewPager mainPager
+    private PagerAdaptater pagerAdaptater
 
-	/**
-	 * Constructor
-	 * @param fm Fragment manager from main activity (just use {@link MainActivity#getSupportFragmentManager}
-	 * @param ms Music service from the main activity (just use {@link PhoebiusApplication#getMusicService}
-	 */
-	public MainPageFragment(){ super() }
+    /**
+     * Constructor
+     * @param fm Fragment manager from main activity (just use {@link
+     * MainActivity # getSupportFragmentManager}
+     * @param ms Music service from the main activity (just use {@link
+     * PhoebiusApplication # getMusicService}
+     */
+    public MainPageFragment(){ super() }
 
-	@Override
-	void onAttach(Activity activity)
-	{
-		super.onAttach(activity)
-		def a = activity as FragmentActivity
-		pagerAdaptater = new PagerAdaptater(a.supportFragmentManager)
-	}
+    @Override
+    void onAttach(Activity activity)
+    {
+        super.onAttach(activity)
+        def a = activity as FragmentActivity
+        pagerAdaptater = new PagerAdaptater(a.supportFragmentManager)
+    }
 
-	@Override
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View view = inflater.inflate(R.layout.fragment_main_page, container, false)
-		SwissKnife.inject(this, view)
+    @Override
+    View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.fragment_main_page, container, false)
+        SwissKnife.inject(this, view)
 
-		mainPager.adapter = pagerAdaptater
-		return view
-	}
+        mainPager.adapter = pagerAdaptater
+        return view
+    }
 
-	@Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
-	@Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
-	@Override public void onTabSelected(Tab tab, FragmentTransaction ft)
-		{ mainPager.currentItem = tab.position }
+    @Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
 
-	/**
-	 * Adaptater to manage displaying of the tabs
-	 */
-	class PagerAdaptater extends FragmentStatePagerAdapter
-	{
-		/**
-		 * Title of each tab
-		 * 
-		 * The title have to be ordered the same order than
-		 * the corresponding fragments
-		 *
-		 * @see {@link #FRAGMENTS}
-		 */
-		private final int[] HEADER_ITEMS = [
-			R.string.titles as int,
-			R.string.album as int,
-			R.string.playlist as int
-		]
+    @Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
 
-		/**
-		 * {@link Fragment} to be displayed for each tab
-		 *
-		 * The fragments have to be ordered the same order than
-		 * the correspondoig tab titles.
-		 *
-		 * @see {@link #HEADER_ITEMS}
-		 */
-		private final Fragment[] FRAGMENTS = [
-				new SongListFragment(),
-				new AlbumListFragment(),
-				new PlaylistsFragment()
-		]
+    @Override public void onTabSelected(Tab tab, FragmentTransaction ft)
+    { mainPager.currentItem = tab.position }
 
-		/** Constructor. Nothing special */
-		public PagerAdaptater(FragmentManager fm){ super(fm) }
+    /**
+     * Adaptater to manage displaying of the tabs
+     */
+    class PagerAdaptater extends FragmentStatePagerAdapter
+    {
+        /**
+         * Title of each tab
+         *
+         * The title have to be ordered the same order than
+         * the corresponding fragments
+         *
+         * @see {@link #FRAGMENTS}
+         */
+        private final int[] HEADER_ITEMS = [
+            R.string.titles as int,
+            R.string.album as int,
+            R.string.playlist as int
+        ]
 
-		/**
-		 * Returns the {@link Fragment} for the queried tab
-		 * @param arg0 Index of the queried {@link Fragment}
-		 * @return The {@link Fragment} corresponding to the index in the {@link #FRAGMENTS} array
-		 */
-		@Override public Fragment getItem(int arg0){ return FRAGMENTS[arg0] }
+        /**
+         * {@link Fragment} to be displayed for each tab
+         *
+         * The fragments have to be ordered the same order than
+         * the correspondoig tab titles.
+         *
+         * @see {@link #HEADER_ITEMS}
+         */
+        private final Fragment[] FRAGMENTS = [
+            new SongListFragment(),
+            new AlbumListFragment(),
+            new PlaylistsFragment()
+        ]
 
-		/**
-		 * Get the number of pages
-		 * @return number of pages
-		 */
-		@Override public int getCount(){ return HEADER_ITEMS.length }
+        /** Constructor. Nothing special */
+        public PagerAdaptater(FragmentManager fm){ super(fm) }
 
-		/**
-		 * Returns the title for the queried tab
-		 * @param position Index of the queried title
-		 * @return The title corresponding to the index in the {@link #HEADER_ITEMS} array
-		 */
-		@Override CharSequence getPageTitle(int position){ return getText(HEADER_ITEMS[position]) }
-	}
+        /**
+         * Returns the {@link Fragment} for the queried tab
+         * @param arg0 Index of the queried {@link Fragment}
+         * @return The {@link Fragment} corresponding to the index in the {@link #FRAGMENTS} array
+         */
+        @Override public Fragment getItem(int arg0){ return FRAGMENTS[arg0] }
+
+        /**
+         * Get the number of pages
+         * @return number of pages
+         */
+        @Override public int getCount(){ return HEADER_ITEMS.length }
+
+        /**
+         * Returns the title for the queried tab
+         * @param position Index of the queried title
+         * @return The title corresponding to the index in the {@link #HEADER_ITEMS} array
+         */
+        @Override CharSequence getPageTitle(int position){ return getText(HEADER_ITEMS[position]) }
+    }
 }

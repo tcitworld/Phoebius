@@ -32,7 +32,8 @@ enum ConfigManager
         if(!configFile.exists()) configFile.createNewFile()
         else
         {
-            try{ configs = new JsonSlurper().parse(configFile) as Map }
+            try
+            { configs = new JsonSlurper().parse(configFile) as Map }
             catch(Exception e)
             {
                 Log.e(this.class.toString(), "Enable to parse file: ${e}")
