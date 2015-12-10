@@ -77,13 +77,11 @@ enum NotificationPlayer
         remoteViews.setTextViewText(R.id.notifSongTitleLabel, song.title)
         remoteViews.setTextViewText(R.id.notifSongArtistLabel, song.artist)
 
-        if(musicService.playing) play()
-        else pause()
+        if(musicService.playing){ play() }
+        else{ pause() }
 
         notification.contentView = remoteViews
         notification.bigContentView = remoteViews
-        def nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(NOTIFICATION_TAG, 0, notification)
     }
 
     /**
@@ -101,4 +99,6 @@ enum NotificationPlayer
     private SongList getSongList(){ return SongList.INSTANCE }
 
     private MusicService getMusicService(){ return PhoebiusApplication.musicService }
+
+    public Notification getNotification(){ return this.@notification }
 }

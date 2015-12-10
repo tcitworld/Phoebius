@@ -64,16 +64,9 @@ public class PlayerControlFragment extends Fragment
 	@OnClick(R.id.btnPlayPause)
 	public void onBtnPlayClick()
 	{
-		if(playing)
-		{
-			pause()
-			btnPlayPause.imageResource = R.drawable.btn_play
-		}
-		else
-		{
-			start()
-			btnPlayPause.imageResource = R.drawable.btn_pause
-		}
+		musicService.playPause()
+		if(playing){ btnPlayPause.imageResource = R.drawable.btn_play }
+		else{ btnPlayPause.imageResource = R.drawable.btn_pause }
 	}
 
 	/**
@@ -174,10 +167,6 @@ public class PlayerControlFragment extends Fragment
 	boolean isPlaying(){ return musicService?.playing ?: false }
 	/** Shorthand for {@link MusicService#seek(int)} */
 	void seekTo(int i){ musicService.seek(i) }
-	/** Shorthand for {@link MusicService#start()} */
-	void start(){ musicService.start() }
-	/** Shorthand for {@link MusicService#start()} */
-	void pause(){ musicService.pause() }
 	//endregion
 
 	private MusicService getMusicService(){ return PhoebiusApplication.musicService }

@@ -39,17 +39,22 @@ public class MediaButtonReceiver extends BroadcastReceiver
 		switch(action)
 		{
 			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-				if(musicService.playing) musicService.pause()
-				else musicService.start()
+				musicService.playPause()
 				abortBroadcast()
 				break
 			case KeyEvent.KEYCODE_MEDIA_PLAY:
-				musicService.start()
-				abortBroadcast()
+				if(!musicService.playing)
+				{
+					musicService.playPause()
+					abortBroadcast()
+				}
 				break
 			case KeyEvent.KEYCODE_MEDIA_PAUSE:
-				musicService.pause()
-				abortBroadcast()
+				if(musicService.playing)
+                {
+                    musicService.playPause()
+                    abortBroadcast()
+                }
 				break
 			case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
 				musicService.playPrevious()

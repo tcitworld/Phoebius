@@ -56,7 +56,7 @@ class MusicService extends Service implements OnPreparedListener,
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         handleIntent(intent);
-        return super.onStartCommand(intent, flags, startId);
+        return START_NOT_STICKY
     }
 
     private void handleIntent(Intent intent)
@@ -67,8 +67,7 @@ class MusicService extends Service implements OnPreparedListener,
 	    switch(action)
 	    {
 		    case ACTIONS.ACTION_PLAY_PAUSE:
-			    if(playing) pause()
-			    else start()
+			    playPause()
 			    break
 		    case ACTIONS.ACTION_PREVIOUS:
 			    playPrevious()
@@ -113,10 +112,10 @@ class MusicService extends Service implements OnPreparedListener,
 		{
 			songList.currentSong = song
 			mediaPlayerInit(mediaPlayer, songList.currentSong)
-			prepareNextPlayer()
-			start()
-			notificationPlayer.fireNotification()
-		}
+            prepareNextPlayer()
+            playPause()
+            startForeground(1, notificationPlayer.notification)
+        }
 	}
 
 	/**
@@ -126,15 +125,17 @@ class MusicService extends Service implements OnPreparedListener,
 	{
 		mediaPlayer.stop()
 		notificationPlayer.cancel()
+		stopForeground(false)
 	}
 
 	/**
 	 * Pauses the player
 	 */
-	public void pause()
+	public void playPause()
 	{
-		mediaPlayer.pause()
-		//notificationPlayer.fireNotification()
+		if(playing){ mediaPlayer.pause() }
+		else{ mediaPlayer.start() }
+        notificationPlayer.fireNotification()
 	}
 
 	/**
@@ -160,14 +161,6 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void backward(){ seek(position - 10000) }
 
-	/**
-	 * Starts playing the music
-	 */
-	public void start()
-	{
-		mediaPlayer.start()
-		notificationPlayer.fireNotification()
-	}
 
 	/**
 	 * Moves the song playing (or song to be played if the player
