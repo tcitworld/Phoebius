@@ -11,7 +11,7 @@ import android.widget.RemoteViews
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.utils.Song
-import augier.fr.phoebius.utils.SongList
+import com.squareup.otto.Subscribe
 
 /**
  * Helper class for showing and canceling player notifications
@@ -26,11 +26,11 @@ enum NotificationPlayer
     /** Unique identifier for this type of notification. */
     private static final String NOTIFICATION_TAG = "${R.string.app_name}#NotifPlayer"
     private final def FOR_BUTTON = [
-        (R.id.btnPlayPause): MusicService.ACTIONS.ACTION_PLAY_PAUSE,
-        (R.id.btnBackward) : MusicService.ACTIONS.ACTION_BACKWARD,
-        (R.id.btnForward)  : MusicService.ACTIONS.ACTION_FORWARD,
-        (R.id.btnNext)     : MusicService.ACTIONS.ACTION_NEXT,
-        (R.id.btnPrevious) : MusicService.ACTIONS.ACTION_PREVIOUS
+        (R.id.btnPlayPause): PlayerActions.ACTION_PLAY_PAUSE,
+        (R.id.btnBackward) : PlayerActions.ACTION_BACKWARD,
+        (R.id.btnForward)  : PlayerActions.ACTION_FORWARD,
+        (R.id.btnNext)     : PlayerActions.ACTION_NEXT,
+        (R.id.btnPrevious) : PlayerActions.ACTION_PREVIOUS
     ]
     private Notification notification
     private RemoteViews remoteViews
@@ -48,6 +48,8 @@ enum NotificationPlayer
         FOR_BUTTON.keySet().each{
             remoteViews.setOnClickPendingIntent(it, generateAction(it))
         }
+
+        PhoebiusApplication.bus.register(this)
     }
 
     private PendingIntent generateAction(int btn)
@@ -68,18 +70,41 @@ enum NotificationPlayer
      *
      * @see #cancel()
      */
-    public void fireNotification()
+    @Subscribe
+    public void getSong(Song song)
     {
-        Song song = songList.currentSong
-        def play = { remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_pause) }
-        def pause = { remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_play) }
         remoteViews.setImageViewBitmap(R.id.notifAlbumCover, song.cover)
         remoteViews.setTextViewText(R.id.notifSongTitleLabel, song.title)
         remoteViews.setTextViewText(R.id.notifSongArtistLabel, song.artist)
 
-        if(musicService.playing){ play() }
-        else{ pause() }
+        update()
+    }
 
+    @Subscribe
+    public void getPlayerAction(PlayerActions action)
+    {
+        switch(action)
+        {
+            case PlayerActions.ACTION_STOP:
+                cancel()
+                break
+            case PlayerActions.ACTION_PLAY_PAUSE:
+                computePlayPauseState()
+                break
+        }
+    }
+
+    private computePlayPauseState()
+    {
+        if(musicService.playing)
+            remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_pause)
+        else
+            remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_play)
+        update()
+    }
+
+    private void update()
+    {
         notification.contentView = remoteViews
         notification.bigContentView = remoteViews
     }
@@ -95,8 +120,6 @@ enum NotificationPlayer
     }
 
     private Context getContext(){ return PhoebiusApplication.context }
-
-    private SongList getSongList(){ return SongList.INSTANCE }
 
     private MusicService getMusicService(){ return PhoebiusApplication.musicService }
 

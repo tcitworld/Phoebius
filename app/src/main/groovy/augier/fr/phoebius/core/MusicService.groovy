@@ -11,9 +11,9 @@ import android.media.MediaPlayer.OnPreparedListener
 import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
+import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.utils.Song
 import augier.fr.phoebius.utils.SongList
-
 
 /**
  * This class takes care of playing the music and interacting with the controls
@@ -21,15 +21,6 @@ import augier.fr.phoebius.utils.SongList
 class MusicService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener
 {
-   	public static final def ACTIONS = [
-		ACTION_PLAY_PAUSE: "action_play_pause",
-		ACTION_BACKWARD: "action_rewind",
-		ACTION_FORWARD: "action_fast_foward",
-		ACTION_NEXT: "action_next",
-		ACTION_PREVIOUS: "action_previous"
-    ]
-
-
 	/**
 	 * Our actual music player that will broadcast sound
 	 */
@@ -62,23 +53,23 @@ class MusicService extends Service implements OnPreparedListener,
     private void handleIntent(Intent intent)
     {
         if(intent == null || intent.getAction() == null) return
-        String action = intent.getAction();
+        PlayerActions action = PlayerActions.valueOf(intent.getAction());
 
 	    switch(action)
 	    {
-		    case ACTIONS.ACTION_PLAY_PAUSE:
+            case PlayerActions.ACTION_PLAY_PAUSE:
 			    playPause()
 			    break
-		    case ACTIONS.ACTION_PREVIOUS:
+            case PlayerActions.ACTION_PREVIOUS:
 			    playPrevious()
 			    break
-		    case ACTIONS.ACTION_NEXT:
+            case PlayerActions.ACTION_NEXT:
 			    playNext()
 			    break
-		    case ACTIONS.ACTION_FORWARD:
+            case PlayerActions.ACTION_FORWARD:
 			    forward()
 			    break
-		    case ACTIONS.ACTION_BACKWARD:
+            case PlayerActions.ACTION_BACKWARD:
 			    backward()
 			    break
 	    }
@@ -107,13 +98,15 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void play(Song song)
 	{
-		if(!song) stop()
+        if(!song)
+        { stop() }
 		else
 		{
 			songList.currentSong = song
 			mediaPlayerInit(mediaPlayer, songList.currentSong)
             prepareNextPlayer()
             playPause()
+            PhoebiusApplication.bus.post(songList.currentSong)
             startForeground(1, notificationPlayer.notification)
         }
 	}
@@ -124,7 +117,7 @@ class MusicService extends Service implements OnPreparedListener,
 	public void stop()
 	{
 		mediaPlayer.stop()
-		notificationPlayer.cancel()
+        PhoebiusApplication.bus.post(PlayerActions.ACTION_STOP)
 		stopForeground(false)
 	}
 
@@ -135,7 +128,7 @@ class MusicService extends Service implements OnPreparedListener,
 	{
 		if(playing){ mediaPlayer.pause() }
 		else{ mediaPlayer.start() }
-        notificationPlayer.fireNotification()
+        PhoebiusApplication.bus.post(PlayerActions.ACTION_PLAY_PAUSE)
 	}
 
 	/**
@@ -174,7 +167,6 @@ class MusicService extends Service implements OnPreparedListener,
 	 */
 	public void playNext(){ play(songList.nextSong) }
 	//endregion
-
 
 	//region Overrided methods
 	@Override
