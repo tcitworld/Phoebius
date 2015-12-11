@@ -9,7 +9,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
-import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.model.Song
+import augier.fr.phoebius.utils.SquareImageView
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.squareup.otto.Subscribe

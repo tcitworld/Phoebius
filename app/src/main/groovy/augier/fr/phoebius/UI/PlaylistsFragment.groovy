@@ -11,7 +11,8 @@ import android.widget.ListView
 import android.widget.TextView
 import augier.fr.phoebius.PlaylistDetailActivity
 import augier.fr.phoebius.R
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.model.SongManager
+import augier.fr.phoebius.utils.AbstractAdaptater
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
@@ -34,11 +35,11 @@ public class PlaylistsFragment extends Fragment
     {
         String playlistName = allPlaylists[position]
         Intent intent = new Intent(activity, PlaylistDetailActivity.class)
-        intent.putExtra("songs", SongList.INSTANCE.getPlaylist(playlistName))
+        intent.putExtra("songs", SongManager.INSTANCE.getPlaylist(playlistName))
         startActivity(intent)
     }
 
-    private ArrayList<String> getAllPlaylists(){ return SongList.INSTANCE.allPlaylists }
+    private ArrayList<String> getAllPlaylists(){ return SongManager.INSTANCE.allPlaylists }
 
     class PlaylistAdaptater extends AbstractAdaptater
     {

@@ -1,10 +1,8 @@
-package augier.fr.phoebius.utils
+package augier.fr.phoebius.model
 
 
 import android.content.ContentResolver
-import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import augier.fr.phoebius.PhoebiusApplication
@@ -13,6 +11,7 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.OnBackground
 import groovy.transform.CompileStatic
 
+
 /**
  * This class manages the creation, listing and iteration through the musics
  *
@@ -20,18 +19,15 @@ import groovy.transform.CompileStatic
  * It is an abstraction of Andrdoid FS
  */
 @CompileStatic
-enum SongList
+enum SongManager
 {
     INSTANCE()
 
-    private ArrayList<Song> currSongList = []
-    private ArrayList<Album> thisAlbumList = []
-    private LinkedHashMap<String, Bitmap> covers = [:]
-    private LinkedHashMap<String, ArrayList<Song>> playlists = [Test: new ArrayList<>()]
+    private NamedPlaylistsSet playlists = [Test: new Playlist()]
     private Long currentSongId
     private boolean loop
 
-    private SongList()
+    private SongManager()
     {
         def musicQueryBuilder = new MusicQueryBuilder()
         musicQueryBuilder.createAlbumList()
@@ -39,13 +35,6 @@ enum SongList
         createPlaylists()
         currentSongId = firstId
         loop = false
-    }
-
-    public boolean newPlaylist(String name)
-    {
-        if(playlists.containsKey(name)){ return false }
-        playlists[name] = new ArrayList<>()
-        return true
     }
 
     public void addToPlaylist(String name, Song song){ playlists[name].add(song) }
@@ -56,7 +45,7 @@ enum SongList
         res.each{
             String name = it.key as String
             def songs = it.value as List
-            playlists[name] = new ArrayList<>()
+            playlists[name] = new Playlist()
             songs.each{
                 def song = it as Map<String, String>
                 playlists[name].add(Song.fromMap(song))
@@ -78,13 +67,13 @@ enum SongList
     /** Overriding of [] operator */
     public Song getAt(int idx){ return currSongList[idx] }
 
-    public SongList next()
+    public SongManager next()
     {
         currentSongId = nextSong?.ID ?: firstId
         return this
     }
 
-    public SongList previous()
+    public SongManager previous()
     {
         currentSongId = previousSong?.ID ?: firstId
         return this
@@ -161,9 +150,6 @@ enum SongList
         else return currSongList[idx]
     }
 
-    /** @return The context of the application    */
-    private Context getContext(){ return PhoebiusApplication.context }
-
     private ConfigManager getConfigManager(){ return ConfigManager.INSTANCE }
 
     private Long getFirstId(){ return songList[0]?.ID ?: -1 }
@@ -178,7 +164,7 @@ enum SongList
     public void setLoop(boolean loop){ this.loop = loop }
 
     /** @return The current playing list    */
-    public ArrayList<Song> getCurrSongList(){ return currSongList }
+    public Playlist getCurrSongList(){ return Song.allSongs }
 
     /** @return The current playing song    */
     public Song getCurrentSong(){ return findById(currentSongId) }
@@ -186,19 +172,12 @@ enum SongList
     /** Sets the current playing song */
     public void setCurrentSong(Song song){ this.currentSongId = song?.ID ?: getFirstId() }
 
-    /** @return The album list   */
-    public ArrayList<Album> getAlbumList(){ return thisAlbumList }
-
     /** @return The complete song list    */
-    public ArrayList<Song> getSongList(){ return currSongList }
-
-    /** @return Cover for album title or default cover    */
-    public Bitmap getCoverFor(String albumTitle){ return covers[albumTitle] ?: Album.defaultCover }
+    public Playlist getSongList(){ return currSongList }
 
     public ArrayList<String> getAllPlaylists(){ return playlists.keySet() as ArrayList<String> }
 
-    public ArrayList<Song> getPlaylist(String name)
-    { return playlists[name] ?: [] as ArrayList<Song> }
+    public Playlist getPlaylist(String name){ return playlists[name] ?: new Playlist() }
 
     //endregion
 
@@ -222,9 +201,14 @@ enum SongList
                                                    ALBUM_DATE, ALBUM_NB_SONG, ALBUM_COVER]
 
         private Cursor musicCursor
+        private Cursor albumCursor
         private ContentResolver resolver = PhoebiusApplication.context.contentResolver
 
-        public MusicQueryBuilder(){}
+        public MusicQueryBuilder()
+        {
+            musicCursor = query(MUSIC_URI, null)
+            albumCursor = query(ALBUM_URI, ALBUM_COLS)
+        }
 
         /**
          * Query the DB to retrieve the list of songs
@@ -238,26 +222,23 @@ enum SongList
         @OnBackground
         private void bgCreateSongList()
         {
-            currSongList.clear()
-            musicCursor = queryCursor
-
             if(musicCursor?.moveToFirst())
             {
 
                 while(musicCursor.moveToNext())
                 {
-                    currSongList.add(new Song(
+                    Song.createOne(
                         musicCursor.getLong(songIdColumn),
                         musicCursor.getString(songTitleColumn),
                         musicCursor.getString(songArtistColumn),
                         musicCursor.getString(songAlbumColumn),
                         musicCursor.getInt(songNumberColumn),
-                        musicCursor.getInt(songYearColumn))
+                        musicCursor.getInt(songYearColumn)
                     )
                 }
             }
             musicCursor.close()
-            currSongList.sort()
+            Song.allSongs.sort()
         }
 
         /**
@@ -271,55 +252,46 @@ enum SongList
 
         private void bgCreateAlbumList()
         {
-            thisAlbumList.clear()
-            musicCursor = albumCursor
-
-            if(musicCursor?.moveToFirst())
+            if(albumCursor?.moveToFirst())
             {
-                while(musicCursor.moveToNext())
+                while(albumCursor.moveToNext())
                 {
-                    def album = new Album(
-                        musicCursor.getString(albumTitleColumn),
-                        musicCursor.getString(albumArtistColumn),
-                        musicCursor.getString(albumDateColumn),
-                        musicCursor.getString(albumNbSongsColumn),
-                        musicCursor.getString(albumCoverColumn))
-
-                    thisAlbumList.add(album)
-                    covers[album.albumTitle] = album.cover
+                    Album.createOne(
+                        albumCursor.getString(albumTitleColumn),
+                        albumCursor.getString(albumArtistColumn),
+                        albumCursor.getString(albumDateColumn),
+                        albumCursor.getString(albumNbSongsColumn),
+                        albumCursor.getString(albumCoverColumn)
+                    )
                 }
             }
-            musicCursor.close()
-            thisAlbumList.sort()
+            albumCursor.close()
+            Album.allAlbums.sort()
         }
 
-        private int getSongTitleColumn(){ return gci(SONG_TITLE) }
+        private int getSongTitleColumn(){ return gci(SONG_TITLE, musicCursor) }
 
-        private int getSongIdColumn(){ return gci(SONG_ID) }
+        private int getSongIdColumn(){ return gci(SONG_ID, musicCursor) }
 
-        private int getSongArtistColumn(){ return gci(SONG_ARTIST) }
+        private int getSongArtistColumn(){ return gci(SONG_ARTIST, musicCursor) }
 
-        private int getSongAlbumColumn(){ return gci(SONG_ALBUM) }
+        private int getSongAlbumColumn(){ return gci(SONG_ALBUM, musicCursor) }
 
-        private int getSongYearColumn(){ return gci(SONG_YEAR) }
+        private int getSongYearColumn(){ return gci(SONG_YEAR, musicCursor) }
 
-        private int getSongNumberColumn(){ return gci(SONG_NUMBER) }
+        private int getSongNumberColumn(){ return gci(SONG_NUMBER, musicCursor) }
 
-        private int getAlbumArtistColumn(){ return gci(ALBUM_ARTIST) }
+        private int getAlbumArtistColumn(){ return gci(ALBUM_ARTIST, albumCursor) }
 
-        private int getAlbumTitleColumn(){ return gci(ALBUM_TITLE) }
+        private int getAlbumTitleColumn(){ return gci(ALBUM_TITLE, albumCursor) }
 
-        private int getAlbumDateColumn(){ return gci(ALBUM_DATE) }
+        private int getAlbumDateColumn(){ return gci(ALBUM_DATE, albumCursor) }
 
-        private int getAlbumNbSongsColumn(){ return gci(ALBUM_NB_SONG) }
+        private int getAlbumNbSongsColumn(){ return gci(ALBUM_NB_SONG, albumCursor) }
 
-        private int getAlbumCoverColumn(){ return gci(ALBUM_COVER) }
+        private int getAlbumCoverColumn(){ return gci(ALBUM_COVER, albumCursor) }
 
-        private Cursor getQueryCursor(){ return query(MUSIC_URI, null) }
-
-        private Cursor getAlbumCursor(){ return query(ALBUM_URI, ALBUM_COLS) }
-
-        private int gci(String columnName){ return musicCursor.getColumnIndex(columnName) }
+        private int gci(String col, Cursor c){ return c.getColumnIndex(col) }
 
         private Cursor query(Uri a, String[] b){ return resolver.query(a, b, null, null, null) }
     }

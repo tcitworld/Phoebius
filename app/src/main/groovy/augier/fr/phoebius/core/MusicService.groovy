@@ -12,8 +12,8 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.PowerManager
 import augier.fr.phoebius.PhoebiusApplication
-import augier.fr.phoebius.utils.Song
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.model.Song
+import augier.fr.phoebius.model.SongManager
 
 /**
  * This class takes care of playing the music and interacting with the controls
@@ -268,7 +268,7 @@ class MusicService extends Service implements OnPreparedListener,
      */
     int getPosition(){ return ready ? mediaPlayer.currentPosition : 0 }
 
-    private SongList getSongList(){ return SongList.INSTANCE }
+    private SongManager getSongList(){ return SongManager.INSTANCE }
 
     //endregion
 

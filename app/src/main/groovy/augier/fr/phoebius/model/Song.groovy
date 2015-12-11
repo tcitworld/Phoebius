@@ -1,4 +1,4 @@
-package augier.fr.phoebius.utils
+package augier.fr.phoebius.model
 
 
 import android.content.ContentUris
@@ -9,71 +9,84 @@ import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
 import groovy.transform.CompileStatic
 
+
 /**
  * Representation of a song
  */
 @CompileStatic
-@Parcelable(exclude = { URI })
-class Song implements Comparable
+@Parcelable(exclude = { defaultSong })
+class Song extends SongDataBase implements Comparable
 {
     private Long id
     private String title
     private String artist
-    private String album
+    private String albumName
+    private Album album
     private Integer trackNumber
     private Integer year
-    private Uri URI
     private static final Song defaultSong = new Song(
-        new Long(-1), "Song title", "Song artist", "Song album", 0, 0)
+        new Long(-1), "Song title", "Song artist", "Song albumName", 0, 0)
 
     /**
      * Builds a new song
      * @param songID ID of the song in the Android's DB
      * @param songTitle Song title
      * @param songArtist Artist of the song
-     * @param songAlbum Song's album
-     * @param songNb Song's rank on the album
+     * @param songAlbum Song's albumName
+     * @param songNb Song's rank on the albumName
      * @param songYear Song's year of release
      */
-    public Song(Long songID, String songTitle, String songArtist,
-        String songAlbum, Integer songNb, Integer songYear)
+    private Song(Long songID, String songTitle, String songArtist,
+                String songAlbum, Integer songNb, Integer songYear)
     {
         id = songID
         title = songTitle
         artist = songArtist
-        album = songAlbum
+        albumName = songAlbum
         trackNumber = songNb
         year = songYear
-        URI = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
     }
 
-    /** @return Song id   */
+    public static void createOne(Long songID, String songTitle, String songArtist,
+                              String songAlbum, Integer songNb, Integer songYear)
+    {
+        this.@allSongs << new Song(songID, songTitle, songArtist,
+                             songAlbum, songNb, songYear)
+    }
+
+    //region GET/SET
+    /** @return Song id     */
     public Long getID(){ return id }
 
-    /** @return Song title   */
+    /** @return Song title     */
     public String getTitle(){ return title }
 
-    /** @return Song artist   */
+    /** @return Song artist     */
     public String getArtist(){ return artist }
 
-    /** @return Song URI (path in FS)   */
-    public Uri getURI(){ return URI }
-
-    /** @return Song album   */
-    public String getAlbum(){ return album }
-
-    /** @return Song rank in album   */
-    public int getTrackNumber(){ return trackNumber }
-
-    /** @return Song year of release   */
-    public int getYear(){ return year }
-
-    public Bitmap getCover()
+    /** @return Song URI (path in FS)     */
+    public Uri getURI()
     {
-        if(id < 0) return Album.defaultCover
-        else return SongList.INSTANCE.getCoverFor(this.album) ?: Album.defaultCover
+        return ContentUris.withAppendedId(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
     }
 
+    /** @return Song albumName     */
+    public Album getAlbum()
+    {
+        if(!album){ album = Album.findByName(albumName) }
+        return album
+    }
+
+    /** @return Song rank in albumName     */
+    public int getTrackNumber(){ return trackNumber }
+
+    /** @return Song year of release     */
+    public int getYear(){ return year }
+
+    public Bitmap getCover(){ return this.getAlbum().cover }
+
+    //endregion
     @Override
     public String toString()
     {
@@ -86,7 +99,7 @@ class Song implements Comparable
             ID         : "${ID}",
             title      : "${title}",
             artist     : "${artist}",
-            album      : "${album}",
+            album      : "${albumName}",
             trackNumber: "${trackNumber}",
             year       : "${year}"
         ]
@@ -97,7 +110,7 @@ class Song implements Comparable
         String ID = values["ID"]
         String title = values["title"]
         String artist = values["artist"]
-        String album = values["album"]
+        String album = values["albumName"]
         String trackNumber = values["trackNumber"]
         String year = values["year"]
 
@@ -111,7 +124,7 @@ class Song implements Comparable
     /**
      * Compares for sorting
      *
-     * Compare by 2 criterias: by album title first and then by rank on the album.
+     * Compare by 2 criterias: by albumName title first and then by rank on the albumName.
      *
      * @param o Other object to compare to
      * @return Result of comparison
@@ -121,10 +134,6 @@ class Song implements Comparable
     {
         if(!o instanceof Song) return 0
         Song other = o as Song
-        int byAlbum = this.album.compareTo(other.album)
-        int byNumber = this.trackNumber.compareTo(other.trackNumber)
-
-        if(byAlbum) return byAlbum
-        return byNumber
+        return this.albumName <=> other.albumName ?: this.trackNumber <=> other.trackNumber
     }
 }

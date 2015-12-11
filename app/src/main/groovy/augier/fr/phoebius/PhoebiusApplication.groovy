@@ -11,7 +11,7 @@ import android.os.IBinder
 import augier.fr.phoebius.core.ConfigManager
 import augier.fr.phoebius.core.MusicService
 import augier.fr.phoebius.core.NotificationPlayer
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.model.SongManager
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.OnBackground
 import com.squareup.otto.Bus
@@ -46,7 +46,7 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
 
     private void dumpConfig()
     {
-        SongList.INSTANCE.dispose()
+        SongManager.INSTANCE.dispose()
         ConfigManager.INSTANCE.dump()
     }
 

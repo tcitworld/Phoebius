@@ -3,55 +3,55 @@
 			  android:layout_width="fill_parent"
 			  android:layout_height="wrap_content">
 
-	<augier.fr.phoebius.UI.SquareImageView
+	<augier.fr.phoebius.utils.SquareImageView
 		android:id="@+id/albumCover"
-		android:src="@drawable/application_icon"
 		android:layout_width="wrap_content"
 		android:layout_height="fill_parent"
-		android:layout_margin="5dp"/>
+		android:layout_margin="5dp"
+		android:src="@drawable/application_icon"/>
 
 	<LinearLayout
-		android:orientation="vertical"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="5dp">
+		android:layout_marginLeft="5dp"
+		android:orientation="vertical">
 
 		<TextView
 			android:id="@+id/albumTitle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:lines="1"
+			android:text="@string/albumTitleText"
 			android:textColor="#FFFFFF99"
 			android:textSize="20sp"
-			android:textStyle="bold"
-			android:lines="1"
-			android:text="@string/albumTitleText"/>
+			android:textStyle="bold"/>
 
 		<TextView
 			android:id="@+id/albumArtist"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textColor="#FFFFFF99"
-			android:textSize="18sp"
 			android:lines="1"
-			android:text="@string/albumArtistText"/>
+			android:text="@string/albumArtistText"
+			android:textColor="#FFFFFF99"
+			android:textSize="18sp"/>
 
 		<TextView
 			android:id="@+id/albumDate"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textColor="#FFFFFF99"
-			android:textSize="18sp"
 			android:lines="1"
-			android:text="@string/albumDateText"/>
+			android:text="@string/albumDateText"
+			android:textColor="#FFFFFF99"
+			android:textSize="18sp"/>
 
 		<TextView
 			android:id="@+id/albumNbSongs"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textColor="#FFFFFF99"
-			android:textSize="18sp"
 			android:lines="1"
-			android:text="@string/albumNbSongText"/>
+			android:text="@string/albumNbSongText"
+			android:textColor="#FFFFFF99"
+			android:textSize="18sp"/>
 	</LinearLayout>
 
 </LinearLayout>

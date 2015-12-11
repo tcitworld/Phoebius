@@ -10,13 +10,15 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import augier.fr.phoebius.R
-import augier.fr.phoebius.utils.Album
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.model.Album
+import augier.fr.phoebius.model.AlbumList
+import augier.fr.phoebius.model.SongManager
+import augier.fr.phoebius.utils.AbstractAdaptater
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 
 /**
- * Fragment to display the album list
+ * Fragment to display the albumName list
  *
  * This class uses <a href="https://github.com/Arasthel/SwissKnife">SwissKnife</a>.
  * The views are injected in the {@link AlbumListFragment#onCreateView onCreateView} method
@@ -41,26 +43,19 @@ public class AlbumListFragment extends Fragment
 
         return view
     }
-
     /**
-     * Shorthand to {@link SongList#getAlbumList()}
-     * @return List of albums
-     */
-    private static ArrayList<Album> getAlbums(){ return SongList.INSTANCE.albumList }
-
-    /**
-     * Adaptater to create a grid of albums
+     * Adaptater to createOne a grid of albums
      */
     class SongAdapter extends AbstractAdaptater
     {
-        @Override public int getCount(){ return albums.size() }
+        @Override public int getCount(){ return Album.allAlbums.size() }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
             layout = inflate(activity, R.layout.album_item, parent)
 
-            Album currAlbum = albums[position]
+            Album currAlbum = Album.allAlbums[position]
             this.<TextView>getView(R.id.albumTitle).text = currAlbum.albumTitle
             this.<TextView>getView(R.id.albumArtist).text = currAlbum.albumArtist
             this.<TextView>getView(R.id.albumDate).text = currAlbum.date

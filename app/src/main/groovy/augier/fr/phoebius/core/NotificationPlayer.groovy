@@ -10,7 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
-import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.model.Song
 import com.squareup.otto.Subscribe
 
 /**

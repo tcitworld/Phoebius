@@ -9,8 +9,10 @@ import android.widget.TextView
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
-import augier.fr.phoebius.utils.Song
-import augier.fr.phoebius.utils.SongList
+import augier.fr.phoebius.model.Playlist
+import augier.fr.phoebius.model.Song
+import augier.fr.phoebius.model.SongManager
+import augier.fr.phoebius.utils.AbstractAdaptater
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
@@ -83,12 +85,12 @@ public class SongListFragment extends Fragment
         return true
     }
 
-    /** @return List of songs @see {@link SongList} */
-    protected ArrayList<Song> getSongs(){ return songList.currSongList }
+    /** @return List of songs @see {@link SongManager} */
+    protected Playlist getSongs(){ return songList.currSongList }
 
     protected MusicService getMusicService(){ return PhoebiusApplication.musicService }
 
-    protected SongList getSongList(){ return SongList.INSTANCE }
+    protected SongManager getSongList(){ return SongManager.INSTANCE }
 
     /** Adapter class, nothing special */
     class SongAdapter extends AbstractAdaptater

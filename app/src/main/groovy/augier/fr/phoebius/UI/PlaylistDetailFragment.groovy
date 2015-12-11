@@ -4,13 +4,14 @@ package augier.fr.phoebius.UI
 import android.app.Activity
 import android.util.Log
 import augier.fr.phoebius.PlaylistDetailActivity
-import augier.fr.phoebius.utils.Song
+import augier.fr.phoebius.model.Playlist
+import augier.fr.phoebius.model.Song
 import groovy.transform.CompileStatic
 
 @CompileStatic
 public class PlaylistDetailFragment extends SongListFragment
 {
-    ArrayList<Song> songs
+    Playlist songs
 
     @Override
     void onAttach(Activity activity)
@@ -20,8 +21,7 @@ public class PlaylistDetailFragment extends SongListFragment
     }
 
     @Override
-    protected ArrayList<Song> getSongs()
-    { return songs }
+    protected Playlist getSongs(){ return songs }
 
     @Override
     void onItemClick(int position)

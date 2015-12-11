@@ -1,4 +1,4 @@
-package augier.fr.phoebius.UI
+package augier.fr.phoebius.utils
 
 
 import android.content.Context
