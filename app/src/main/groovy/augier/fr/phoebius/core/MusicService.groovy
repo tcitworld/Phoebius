@@ -229,7 +229,7 @@ class MusicService extends Service implements OnPreparedListener,
         Song next = songList.nextSong
         if(next) mediaPlayerInit(nextMediaPlayer, next)
         else nextMediaPlayer = null
-        mediaPlayer.nextMediaPlayer = nextMediaPlayer
+        //mediaPlayer.nextMediaPlayer = nextMediaPlayer
     }
 
     private void releasePlayers()

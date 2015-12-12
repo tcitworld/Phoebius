@@ -21,7 +21,5 @@ public class NavbarFragment extends Fragment
         return view
     }
 
-    @OnClick(R.id.action_end)
-    public void onClick()
-    { System.exit(0) }
+    @OnClick(R.id.action_end) public void onClick(){ System.exit(0) }
 }

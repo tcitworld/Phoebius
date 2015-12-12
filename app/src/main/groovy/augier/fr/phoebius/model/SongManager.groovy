@@ -42,7 +42,7 @@ enum SongManager
     private void createPlaylists()
     {
         def res = configManager[ConfigManager.WKK_PLAYLIST] as Map
-        res.each{
+        res?.each{
             String name = it.key as String
             def songs = it.value as List
             playlists[name] = new Playlist()

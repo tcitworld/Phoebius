@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme" parent="android:Theme.Holo.Light.NoActionBar">
+    <style name="PhoebiusTheme" parent="Theme.AppCompat">
 		<item name="android:windowActionBarOverlay">true</item>
     </style>
 	<color name="GlobalBG">#000</color>

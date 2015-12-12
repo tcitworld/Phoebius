@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v4.app.NavUtils
+import android.support.v7.app.AppCompatActivity
 import augier.fr.phoebius.model.Playlist
 import groovy.transform.CompileStatic
 
 @CompileStatic
-public class PlaylistDetailActivity extends FragmentActivity
+public class PlaylistDetailActivity extends AppCompatActivity
 {
     Playlist songs
 

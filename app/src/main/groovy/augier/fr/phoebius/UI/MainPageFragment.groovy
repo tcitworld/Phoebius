@@ -6,11 +6,12 @@ import android.app.ActionBar.TabListener
 import android.app.Activity
 import android.app.FragmentTransaction
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,9 +29,10 @@ import groovy.transform.CompileStatic
  * The views are injected in the {@link MainPageFragment#onCreateView onCreateView} method
  */
 @CompileStatic
-public class MainPageFragment extends Fragment implements TabListener
+public class MainPageFragment extends Fragment
 {
     @InjectView ViewPager mainPager
+    @InjectView TabLayout slidingTabs
     private PagerAdaptater pagerAdaptater
 
     /**
@@ -46,7 +48,7 @@ public class MainPageFragment extends Fragment implements TabListener
     void onAttach(Activity activity)
     {
         super.onAttach(activity)
-        def a = activity as FragmentActivity
+        def a = activity as AppCompatActivity
         pagerAdaptater = new PagerAdaptater(a.supportFragmentManager)
     }
 
@@ -57,20 +59,14 @@ public class MainPageFragment extends Fragment implements TabListener
         SwissKnife.inject(this, view)
 
         mainPager.adapter = pagerAdaptater
+        slidingTabs.setupWithViewPager(mainPager)
         return view
     }
-
-    @Override public void onTabReselected(Tab tab, FragmentTransaction ft){}
-
-    @Override public void onTabUnselected(Tab tab, FragmentTransaction ft){}
-
-    @Override public void onTabSelected(Tab tab, FragmentTransaction ft)
-    { mainPager.currentItem = tab.position }
 
     /**
      * Adaptater to manage displaying of the tabs
      */
-    class PagerAdaptater extends FragmentStatePagerAdapter
+    class PagerAdaptater extends FragmentPagerAdapter
     {
         /**
          * Title of each tab
