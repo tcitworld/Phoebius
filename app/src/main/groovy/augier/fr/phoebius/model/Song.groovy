@@ -5,6 +5,8 @@ import android.content.ContentUris
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import com.arasthel.swissknife.SwissKnife
+import com.arasthel.swissknife.annotations.OnBackground
 import com.arasthel.swissknife.annotations.Parcelable
 import groovy.json.JsonBuilder
 import groovy.transform.CompileStatic
@@ -50,8 +52,9 @@ class Song extends SongDataBase implements Comparable
     public static void createOne(Long songID, String songTitle, String songArtist,
                               String songAlbum, Integer songNb, Integer songYear)
     {
-        this.@allSongs << new Song(songID, songTitle, songArtist,
-                             songAlbum, songNb, songYear)
+        this.@allSongs.add(
+            new Song(songID, songTitle, songArtist,
+                     songAlbum, songNb, songYear))
     }
 
     //region GET/SET
@@ -86,12 +89,13 @@ class Song extends SongDataBase implements Comparable
 
     public Bitmap getCover(){ return this.getAlbum().cover }
 
+    public static Song getDefaultSong(){ return defaultSong }
+
+    public static Playlist getAllSongs(){ return this.@allSongs }
+
     //endregion
     @Override
-    public String toString()
-    {
-        return new JsonBuilder(toMap()).toPrettyString()
-    }
+    public String toString(){ return new JsonBuilder(toMap()).toPrettyString() }
 
     public LinkedHashMap<String, String> toMap()
     {
@@ -119,8 +123,6 @@ class Song extends SongDataBase implements Comparable
             new Integer(trackNumber), new Integer(year))
     }
 
-    public static Song getDefaultSong(){ return defaultSong }
-
     /**
      * Compares for sorting
      *
@@ -136,4 +138,47 @@ class Song extends SongDataBase implements Comparable
         Song other = o as Song
         return this.albumName <=> other.albumName ?: this.trackNumber <=> other.trackNumber
     }
+
+    //region QUERY
+    public static void query(){ SwissKnife.runOnBackground(this, "bgCreateSongList") }
+
+    @OnBackground
+    private static void bgCreateSongList()
+    {
+        def musicCursor = getCursor(MUSIC_URI, null)
+
+        def getString = { String columnName ->
+            return musicCursor.getString(
+                musicCursor.getColumnIndex(columnName))
+        }
+
+        def getInt = { String columnName ->
+            return musicCursor.getInt(
+                musicCursor.getColumnIndex(columnName))
+        }
+
+        def getLong = { String columnName ->
+            return musicCursor.getLong(
+                musicCursor.getColumnIndex(columnName))
+        }
+
+        if(musicCursor?.moveToFirst())
+        {
+
+            while(musicCursor.moveToNext())
+            {
+                createOne(
+                    getLong(SONG_ID),
+                    getString(SONG_TITLE),
+                    getString(SONG_ARTIST),
+                    getString(SONG_ALBUM),
+                    getInt(SONG_NUMBER),
+                    getInt(SONG_YEAR)
+                )
+            }
+        }
+        musicCursor.close()
+        this.@allSongs.sort()
+    }
+    //endregion
 }

@@ -1,10 +1,12 @@
 package augier.fr.phoebius.model
 
 
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
+import com.arasthel.swissknife.SwissKnife
 import groovy.transform.CompileStatic
 
 /**
@@ -55,6 +57,7 @@ public class Album extends SongDataBase implements Comparable
         this.@allAlbums << new Album(albumTitle, albumArtist, date, nbSongs, coverPath)
     }
 
+    //region GET/SET
     /** @return Album artist     */
     String getAlbumArtist(){ return albumArtist }
 
@@ -81,7 +84,8 @@ public class Album extends SongDataBase implements Comparable
         return songs
     }
 
-    AlbumList getAllAlbums(){ return allAlbums }
+    public AlbumList getAllAlbums(){ return this.@allAlbums }
+    //endregion
 
     public static Album findByName(String name)
     {
@@ -104,9 +108,39 @@ public class Album extends SongDataBase implements Comparable
         return byTitle
     }
 
-    public static Bitmap getDefaultCover()
+    private static Bitmap getDefaultCover()
     {
         return BitmapFactory.decodeResource(
             PhoebiusApplication.resources, R.drawable.default_cover)
     }
+
+    //region QUERY
+    public static void query(){ SwissKnife.runOnBackground(this, "bgCreateAlbumList") }
+
+    private static void bgCreateAlbumList()
+    {
+        Cursor albumCursor = getCursor(ALBUM_URI, ALBUM_COLS)
+
+        if(albumCursor?.moveToFirst())
+        {
+            def getString = { String columnName ->
+                return albumCursor.getString(
+                    albumCursor.getColumnIndex(columnName))
+            }
+
+            while(albumCursor.moveToNext())
+            {
+                createOne(
+                    getString(ALBUM_TITLE),
+                    getString(ALBUM_ARTIST),
+                    getString(ALBUM_DATE),
+                    getString(ALBUM_NB_SONG),
+                    getString(ALBUM_COVER)
+                )
+            }
+        }
+        albumCursor.close()
+        this.@allAlbums.sort()
+    }
+    //endregion
 }

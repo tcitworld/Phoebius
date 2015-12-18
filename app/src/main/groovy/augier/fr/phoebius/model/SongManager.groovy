@@ -29,9 +29,8 @@ enum SongManager
 
     private SongManager()
     {
-        def musicQueryBuilder = new MusicQueryBuilder()
-        musicQueryBuilder.createAlbumList()
-        musicQueryBuilder.createSongList()
+        Album.query()
+        Song.query()
         createPlaylists()
         currentSongId = firstId
         loop = false
@@ -180,119 +179,4 @@ enum SongManager
     public Playlist getPlaylist(String name){ return playlists[name] ?: new Playlist() }
 
     //endregion
-
-    private class MusicQueryBuilder
-    {
-        public static final String SONG_ID = MediaStore.Audio.Media._ID
-        public static final String SONG_TITLE = MediaStore.Audio.Media.TITLE
-        public static final String SONG_ARTIST = MediaStore.Audio.Media.ARTIST
-        public static final String SONG_YEAR = MediaStore.Audio.Media.YEAR
-        public static final String SONG_ALBUM = MediaStore.Audio.Media.ALBUM
-        public static final String SONG_NUMBER = MediaStore.Audio.Media.TRACK
-        public static final String ALBUM_TITLE = MediaStore.Audio.Albums.ALBUM
-        public static final String ALBUM_ARTIST = MediaStore.Audio.Albums.ARTIST
-        public static final String ALBUM_DATE = MediaStore.Audio.Albums.FIRST_YEAR
-        public static final String ALBUM_NB_SONG = MediaStore.Audio.Albums.NUMBER_OF_SONGS
-        public static final String ALBUM_COVER = MediaStore.Audio.Albums.ALBUM_ART
-
-        public static final Uri MUSIC_URI = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        public static final Uri ALBUM_URI = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-        public static final String[] ALBUM_COLS = [ALBUM_TITLE, ALBUM_ARTIST,
-                                                   ALBUM_DATE, ALBUM_NB_SONG, ALBUM_COVER]
-
-        private Cursor musicCursor
-        private Cursor albumCursor
-        private ContentResolver resolver = PhoebiusApplication.context.contentResolver
-
-        public MusicQueryBuilder()
-        {
-            musicCursor = query(MUSIC_URI, null)
-            albumCursor = query(ALBUM_URI, ALBUM_COLS)
-        }
-
-        /**
-         * Query the DB to retrieve the list of songs
-         *
-         * Creates an {@link ArrayList} of {@link Song} from the query an sorts the list.
-         *
-         * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
-         */
-        public void createSongList(){ SwissKnife.runOnBackground(this, "bgCreateSongList") }
-
-        @OnBackground
-        private void bgCreateSongList()
-        {
-            if(musicCursor?.moveToFirst())
-            {
-
-                while(musicCursor.moveToNext())
-                {
-                    Song.createOne(
-                        musicCursor.getLong(songIdColumn),
-                        musicCursor.getString(songTitleColumn),
-                        musicCursor.getString(songArtistColumn),
-                        musicCursor.getString(songAlbumColumn),
-                        musicCursor.getInt(songNumberColumn),
-                        musicCursor.getInt(songYearColumn)
-                    )
-                }
-            }
-            musicCursor.close()
-            Song.allSongs.sort()
-        }
-
-        /**
-         * Query the DB to retrieve the list of albums
-         *
-         * Creates an {@link ArrayList} of {@link Album} from the query an sorts the list.
-         *
-         * @see {@link android.content.ContentResolver#query} and {@link android.database.Cursor}
-         */
-        public void createAlbumList(){ SwissKnife.runOnBackground(this, "bgCreateAlbumList") }
-
-        private void bgCreateAlbumList()
-        {
-            if(albumCursor?.moveToFirst())
-            {
-                while(albumCursor.moveToNext())
-                {
-                    Album.createOne(
-                        albumCursor.getString(albumTitleColumn),
-                        albumCursor.getString(albumArtistColumn),
-                        albumCursor.getString(albumDateColumn),
-                        albumCursor.getString(albumNbSongsColumn),
-                        albumCursor.getString(albumCoverColumn)
-                    )
-                }
-            }
-            albumCursor.close()
-            Album.allAlbums.sort()
-        }
-
-        private int getSongTitleColumn(){ return gci(SONG_TITLE, musicCursor) }
-
-        private int getSongIdColumn(){ return gci(SONG_ID, musicCursor) }
-
-        private int getSongArtistColumn(){ return gci(SONG_ARTIST, musicCursor) }
-
-        private int getSongAlbumColumn(){ return gci(SONG_ALBUM, musicCursor) }
-
-        private int getSongYearColumn(){ return gci(SONG_YEAR, musicCursor) }
-
-        private int getSongNumberColumn(){ return gci(SONG_NUMBER, musicCursor) }
-
-        private int getAlbumArtistColumn(){ return gci(ALBUM_ARTIST, albumCursor) }
-
-        private int getAlbumTitleColumn(){ return gci(ALBUM_TITLE, albumCursor) }
-
-        private int getAlbumDateColumn(){ return gci(ALBUM_DATE, albumCursor) }
-
-        private int getAlbumNbSongsColumn(){ return gci(ALBUM_NB_SONG, albumCursor) }
-
-        private int getAlbumCoverColumn(){ return gci(ALBUM_COVER, albumCursor) }
-
-        private int gci(String col, Cursor c){ return c.getColumnIndex(col) }
-
-        private Cursor query(Uri a, String[] b){ return resolver.query(a, b, null, null, null) }
-    }
 }
