@@ -1,11 +1,8 @@
 package augier.fr.phoebius.utils
-
-
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
-import groovy.transform.CompileStatic;
-
+import groovy.transform.CompileStatic
 /**
  * Overriding class used to display square images
  */

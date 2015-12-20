@@ -1,22 +1,18 @@
 package augier.fr.phoebius.UI
-
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import augier.fr.phoebius.R
 import augier.fr.phoebius.model.Album
 import augier.fr.phoebius.utils.AbstractAdaptater
+import augier.fr.phoebius.utils.SquareImageView
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
-
-
 /**
  * Fragment to display the albumName list
  *
@@ -59,7 +55,7 @@ public class AlbumListFragment extends Fragment
             this.<TextView>getView(R.id.albumTitle).text = currAlbum.albumTitle
             this.<TextView>getView(R.id.albumArtist).text = currAlbum.albumArtist
             this.<TextView>getView(R.id.albumNbSongs).text = "${currAlbum.nbSongs} pistes"
-            this.<ImageView>getView(R.id.albumCover).imageBitmap = currAlbum.cover
+            this.<SquareImageView>getView(R.id.albumCover).imageBitmap = currAlbum.cover
 
             return layout
         }
