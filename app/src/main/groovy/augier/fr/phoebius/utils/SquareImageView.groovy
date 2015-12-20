@@ -17,7 +17,8 @@ public class SquareImageView extends ImageView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        setMeasuredDimension(measuredHeight, measuredHeight)
+        def dim = Math.max(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(dim, dim)
+        setMeasuredDimension(dim, dim)
     }
 }

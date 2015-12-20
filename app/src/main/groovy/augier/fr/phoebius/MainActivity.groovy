@@ -4,6 +4,7 @@ package augier.fr.phoebius
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import augier.fr.phoebius.model.Song
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity
     @InjectView private TextView playbarMinSongTitle
     @InjectView private TextView playbarMinArtistName
     @InjectView private SquareImageView mainPlayingCoverView
-    @InjectView private SquareImageView playbarMinCover
+    @InjectView private ImageView playbarMinCover
     @InjectView private RelativeLayout playbar
     @InjectView private SlidingUpPanelLayout slidingLayout
 

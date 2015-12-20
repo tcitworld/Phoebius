@@ -99,7 +99,6 @@ class MusicService extends Service implements OnPreparedListener,
             songList.currentSong = song
             mediaPlayerInit(mediaPlayer, songList.currentSong)
             prepareNextPlayer()
-            PhoebiusApplication.bus.post(songList.currentSong)
             playPause()
         }
     }
@@ -122,6 +121,7 @@ class MusicService extends Service implements OnPreparedListener,
         if(playing) mediaPlayer.pause()
         else mediaPlayer.start()
 
+        PhoebiusApplication.bus.post(songList.currentSong)
         PhoebiusApplication.bus.post(PlayerActions.ACTION_PLAY_PAUSE)
         notificationPlayer.updateNotification(songList.currentSong)
         startForeground(1, notificationPlayer.notification)

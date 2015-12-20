@@ -1,10 +1,7 @@
 package augier.fr.phoebius.UI
-
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
@@ -20,7 +17,6 @@ import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
 import com.arasthel.swissknife.annotations.OnItemLongClick
-
 /**
  * Fragment to display the song list
  *

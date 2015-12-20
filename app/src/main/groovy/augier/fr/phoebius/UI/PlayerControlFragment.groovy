@@ -1,6 +1,4 @@
 package augier.fr.phoebius.UI
-
-
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -13,14 +11,11 @@ import android.widget.TextView
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
-import augier.fr.phoebius.core.PlayerActions
 import augier.fr.phoebius.utils.Refresher
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnClick
-import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
-
 /**
  * {@link Fragment} to display the customized player controller
  *

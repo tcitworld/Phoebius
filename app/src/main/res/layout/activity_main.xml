@@ -37,10 +37,10 @@
 						android:padding="0dp"
 						android:layout_margin="0dp">
 
-			<augier.fr.phoebius.utils.SquareImageView
+			<ImageView
 				android:id="@+id/playbarMinCover"
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
+				android:layout_width="@dimen/navbar_height"
+				android:layout_height="@dimen/navbar_height"
 				android:layout_marginRight="5dp"
 				android:src="@drawable/default_cover"/>
 
