@@ -4,6 +4,8 @@ package augier.fr.phoebius.UI
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.*
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import augier.fr.phoebius.PhoebiusApplication
@@ -13,6 +15,7 @@ import augier.fr.phoebius.model.Playlist
 import augier.fr.phoebius.model.Song
 import augier.fr.phoebius.model.SongManager
 import augier.fr.phoebius.utils.AbstractAdaptater
+import augier.fr.phoebius.utils.SquareImageView
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnItemClick
@@ -93,7 +96,7 @@ public class SongListFragment extends Fragment
     protected SongManager getSongList(){ return SongManager.INSTANCE }
 
     /** Adapter class, nothing special */
-    class SongAdapter extends AbstractAdaptater
+    class SongAdapter extends AbstractAdaptater<LinearLayout>
     {
         @Override public int getCount(){ return songs.size() }
 
@@ -103,8 +106,9 @@ public class SongListFragment extends Fragment
 
             Song currSong = songs[position]
 
-            this.<TextView> getView(R.id.songTitle).text = currSong.title
-            this.<TextView> getView(R.id.songArtist).text = currSong.artist
+            this.<SquareImageView>getView(R.id.songCover).imageBitmap = currSong.cover
+            this.<TextView>getView(R.id.songTitle).text = currSong.title
+            this.<TextView>getView(R.id.songArtist).text = currSong.artist
 
             layout.tag = position
             return layout

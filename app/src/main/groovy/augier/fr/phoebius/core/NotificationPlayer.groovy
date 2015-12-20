@@ -26,11 +26,11 @@ enum NotificationPlayer
     /** Unique identifier for this type of notification. */
     private static final String NOTIFICATION_TAG = "${R.string.app_name}#NotifPlayer"
     private final def FOR_BUTTON = [
-        (R.id.btnPlayPause): PlayerActions.ACTION_PLAY_PAUSE,
-        (R.id.btnBackward) : PlayerActions.ACTION_BACKWARD,
-        (R.id.btnForward)  : PlayerActions.ACTION_FORWARD,
-        (R.id.btnNext)     : PlayerActions.ACTION_NEXT,
-        (R.id.btnPrevious) : PlayerActions.ACTION_PREVIOUS
+        (R.id.notifBtnPlayPause): PlayerActions.ACTION_PLAY_PAUSE,
+        (R.id.notifBtnBackward) : PlayerActions.ACTION_BACKWARD,
+        (R.id.notifBtnForward)  : PlayerActions.ACTION_FORWARD,
+        (R.id.notifBtnNext)     : PlayerActions.ACTION_NEXT,
+        (R.id.notifBtnPrevious) : PlayerActions.ACTION_PREVIOUS
     ]
     private Notification notification
     private RemoteViews remoteViews
@@ -48,8 +48,6 @@ enum NotificationPlayer
         FOR_BUTTON.keySet().each{
             remoteViews.setOnClickPendingIntent(it, generateAction(it))
         }
-
-        PhoebiusApplication.bus.register(this)
     }
 
     private PendingIntent generateAction(int btn)
@@ -60,63 +58,18 @@ enum NotificationPlayer
         return PendingIntent.getService(context, 1, intent, 0);
     }
 
-    /**
-     * Shows or updates the notification
-     *
-     * Shows or update a previously shown notification of
-     * this type, with the given parameters. Make sure to follow the
-     * <a href="https://developer.android.com/design/patterns/notifications.html">
-     * Notification design guidelines</a> when doing so.
-     *
-     * @see #cancel()
-     */
-    @Subscribe
-    public void getSong(Song song)
+    public void updateNotification(Song song)
     {
         remoteViews.setImageViewBitmap(R.id.notifAlbumCover, song.cover)
         remoteViews.setTextViewText(R.id.notifSongTitleLabel, song.title)
         remoteViews.setTextViewText(R.id.notifSongArtistLabel, song.artist)
-
-        update()
-    }
-
-    @Subscribe
-    public void getPlayerAction(PlayerActions action)
-    {
-        switch(action)
-        {
-            case PlayerActions.ACTION_STOP:
-                cancel()
-                break
-            case PlayerActions.ACTION_PLAY_PAUSE:
-                computePlayPauseState()
-                break
-        }
-    }
-
-    private computePlayPauseState()
-    {
         if(musicService.playing)
-            remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_pause)
+            remoteViews.setImageViewResource(R.id.notifBtnPlayPause, R.drawable.btn_pause)
         else
-            remoteViews.setImageViewResource(R.id.btnPlayPause, R.drawable.btn_play)
-        update()
-    }
+            remoteViews.setImageViewResource(R.id.notifBtnPlayPause, R.drawable.btn_play)
 
-    private void update()
-    {
         notification.contentView = remoteViews
         notification.bigContentView = remoteViews
-    }
-
-    /**
-     * Cancels any notifications of this type previously shown using
-     * {@link #notify()}.
-     */
-    public void cancel()
-    {
-        def nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.cancel(NOTIFICATION_TAG, 0)
     }
 
     private Context getContext(){ return PhoebiusApplication.context }

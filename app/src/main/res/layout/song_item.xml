@@ -1,22 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="5dp">
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal"
+	android:padding="5dp"
+	android:gravity="start|center_horizontal">
 
-    <TextView
-        android:id="@+id/songTitle"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF99"
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+		<augier.fr.phoebius.utils.SquareImageView
+			android:id="@+id/songCover"
+			android:src="@drawable/default_cover"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_margin="0dp"
+			android:layout_gravity="center"/>
 
-    <TextView
-        android:id="@+id/songArtist"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF99"
-        android:textSize="18sp"/>
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="5dp">
+
+			<TextView
+				android:id="@+id/songTitle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#FFFFFF99"
+				android:textSize="20sp"
+				android:textStyle="bold"
+				android:lines="1"
+				android:text="@string/albumTitleText"
+				android:padding="2dp"
+				android:gravity="start|center_horizontal"/>
+
+			<TextView
+				android:id="@+id/songArtist"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#FFFFFF99"
+				android:textSize="18sp"
+				android:lines="1"
+				android:text="@string/albumArtistText"
+				android:padding="2dp"
+				android:gravity="start|center_horizontal"/>
+		</LinearLayout>
 </LinearLayout>

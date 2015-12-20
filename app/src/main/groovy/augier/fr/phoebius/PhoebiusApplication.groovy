@@ -70,7 +70,6 @@ public class PhoebiusApplication extends Application implements ServiceConnectio
         @Override void run()
         {
             dumpConfig()
-            NotificationPlayer.INSTANCE.cancel()
             musicService.stop()
         }
     }

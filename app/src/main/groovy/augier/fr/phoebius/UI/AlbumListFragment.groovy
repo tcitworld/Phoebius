@@ -3,6 +3,7 @@ package augier.fr.phoebius.UI
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,6 @@ import android.widget.ListView
 import android.widget.TextView
 import augier.fr.phoebius.R
 import augier.fr.phoebius.model.Album
-import augier.fr.phoebius.model.AlbumList
-import augier.fr.phoebius.model.SongManager
 import augier.fr.phoebius.utils.AbstractAdaptater
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
@@ -46,7 +45,7 @@ public class AlbumListFragment extends Fragment
     /**
      * Adaptater to createOne a grid of albums
      */
-    class SongAdapter extends AbstractAdaptater
+    class SongAdapter extends AbstractAdaptater<LinearLayoutCompat>
     {
         @Override public int getCount(){ return Album.allAlbums.size() }
 

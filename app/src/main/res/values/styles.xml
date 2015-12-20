@@ -1,7 +1,8 @@
 <resources>
-    <style name="PhoebiusTheme" parent="Theme.AppCompat">
+    <style name="PhoebiusTheme" parent="Theme.AppCompat.NoActionBar">
 		<item name="android:windowActionBarOverlay">true</item>
     </style>
-	<color name="GlobalBG">#000</color>
+	<color name="black">#000</color>
 	<color name="ControllBG">#2f2f2f</color>
+	<color name="white">#fff</color>
 </resources>

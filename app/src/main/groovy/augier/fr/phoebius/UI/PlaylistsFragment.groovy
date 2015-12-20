@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
 import augier.fr.phoebius.PlaylistDetailActivity
@@ -41,7 +42,7 @@ public class PlaylistsFragment extends Fragment
 
     private ArrayList<String> getAllPlaylists(){ return SongManager.INSTANCE.allPlaylists }
 
-    class PlaylistAdaptater extends AbstractAdaptater
+    class PlaylistAdaptater extends AbstractAdaptater<LinearLayout>
     {
         @Override int getCount(){ return allPlaylists.size() }
 

@@ -3,6 +3,7 @@ package augier.fr.phoebius.utils
 
 import android.app.Activity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.LinearLayout
@@ -14,12 +15,12 @@ import groovy.transform.CompileStatic
  * This class just provides convenient methods for conceiving adaptaters
  */
 @CompileStatic
-abstract class AbstractAdaptater extends BaseAdapter
+abstract class AbstractAdaptater<LT extends ViewGroup> extends BaseAdapter
 {
     /**
      * Inflated layout
      */
-    protected LinearLayout layout
+    protected LT layout
 
     /**
      * Does nothing
@@ -51,9 +52,9 @@ abstract class AbstractAdaptater extends BaseAdapter
      * method
      * @return The {@link LinearLayout} inflated (just uses {@link LayoutInflater#inflate}
      */
-    protected static LinearLayout inflate(Activity a, int r, ViewGroup p)
+    protected static LT inflate(Activity a, int r, ViewGroup p)
     {
         LayoutInflater li = LayoutInflater.from(a)
-        return li.inflate(r, p, false) as LinearLayout
+        return li.inflate(r, p, false) as LT
     }
 }

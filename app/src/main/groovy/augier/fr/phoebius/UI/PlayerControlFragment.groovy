@@ -13,10 +13,12 @@ import android.widget.TextView
 import augier.fr.phoebius.PhoebiusApplication
 import augier.fr.phoebius.R
 import augier.fr.phoebius.core.MusicService
+import augier.fr.phoebius.core.PlayerActions
 import augier.fr.phoebius.utils.Refresher
 import com.arasthel.swissknife.SwissKnife
 import com.arasthel.swissknife.annotations.InjectView
 import com.arasthel.swissknife.annotations.OnClick
+import com.squareup.otto.Subscribe
 import groovy.transform.CompileStatic
 
 /**
@@ -34,7 +36,7 @@ public class PlayerControlFragment extends Fragment
     @InjectView private SeekBar songProgressBar
     @InjectView private ImageButton btnPlayPause
     private SongBarListener songBarListener = new SongBarListener()
-    private Refresher refresher = new Refresher(this.&onRefresh)
+    private Refresher refresher = new Refresher(this.&onRefresh, 500)
 
     @Override
     View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -77,8 +79,7 @@ public class PlayerControlFragment extends Fragment
      * .com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
      */
     @OnClick(R.id.btnBackward)
-    public void onBtnBackwardClick()
-    { if(playing) musicService?.backward() }
+    public void onBtnBackwardClick(){ if(playing) musicService?.backward() }
 
     /**
      * Callback for forward button
@@ -87,8 +88,7 @@ public class PlayerControlFragment extends Fragment
      * .com/Arasthel/SwissKnife/wiki/@OnClick">SwissKnife's @OnClick annotation </a>
      */
     @OnClick(R.id.btnForward)
-    public void onBtnForwardClick()
-    { if(playing) musicService?.forward() }
+    public void onBtnForwardClick(){ if(playing) musicService?.forward() }
 
     /**
      * Callback for previous button

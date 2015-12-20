@@ -76,11 +76,7 @@ class MusicService extends Service implements OnPreparedListener,
     }
 
     @Override
-    void onDestroy()
-    {
-        super.onDestroy()
-        notificationPlayer.cancel()
-    }
+    void onDestroy(){ super.onDestroy() }
 
     @Override
     void onCreate()
@@ -97,16 +93,14 @@ class MusicService extends Service implements OnPreparedListener,
      */
     public void play(Song song)
     {
-        if(!song)
-        { stop() }
+        if(!song) stop()
         else
         {
             songList.currentSong = song
             mediaPlayerInit(mediaPlayer, songList.currentSong)
             prepareNextPlayer()
-            playPause()
             PhoebiusApplication.bus.post(songList.currentSong)
-            startForeground(1, notificationPlayer.notification)
+            playPause()
         }
     }
 
@@ -116,8 +110,8 @@ class MusicService extends Service implements OnPreparedListener,
     public void stop()
     {
         mediaPlayer.stop()
+        stopForeground(true)
         PhoebiusApplication.bus.post(PlayerActions.ACTION_STOP)
-        stopForeground(false)
     }
 
     /**
@@ -127,7 +121,10 @@ class MusicService extends Service implements OnPreparedListener,
     {
         if(playing) mediaPlayer.pause()
         else mediaPlayer.start()
+
         PhoebiusApplication.bus.post(PlayerActions.ACTION_PLAY_PAUSE)
+        notificationPlayer.updateNotification(songList.currentSong)
+        startForeground(1, notificationPlayer.notification)
     }
 
     /**
@@ -164,19 +161,16 @@ class MusicService extends Service implements OnPreparedListener,
      * is paused) to the next song.
      */
     public void playNext(){ play(songList.nextSong) }
-
     //endregion
 
     //region Overrided methods
     @Override
-    IBinder onBind(Intent intent)
-    { return musicBinder }
+    IBinder onBind(Intent intent){ return musicBinder }
 
     @Override
     public boolean onUnbind(Intent intent)
     {
         releasePlayers()
-        notificationPlayer.cancel()
         return false
     }
 
@@ -229,7 +223,7 @@ class MusicService extends Service implements OnPreparedListener,
         Song next = songList.nextSong
         if(next) mediaPlayerInit(nextMediaPlayer, next)
         else nextMediaPlayer = null
-        //mediaPlayer.nextMediaPlayer = nextMediaPlayer
+        mediaPlayer.nextMediaPlayer = nextMediaPlayer
     }
 
     private void releasePlayers()

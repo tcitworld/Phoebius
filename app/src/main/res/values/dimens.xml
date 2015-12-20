@@ -1,3 +1,5 @@
 <resources>
-	<dimen name="NavBarHeigth">60dp</dimen>
+	<dimen name="navbar_height">60dp</dimen>
+	<dimen name="seekbar_height">12dp</dimen>
+	<dimen name="seekbar_outer_height">20dp</dimen>
 </resources>
